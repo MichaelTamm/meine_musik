@@ -1,0 +1,26 @@
+targets:
+  drift:
+    auto_apply_builders: false
+    builders:
+      drift_dev:analyzer:
+        enabled: true
+        generate_for: &generate_for
+          - lib/drift/database.dart
+        options: &options
+          databases:
+            database: lib/drift/database.dart
+          has_separate_analyzer: true
+          store_date_time_values_as_text: true
+      drift_dev:not_shared:
+        enabled: true
+        generate_for: *generate_for
+        options: *options
+  $default:
+    dependencies:
+      - ":drift"
+    builders:
+      drift_dev:
+        enabled: false
+      riverpod_generator:
+        generate_for:
+          - lib/riverpod/*.dart

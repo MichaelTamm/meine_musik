@@ -19,7 +19,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.9.2
+  sdk: 3.9.2
+  flutter: 3.35.5
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -28,23 +29,45 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  audioplayers: 6.5.1
+  audio_session: 0.2.2
+  auto_size_text: 3.0.0
+  collection: 1.19.1
+  dartx: 1.2.0
   flutter:
     sdk: flutter
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
+  delightful_toast: 1.1.0
+  drift: 2.28.2
+  drift_flutter: 0.2.7
+  permission_handler: 12.0.1
+  flutter_riverpod: 3.0.1
+  riverpod_annotation: 3.0.1
+  flutter_hooks: 0.21.3+1
+  flutter_svg: 2.2.1
+  hooks_riverpod: 3.0.1
+  path: 1.9.1
+  path_provider: 2.1.5
+  sqlite3_flutter_libs: 0.5.40
 
 dev_dependencies:
+  build_runner: 2.9.0
+  custom_lint: 0.8.1
+  drift_dev: 2.28.3
   flutter_test:
     sdk: flutter
+  flutter_lints: 6.0.0
+  mocktail: 1.0.4
+  pigeon: 26.0.1
+  riverpod_generator: 3.0.1
+  riverpod_lint: 3.0.1
+  spot: 0.18.0
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+dependency_overrides:
+  analyzer: 8.4.0
+  characters: 1.4.1
+  material_color_utilities: 0.13.0
+  meta: 1.17.0
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -57,10 +80,8 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
@@ -87,3 +108,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  fonts:
+    - family: meine-musik-icons
+      fonts:
+        - asset: fonts/meine-musik-icons.ttf
