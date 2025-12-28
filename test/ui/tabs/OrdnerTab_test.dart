@@ -21,23 +21,23 @@ void main() {
     await tester.startApp();
     await act.tap(spot<TabBar>().spotIcon(Icons.folder_rounded));
     await tester.pumpAndSettle();
-    spot<CurrentPathBar>().spot<TextButton>().existsOnce();
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
     spot<OrdnerTab>().spot<ListTile>().existsExactlyNTimes(2);
     spot<OrdnerTab>().spot<ListTile>().spotText("Samsung").existsOnce();
     spot<OrdnerTab>().spot<ListTile>().spotText("Musik").existsOnce();
     await act.tap(spot<ListTile>().spotText("Samsung"));
     await tester.pumpAndSettle();
-    spot<CurrentPathBar>().spot<TextButton>().existsExactlyNTimes(2);
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Samsung").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().existsExactlyNTimes(2);
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Samsung").existsOnce();
     spot<OrdnerTab>().spot<ListTile>().spotText("Samsung").doesNotExist();
     await act.tap(spot<OrdnerTab>().spot<ListTile>().spotText("Music"));
     await tester.pumpAndSettle();
-    spot<CurrentPathBar>().spot<TextButton>().existsExactlyNTimes(3);
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Samsung").existsOnce();
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Music").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().existsExactlyNTimes(3);
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Samsung").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Music").existsOnce();
     spot<OrdnerTab>().spot<ListTile>().existsOnce();
     spot<OrdnerTab>().spot<ListTile>().spotText("Samsung").doesNotExist();
     spot<OrdnerTab>().spot<ListTile>().spotText("Music").doesNotExist();
@@ -45,19 +45,19 @@ void main() {
     // Pressing the back button should go back to the previous folder ...
     await tester.pressBackButton();
     await tester.pumpAndSettle();
-    spot<CurrentPathBar>().spot<TextButton>().existsExactlyNTimes(2);
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Samsung").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().existsExactlyNTimes(2);
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Samsung").existsOnce();
     spot<OrdnerTab>().spot<ListTile>().spotText("Samsung").doesNotExist();
     spot<OrdnerTab>().spot<ListTile>().spotText("Music").existsOnce();
     spot<OrdnerTab>().spot<ListTile>().spotText("Over the Horizon.mp3").doesNotExist();
     // User can tap on a folder to go back there ...
-    await act.tap(spot<CurrentPathBar>().spotText("Dieses Gerät"));
+    await act.tap(spot<OrdnerTabNavigationBar>().spotText("Dieses Gerät"));
     await tester.pumpAndSettle();
-    spot<CurrentPathBar>().spot<TextButton>().existsOnce();
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
-    spot<CurrentPathBar>().spotText("Samsung").doesNotExist();
-    spot<CurrentPathBar>().spotText("Music").doesNotExist();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
+    spot<OrdnerTabNavigationBar>().spotText("Samsung").doesNotExist();
+    spot<OrdnerTabNavigationBar>().spotText("Music").doesNotExist();
     spot<OrdnerTab>().spot<ListTile>().existsExactlyNTimes(2);
     spot<OrdnerTab>().spot<ListTile>().spotText("Samsung").existsOnce();
     spot<OrdnerTab>().spot<ListTile>().spotText("Musik").existsOnce();
@@ -65,7 +65,7 @@ void main() {
 
   testWidgets('Current folder is restored when user switches tabs', (tester) async {
     when(() => audioService.findAll()).thenAnswer(
-          (_) async => [
+      (_) async => [
         anAudioFile(path: '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3'),
         anAudioFile(path: '/storage/0000-0000/Musik/Alicia Keys - Songs In A Minor/01 - Alicia Keys - Piano & I.mp3'),
         anAudioFile(path: '/storage/0000-0000/Musik/Alicia Keys - Songs In A Minor/02 - Alicia Keys - Girlfriend.mp3'),
@@ -82,9 +82,9 @@ void main() {
     spot<OrdnerTab>().doesNotExist();
     await act.tap(spot<TabBar>().spotIcon(Icons.folder_rounded));
     await tester.pumpAndSettle();
-    spot<CurrentPathBar>().spot<TextButton>().existsExactlyNTimes(2);
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
-    spot<CurrentPathBar>().spot<TextButton>().spotText("Musik").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().existsExactlyNTimes(2);
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Dieses Gerät").existsOnce();
+    spot<OrdnerTabNavigationBar>().spot<TextButton>().spotText("Musik").existsOnce();
     spot<OrdnerTab>().spot<ListTile>().existsOnce();
     spot<OrdnerTab>().spot<ListTile>().spotText("Musik").doesNotExist();
     spot<OrdnerTab>().spot<ListTile>().spotText("Alicia Keys - Songs In A Minor").existsOnce();

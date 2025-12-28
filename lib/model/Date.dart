@@ -1,9 +1,9 @@
 class Date implements Comparable<Date> {
   Date(this.year, this.month, this.day)
-      : assert(year >= 1900 && year <= 2099),
-        assert(month >= 1 && month <= 12),
-        assert(day >= 1 && day <= 31),
-        _dateTime = DateTime(year, month, day) {
+    : assert(year >= 1900 && year <= 2099),
+      assert(month >= 1 && month <= 12),
+      assert(day >= 1 && day <= 31),
+      _dateTime = DateTime(year, month, day) {
     if (_dateTime.year != year || _dateTime.month != month || _dateTime.day != day) {
       throw ArgumentError('Date($year, $month, $day) is not a valid date');
     }

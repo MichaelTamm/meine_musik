@@ -15,12 +15,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   setUp(() {
     audioService = MockAudioService();
     // See https://drift.simonbinder.eu/testing/ ...
-    db = Database(
-      DatabaseConnection(
-        NativeDatabase.memory(),
-        closeStreamsSynchronously: true,
-      ),
-    );
+    db = Database(DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true));
   });
 
   tearDown(() async {

@@ -32,17 +32,17 @@ class MeineMusikApp extends StatelessWidget {
         theme: themeData,
         debugShowCheckedModeBanner: false,
         navigatorKey: appNavigatorKey,
-        home: SafeArea(child: _MeineMusikScaffoldWrapper()),
+        home: _MeineMusikScaffoldWrapper(),
       ),
     );
   }
 }
 
-class _MeineMusikScaffoldWrapper extends HookWidget {
+class _MeineMusikScaffoldWrapper extends HookConsumerWidget {
   const _MeineMusikScaffoldWrapper();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     useOnMount(() {
       riverpodContainer.context = context;
       SystemChrome.setSystemUIOverlayStyle(
@@ -52,12 +52,15 @@ class _MeineMusikScaffoldWrapper extends HookWidget {
           statusBarIconBrightness: Brightness.dark,
         ),
       );
+      // Preload view data of hidden tabs for a smooth tab switch animation ...
+      ref.read(AlbenTab.viewDataProvider);
+      ref.read(KuenstlerTab.viewDataProvider);
+      ref.read(OrdnerTab.thisDeviceProvider);
     });
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        debugPrint('[_MeineMusikScaffoldWrapper] onPopInvokedWithResult($didPop, $result)');
+        debugPrint('[$runtimeType] onPopInvokedWithResult($didPop, $result)');
         // TODO: display Toast: "Drücke die Zurück-Taste noch einmal, um die App zu beenden."
       },
       child: DefaultTabController(length: 4, child: _MeineMusikScaffold()),
@@ -65,20 +68,21 @@ class _MeineMusikScaffoldWrapper extends HookWidget {
   }
 }
 
+const _tabNames = ['Playlists', 'Alben', 'Künstler', 'Ordner'];
+
 class _MeineMusikScaffold extends HookConsumerWidget {
   const _MeineMusikScaffold();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tabController = DefaultTabController.of(context);
-    final currentTabState = useState(tabController.index);
-    final currentTab = currentTabState.value;
+    final currentTabRef = useRef(tabController.index);
 
     useEffect(() {
       void listener() {
-        if (currentTabState.value != tabController.index) {
-          debugPrint('[_MeineMusikScaffold] currentTabState.value = ${tabController.index}');
-          currentTabState.value = tabController.index;
+        if (currentTabRef.value != tabController.index) {
+          debugPrint("[$runtimeType] Switching to tab '${_tabNames[tabController.index]}'");
+          currentTabRef.value = tabController.index;
         }
       }
 
@@ -94,45 +98,28 @@ class _MeineMusikScaffold extends HookConsumerWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        toolbarHeight: null,
-        titleSpacing: 0,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        bottom: TabBar(
-          tabs: [
-            Tab(icon: Icon(Icons.library_music_rounded), text: 'Playlists'),
-            Tab(icon: Icon(Icons.album_rounded), text: 'Alben'),
-            Tab(icon: Icon(Icons.group_rounded), text: 'Künstler'),
-            ordnerTab,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          toolbarHeight: null,
+          titleSpacing: 0,
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.library_music_rounded), text: 'Playlists'),
+              Tab(icon: Icon(Icons.album_rounded), text: 'Alben'),
+              Tab(icon: Icon(Icons.group_rounded), text: 'Künstler'),
+              ordnerTab,
+            ],
+          ),
+        ),
+        body: Column(
+          children: [
+            Expanded(child: TabBarView(children: [PlaylistsTab(), AlbenTab(), KuenstlerTab(), OrdnerTab()])),
+            // TODO: if (currentPlaylist.isNotEmpty) const PlayerWidget(),
           ],
         ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                TabBarView(children: [PlaylistsTab(), AlbenTab(), KuenstlerTab(), OrdnerTab()]),
-                if (currentTab == 0)
-                  Positioned(
-                    left: 16,
-                    bottom: 16,
-                    child: FloatingActionButton.small(
-                      tooltip: 'Playlist hinzufügen',
-                      elevation: 0,
-                      onPressed: () {
-                        /* TODO: showDialog(context: context, builder: ((_) => CreatePlaylistDialog())) */
-                      },
-                      child: const Icon(Icons.add),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          // TODO: if (currentPlaylist.isNotEmpty) const PlayerWidget(),
-        ],
       ),
     );
   }

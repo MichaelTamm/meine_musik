@@ -36,7 +36,10 @@ Future<List<Playlist>> playlists(Ref ref) async {
 
 @riverpod
 Future<AllSongs> allSongs(Ref ref) async {
-  final (audioFiles, isSongPredicate) = await Futures.tuple2(ref.watch(localAudioFilesProvider.future), ref.watch(isSongPredicateProvider.future));
+  final (audioFiles, isSongPredicate) = await Futures.tuple2(
+    ref.watch(localAudioFilesProvider.future),
+    ref.watch(isSongPredicateProvider.future),
+  );
   final allSongs = [...audioFiles.where(isSongPredicate.call)];
   ref.keepAlive();
   return AllSongs(allSongs);
@@ -44,7 +47,10 @@ Future<AllSongs> allSongs(Ref ref) async {
 
 @riverpod
 Future<FavoriteSongs> favoriteSongs(Ref ref) async {
-  final (audioFiles, isFavoriteSongPredicate) = await Futures.tuple2(ref.watch(localAudioFilesProvider.future), ref.watch(isFavoriteSongPredicateProvider.future));
+  final (audioFiles, isFavoriteSongPredicate) = await Futures.tuple2(
+    ref.watch(localAudioFilesProvider.future),
+    ref.watch(isFavoriteSongPredicateProvider.future),
+  );
   final favoriteSongs = [...audioFiles.where(isFavoriteSongPredicate.call)];
   ref.keepAlive();
   return FavoriteSongs(
@@ -66,7 +72,7 @@ Future<FavoriteSongs> favoriteSongs(Ref ref) async {
       final configFile = File('${dir.path}/IsFavoriteSongPredicate.config');
       await newIsFavoriteSongPredicate.writeToFile(configFile);
       riverpodContainer.invalidate(isFavoriteSongPredicateProvider);
-    }
+    },
   );
 }
 
@@ -92,7 +98,7 @@ Future<List<ManuallyCreatedPlaylist>> manuallyCreatedPlaylists(Ref ref) async {
     }
   }
   final manuallyCreatedPlaylists = playlistDatabaseRecords.map(
-        (record) => ManuallyCreatedPlaylist(
+    (record) => ManuallyCreatedPlaylist(
       record.name,
       songsByPlaylistId[record.id] ?? [],
       setName: (String name) async {

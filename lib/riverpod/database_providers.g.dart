@@ -15,7 +15,15 @@ const playlistDatabaseRecordsProvider = PlaylistDatabaseRecordsProvider._();
 final class PlaylistDatabaseRecordsProvider extends $FunctionalProvider<AsyncValue<List<Playlist>>, List<Playlist>, Stream<List<Playlist>>>
     with $FutureModifier<List<Playlist>>, $StreamProvider<List<Playlist>> {
   const PlaylistDatabaseRecordsProvider._()
-    : super(from: null, argument: null, retry: null, name: r'playlistDatabaseRecordsProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'playlistDatabaseRecordsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$playlistDatabaseRecordsHash();
@@ -35,10 +43,19 @@ String _$playlistDatabaseRecordsHash() => r'53181be4cae454aeef5021a91f3bec4b8c8c
 @ProviderFor(playlistItemsDatabaseRecords)
 const playlistItemsDatabaseRecordsProvider = PlaylistItemsDatabaseRecordsProvider._();
 
-final class PlaylistItemsDatabaseRecordsProvider extends $FunctionalProvider<AsyncValue<List<PlaylistItem>>, List<PlaylistItem>, Stream<List<PlaylistItem>>>
+final class PlaylistItemsDatabaseRecordsProvider
+    extends $FunctionalProvider<AsyncValue<List<PlaylistItem>>, List<PlaylistItem>, Stream<List<PlaylistItem>>>
     with $FutureModifier<List<PlaylistItem>>, $StreamProvider<List<PlaylistItem>> {
   const PlaylistItemsDatabaseRecordsProvider._()
-    : super(from: null, argument: null, retry: null, name: r'playlistItemsDatabaseRecordsProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'playlistItemsDatabaseRecordsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$playlistItemsDatabaseRecordsHash();

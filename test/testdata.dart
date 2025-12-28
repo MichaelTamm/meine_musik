@@ -27,19 +27,16 @@ int _nextIdFor(Type type) {
   return nextId;
 }
 
-AudioFile anAudioFile({
-  int? id,
-  String? path,
-}) {
+AudioFile anAudioFile({int? id, String? path, String? title, String? artist, String? album, int? trackNumber}) {
   id ??= _nextIdFor(AudioFile);
   return AudioFile(
     id: id,
     path: path ?? '/storage/emulated/0/AudioFile_$id.mp3',
     sizeInBytes: 1234567,
-    title: 'Test Title $id',
-    artist: 'Test Artist',
-    album: 'Test Album',
-    trackNumber: 0,
+    title: title ?? 'Test Title $id',
+    artist: artist ?? 'Test Artist',
+    album: album ?? 'Test Album',
+    trackNumber: trackNumber ?? 0,
     durationInMilliseconds: 234567,
   );
 }

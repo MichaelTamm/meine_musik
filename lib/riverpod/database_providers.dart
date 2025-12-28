@@ -14,4 +14,3 @@ Stream<List<Playlist>> playlistDatabaseRecords(Ref _) {
 Stream<List<PlaylistItem>> playlistItemsDatabaseRecords(Ref _) {
   return db.playlistItems.select().watch();
 }
-

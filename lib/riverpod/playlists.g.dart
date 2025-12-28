@@ -12,8 +12,18 @@ part of 'playlists.dart';
 @ProviderFor(playlists)
 const playlistsProvider = PlaylistsProvider._();
 
-final class PlaylistsProvider extends $FunctionalProvider<AsyncValue<List<Playlist>>, List<Playlist>, FutureOr<List<Playlist>>> with $FutureModifier<List<Playlist>>, $FutureProvider<List<Playlist>> {
-  const PlaylistsProvider._() : super(from: null, argument: null, retry: null, name: r'playlistsProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+final class PlaylistsProvider extends $FunctionalProvider<AsyncValue<List<Playlist>>, List<Playlist>, FutureOr<List<Playlist>>>
+    with $FutureModifier<List<Playlist>>, $FutureProvider<List<Playlist>> {
+  const PlaylistsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'playlistsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$playlistsHash();
@@ -33,8 +43,18 @@ String _$playlistsHash() => r'b9bd6b8c5455b5024cc381a6719e8975e119109d';
 @ProviderFor(allSongs)
 const allSongsProvider = AllSongsProvider._();
 
-final class AllSongsProvider extends $FunctionalProvider<AsyncValue<AllSongs>, AllSongs, FutureOr<AllSongs>> with $FutureModifier<AllSongs>, $FutureProvider<AllSongs> {
-  const AllSongsProvider._() : super(from: null, argument: null, retry: null, name: r'allSongsProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+final class AllSongsProvider extends $FunctionalProvider<AsyncValue<AllSongs>, AllSongs, FutureOr<AllSongs>>
+    with $FutureModifier<AllSongs>, $FutureProvider<AllSongs> {
+  const AllSongsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'allSongsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$allSongsHash();
@@ -54,8 +74,18 @@ String _$allSongsHash() => r'636a38b8f5fff0a91b3d48b577df75776132f87d';
 @ProviderFor(favoriteSongs)
 const favoriteSongsProvider = FavoriteSongsProvider._();
 
-final class FavoriteSongsProvider extends $FunctionalProvider<AsyncValue<FavoriteSongs>, FavoriteSongs, FutureOr<FavoriteSongs>> with $FutureModifier<FavoriteSongs>, $FutureProvider<FavoriteSongs> {
-  const FavoriteSongsProvider._() : super(from: null, argument: null, retry: null, name: r'favoriteSongsProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+final class FavoriteSongsProvider extends $FunctionalProvider<AsyncValue<FavoriteSongs>, FavoriteSongs, FutureOr<FavoriteSongs>>
+    with $FutureModifier<FavoriteSongs>, $FutureProvider<FavoriteSongs> {
+  const FavoriteSongsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'favoriteSongsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$favoriteSongsHash();
@@ -75,10 +105,24 @@ String _$favoriteSongsHash() => r'b0475afcac8fb740b842adfff30d245aba72fe85';
 @ProviderFor(manuallyCreatedPlaylists)
 const manuallyCreatedPlaylistsProvider = ManuallyCreatedPlaylistsProvider._();
 
-final class ManuallyCreatedPlaylistsProvider extends $FunctionalProvider<AsyncValue<List<ManuallyCreatedPlaylist>>, List<ManuallyCreatedPlaylist>, FutureOr<List<ManuallyCreatedPlaylist>>>
+final class ManuallyCreatedPlaylistsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<ManuallyCreatedPlaylist>>,
+          List<ManuallyCreatedPlaylist>,
+          FutureOr<List<ManuallyCreatedPlaylist>>
+        >
     with $FutureModifier<List<ManuallyCreatedPlaylist>>, $FutureProvider<List<ManuallyCreatedPlaylist>> {
   const ManuallyCreatedPlaylistsProvider._()
-    : super(from: null, argument: null, retry: null, name: r'manuallyCreatedPlaylistsProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'manuallyCreatedPlaylistsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$manuallyCreatedPlaylistsHash();
@@ -100,7 +144,16 @@ const isSongPredicateProvider = IsSongPredicateProvider._();
 
 final class IsSongPredicateProvider extends $FunctionalProvider<AsyncValue<IsSongPredicate>, IsSongPredicate, FutureOr<IsSongPredicate>>
     with $FutureModifier<IsSongPredicate>, $FutureProvider<IsSongPredicate> {
-  const IsSongPredicateProvider._() : super(from: null, argument: null, retry: null, name: r'isSongPredicateProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+  const IsSongPredicateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isSongPredicateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$isSongPredicateHash();
@@ -120,10 +173,19 @@ String _$isSongPredicateHash() => r'7c1340f34b24c5dd7bf288dba0ee0e4b63aa865d';
 @ProviderFor(isFavoriteSongPredicate)
 const isFavoriteSongPredicateProvider = IsFavoriteSongPredicateProvider._();
 
-final class IsFavoriteSongPredicateProvider extends $FunctionalProvider<AsyncValue<IsFavoriteSongPredicate>, IsFavoriteSongPredicate, FutureOr<IsFavoriteSongPredicate>>
+final class IsFavoriteSongPredicateProvider
+    extends $FunctionalProvider<AsyncValue<IsFavoriteSongPredicate>, IsFavoriteSongPredicate, FutureOr<IsFavoriteSongPredicate>>
     with $FutureModifier<IsFavoriteSongPredicate>, $FutureProvider<IsFavoriteSongPredicate> {
   const IsFavoriteSongPredicateProvider._()
-    : super(from: null, argument: null, retry: null, name: r'isFavoriteSongPredicateProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'isFavoriteSongPredicateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$isFavoriteSongPredicateHash();

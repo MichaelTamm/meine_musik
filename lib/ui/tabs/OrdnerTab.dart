@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meine_musik/model/IsSongPredicate.dart';
+import 'package:meine_musik/utils.dart';
 
 import '../../model/AudioFile.dart';
 import '../../model/AudioFolder.dart';
@@ -11,24 +12,18 @@ import '../../riverpod/media.dart';
 import '../../riverpod/playlists.dart';
 import '../LoadingIndicator.dart';
 
-final GlobalKey<NavigatorState> folderNavigatorKey = GlobalKey(debugLabel: 'folderNavigatorKey');
-
 class OrdnerTab extends ConsumerStatefulWidget {
-  /// All audio files on the device.
-  static final thisDeviceProvider = FutureProvider<AudioFolder>(
-    (ref) async {
-      final audioFiles = await ref.watch(localAudioFilesProvider.future);
-      final root = groupAudioFiles(audioFiles);
-      ref.keepAlive();
-      return root;
-    },
-    name: '$OrdnerTab.thisDeviceProvider',
-  );
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: '$OrdnerTab.navigatorKey');
 
-  static final currentPathProvider = StateProvider<List<AudioFolder>>(
-    (_) => [],
-    name: '$OrdnerTab.currentPathProvider',
-  );
+  /// All audio files on the device.
+  static final thisDeviceProvider = FutureProvider<AudioFolder>((ref) async {
+    final audioFiles = await ref.watch(localAudioFilesProvider.future);
+    final root = groupAudioFiles(audioFiles);
+    ref.keepAlive();
+    return root;
+  }, name: '$OrdnerTab.thisDeviceProvider');
+
+  static final currentPathProvider = StateProvider<List<AudioFolder>>((_) => [], name: '$OrdnerTab.currentPathProvider');
 
   const OrdnerTab({super.key});
 
@@ -46,9 +41,9 @@ class _OrdnerTabState extends ConsumerState<OrdnerTab> with AutomaticKeepAliveCl
     final currentPath = ref.watch(OrdnerTab.currentPathProvider);
 
     void openFolder(AudioFolder folder, AudioFolder? parent) {
-      final navigator = folderNavigatorKey.currentState;
+      final navigator = OrdnerTab.navigatorKey.currentState;
       if (navigator == null) {
-        throw StateError('folderNavigatorKey.currentState == null');
+        throw StateError('OrdnerTab.navigatorKey.currentState == null');
       }
       List<AudioFolder> newCurrentPath;
       if (parent == null) {
@@ -57,18 +52,13 @@ class _OrdnerTabState extends ConsumerState<OrdnerTab> with AutomaticKeepAliveCl
         final currentPath = ref.read(OrdnerTab.currentPathProvider);
         final i = currentPath.indexOf(parent);
         if (i < 0) {
-          throw Exception(
-            'Parent folder ${parent.name} not found in currentPath: [${currentPath.map((it) => it.name).join(', ')}]',
-          );
+          throw Exception('Parent folder ${parent.name} not found in currentPath: [${currentPath.map((it) => it.name).join(', ')}]');
         }
         newCurrentPath = [...currentPath.sublist(0, i + 1), folder];
       }
       navigator.push(
         MaterialPageRoute(
-          settings: RouteSettings(
-            name: '/${newCurrentPath.map((it) => it.name).join('/')}',
-            arguments: newCurrentPath,
-          ),
+          settings: RouteSettings(name: '/${newCurrentPath.map((it) => it.name).join('/')}', arguments: newCurrentPath),
           builder: (_) => _AudioFolderView(folder, openFolder),
         ),
       );
@@ -81,28 +71,35 @@ class _OrdnerTabState extends ConsumerState<OrdnerTab> with AutomaticKeepAliveCl
           return;
         }
         if (currentPath.isNotEmpty) {
-          folderNavigatorKey.currentState?.pop();
+          OrdnerTab.navigatorKey.currentState?.pop();
+        } else {
+          // TODO: display Toast: "Drücke die Zurück-Taste noch einmal, um die App zu beenden."
         }
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          CurrentPathBar(currentPath, goBackToFolder: (folder) {
-            if (folder == null) {
-              folderNavigatorKey.currentState?.popUntil((it) => it.settings.name == '/');
-            } else {
-              folderNavigatorKey.currentState?.popUntil((it) => (it.settings.arguments as List<AudioFolder>).last == folder);
-            }
-          }),
+          OrdnerTabNavigationBar(
+            currentPath,
+            goBackToFolder: (folder) {
+              if (folder == null) {
+                OrdnerTab.navigatorKey.currentState?.popUntil((it) => it.settings.name == '/');
+              } else {
+                OrdnerTab.navigatorKey.currentState?.popUntil((it) => (it.settings.arguments as List<AudioFolder>).last == folder);
+              }
+            },
+          ),
           Expanded(
             child: Navigator(
-              key: folderNavigatorKey,
+              key: OrdnerTab.navigatorKey,
               observers: [_UpdateCurrentPathObserver(context)],
+              initialRoute: '/',
               onGenerateRoute: (settings) {
-                debugPrint('[OrdnerTab] onGenerateRoute($settings)');
-                return MaterialPageRoute(builder: (_) => _AudioFolderView(null, openFolder), settings: settings);
+                if (settings.name == '/') {
+                  return MaterialPageRoute(builder: (_) => _AudioFolderView(null, openFolder), settings: settings);
+                }
+                throw ArgumentError('Unexpected settings: $settings');
               },
-              initialRoute: '/${currentPath.map((it) => it.name).join('/')}',
             ),
           ),
         ],
@@ -118,51 +115,60 @@ class _UpdateCurrentPathObserver extends NavigatorObserver {
 
   @override
   void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
-    debugPrint('[_UpdateCurrentPathObserver] didChangeTop: ${previousTopRoute?.settings.name} => ${topRoute.settings.name}');
-    if (previousTopRoute == null) {}
+    debugPrint('[$runtimeType] didChangeTop: ${previousTopRoute?.settings} => ${topRoute.settings}');
     final currentPathNotifier = ProviderScope.containerOf(context).read(OrdnerTab.currentPathProvider.notifier);
     Future.microtask(() {
-      if (topRoute.settings.name == '/') {
+      final settings = topRoute.settings;
+      if (settings.name == '/') {
         currentPathNotifier.state = const [];
       } else {
-        final newCurrentPath = topRoute.settings.arguments as List<AudioFolder>;
-        currentPathNotifier.state = newCurrentPath;
+        currentPathNotifier.state = settings.arguments as List<AudioFolder>;
       }
     });
   }
 }
 
 @visibleForTesting
-class CurrentPathBar extends StatelessWidget {
-  const CurrentPathBar(this.currentPath, {required this.goBackToFolder});
+class OrdnerTabNavigationBar extends StatelessWidget {
+  const OrdnerTabNavigationBar(this.currentPath, {required this.goBackToFolder});
 
   final List<AudioFolder> currentPath;
   final Function(AudioFolder? folder) goBackToFolder;
 
   @override
   Widget build(BuildContext context) {
+    final lastIndex = currentPath.length - 1;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       primary: false,
       child: Row(
         children: [
-          TextButton(
-            onPressed: () {
-              debugPrint('[_CurrentPathBar] tap on Dieses Gerät');
-              goBackToFolder(null);
-            },
-            child: Text('Dieses Gerät'),
+          Padding(
+            padding: const EdgeInsets.only(left: 4),
+            child: TextButton(
+              onPressed: currentPath.isEmpty
+                  ? null
+                  : () {
+                      debugPrint("[$runtimeType] tap on 'Dieses Gerät'");
+                      goBackToFolder(null);
+                    },
+              child: Text('Dieses Gerät'),
+            ),
           ),
-          ...currentPath.expand((folder) => [
-                const Icon(Icons.chevron_right_rounded),
-                TextButton(
-                  onPressed: () {
-                    debugPrint('[_CurrentPathBar] tap on folder ${folder.name}');
-                    goBackToFolder(folder);
-                  },
-                  child: Text(folder.name),
-                ),
-              ]),
+          ...currentPath.expandIndexed(
+            (folder, index) => [
+              const Icon(Icons.chevron_right_rounded),
+              TextButton(
+                onPressed: index == lastIndex
+                    ? null
+                    : () {
+                        debugPrint("[$runtimeType] tap on folder ${toDartString(folder.name)}");
+                        goBackToFolder(folder);
+                      },
+                child: Text(folder.name),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -227,7 +233,7 @@ class _AudioFolderListTile extends HookConsumerWidget {
   _AudioFolderListTile(this.folder, {required this.onTap}) : super(key: Key(folder.name));
 
   final AudioFolder folder;
-  final void Function() onTap;
+  final VoidCallback onTap;
 
   /// Resolves to `true` if all audio files in the given folder and its subfolders are songs,
   /// resolves to `false` if no audio file in the given folder and its subfolders is a song,
@@ -279,7 +285,9 @@ class _AudioFolderListTile extends HookConsumerWidget {
       return _FolderState.noSongs;
     } else {
       // Should never happen, because there should be no empty folder ...
-      throw Exception('subfolders: ${folder.subfolders.length}, files: ${folder.files.length}, foundSongFile: $foundSongFile, foundNonSongFile: $foundNonSongFile');
+      throw Exception(
+        'subfolders: ${folder.subfolders.length}, files: ${folder.files.length}, foundSongFile: $foundSongFile, foundNonSongFile: $foundNonSongFile',
+      );
     }
   }
 
@@ -303,21 +311,22 @@ class _AudioFolderListTile extends HookConsumerWidget {
             maintainState: true,
             visible: folderState != _FolderState.loading,
             child: Checkbox(
-                value: switch (folderState) {
-                  _FolderState.allSongs => true,
-                  _FolderState.noSongs => false,
-                  _ => null,
-                },
-                onChanged: (_) {
-                  if (folderState == _FolderState.allSongs) {
-                    debugPrint('Tap on checkbox for folder ${folder.name} -- blacklisting folder ...');
-                    blacklistFolder(folder, ref);
-                  } else {
-                    debugPrint('Tap on checkbox for folder ${folder.name} -- whitelisting folder ...');
-                    whitelistFolder(folder, ref);
-                  }
-                },
-                tristate: true),
+              value: switch (folderState) {
+                _FolderState.allSongs => true,
+                _FolderState.noSongs => false,
+                _ => null,
+              },
+              onChanged: (_) {
+                if (folderState == _FolderState.allSongs) {
+                  debugPrint('[$runtimeType] Tap on checkbox for folder ${folder.name} -- blacklisting folder ...');
+                  blacklistFolder(folder, ref);
+                } else {
+                  debugPrint('Tap on checkbox for folder ${folder.name} -- whitelisting folder ...');
+                  whitelistFolder(folder, ref);
+                }
+              },
+              tristate: true,
+            ),
           ),
           const Icon(Icons.folder_rounded),
         ],
@@ -332,11 +341,7 @@ class _AudioFolderListTile extends HookConsumerWidget {
   }
 }
 
-enum _FileState {
-  loading,
-  song,
-  notSong,
-}
+enum _FileState { loading, song, notSong }
 
 class _AudioFileListTile extends HookConsumerWidget {
   _AudioFileListTile(this.file) : super(key: Key(file.fileName));
@@ -363,24 +368,25 @@ class _AudioFileListTile extends HookConsumerWidget {
             maintainState: true,
             visible: fileState != _FileState.loading,
             child: Checkbox(
-                value: switch (fileState) {
-                  _FileState.song => true,
-                  _FileState.notSong => false,
-                  _ => null,
-                },
-                onChanged: (_) {
-                  if (fileState == _FileState.song) {
-                    debugPrint('Tap on checkbox for file ${file.fileName} -- blacklisting file ...');
-                    blacklistFile(file, ref);
-                  } else if (fileState == _FileState.notSong) {
-                    debugPrint('Tap on checkbox for file ${file.fileName} -- whitelisting file ...');
-                    whitelistFile(file, ref);
-                  } else {
-                    // Should never happen, because the checkbox is only visible if fileState is not loading.
-                    debugPrint('Tap on checkbox for file ${file.fileName} -- ignoring tap');
-                  }
-                },
-                tristate: true),
+              value: switch (fileState) {
+                _FileState.song => true,
+                _FileState.notSong => false,
+                _ => null,
+              },
+              onChanged: (_) {
+                if (fileState == _FileState.song) {
+                  debugPrint('Tap on checkbox for file ${file.fileName} -- blacklisting file ...');
+                  blacklistFile(file, ref);
+                } else if (fileState == _FileState.notSong) {
+                  debugPrint('Tap on checkbox for file ${file.fileName} -- whitelisting file ...');
+                  whitelistFile(file, ref);
+                } else {
+                  // Should never happen, because the checkbox is only visible if fileState is not loading.
+                  debugPrint('Tap on checkbox for file ${file.fileName} -- ignoring tap');
+                }
+              },
+              tristate: true,
+            ),
           ),
           const Icon(Icons.audio_file_rounded),
         ],

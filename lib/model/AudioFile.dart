@@ -8,4 +8,3 @@ extension AudioFileExtension on AudioFile {
     return i < 0 ? path : path.substring(i + 1);
   }
 }
-

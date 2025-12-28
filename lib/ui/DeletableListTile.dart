@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DeletableListTile extends StatelessWidget {
-  const DeletableListTile({
-    required Key key,
-    this.leading,
-    this.title,
-    this.trailing,
-    this.onTap,
-    required this.onDelete,
-  }) : super(key: key);
+  const DeletableListTile({required Key key, this.leading, this.title, this.trailing, this.onTap, required this.onDelete})
+    : super(key: key);
 
   final Widget? leading;
   final Widget? title;

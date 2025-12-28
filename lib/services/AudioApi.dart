@@ -17,7 +17,11 @@ bool _deepEquals(Object? a, Object? b) {
     return a.length == b.length && a.indexed.every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
   }
   if (a is Map && b is Map) {
-    return a.length == b.length && a.entries.every((MapEntry<Object?, Object?> entry) => (b as Map<Object?, Object?>).containsKey(entry.key) && _deepEquals(entry.value, b[entry.key]));
+    return a.length == b.length &&
+        a.entries.every(
+          (MapEntry<Object?, Object?> entry) =>
+              (b as Map<Object?, Object?>).containsKey(entry.key) && _deepEquals(entry.value, b[entry.key]),
+        );
   }
   return a == b;
 }
@@ -130,13 +134,21 @@ class AudioService {
 
   Future<List<AudioFile>> findAll() async {
     final String pigeonVar_channelName = 'dev.flutter.pigeon.meine_musik.AudioService.findAll$pigeonVar_messageChannelSuffix';
-    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(pigeonVar_channelName, pigeonChannelCodec, binaryMessenger: pigeonVar_binaryMessenger);
+    final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
     final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final List<Object?>? pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
     if (pigeonVar_replyList == null) {
       throw _createConnectionError(pigeonVar_channelName);
     } else if (pigeonVar_replyList.length > 1) {
-      throw PlatformException(code: pigeonVar_replyList[0]! as String, message: pigeonVar_replyList[1] as String?, details: pigeonVar_replyList[2]);
+      throw PlatformException(
+        code: pigeonVar_replyList[0]! as String,
+        message: pigeonVar_replyList[1] as String?,
+        details: pigeonVar_replyList[2],
+      );
     } else if (pigeonVar_replyList[0] == null) {
       throw PlatformException(code: 'null-error', message: 'Host platform returned null value for non-null return value.');
     } else {

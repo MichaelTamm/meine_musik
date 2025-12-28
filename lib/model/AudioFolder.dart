@@ -5,9 +5,9 @@ import 'AudioFile.dart';
 /// A Folder on the device that contains audio files.
 class AudioFolder {
   AudioFolder(this.name, [List<AudioFolder>? subfolders, List<AudioFile>? files])
-      : _subfolders = subfolders ?? [],
-        _subfoldersByName = {for (final subfolder in subfolders ?? []) subfolder.name: subfolder},
-        _files = files ?? [];
+    : _subfolders = subfolders ?? [],
+      _subfoldersByName = {for (final subfolder in subfolders ?? []) subfolder.name: subfolder},
+      _files = files ?? [];
 
   final String name;
   final List<AudioFolder> _subfolders;

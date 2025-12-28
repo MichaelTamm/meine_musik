@@ -80,13 +80,14 @@ class FavoriteSongs extends Playlist {
 }
 
 class Album extends Playlist {
+  // TODO: it.artist might contain multiple artists comma separated -- handle this properly!
   Album(super.name, super.songs) : super(upperTitle: songs.map((it) => it.artist).removeDuplicates().join(', '));
 
   String get kuenstler => upperTitle;
 }
 
-class AllSongsOfAnArtist extends Playlist {
-  AllSongsOfAnArtist(super.name, super.songs) : super(upperTitle: 'Alle Lieder von');
+class KuenstlerSongs extends Playlist {
+  KuenstlerSongs(super.name, super.songs) : super(upperTitle: 'Alle Lieder von');
 
   String get kuenstler => name;
 }

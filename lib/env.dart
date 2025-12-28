@@ -18,7 +18,7 @@ final bool kIsAppleDevice = Platform.isIOS || Platform.isMacOS;
 const kMethodChannel = MethodChannel('de.michaeltamm.meine_musik');
 
 /// Set to `true` to enable logging of riverpod activity.
-const kDebugRiverpod = true;
+const kDebugRiverpod = false;
 
 late AudioService audioService;
 late Database db;
@@ -51,5 +51,4 @@ class _RiverpodContainer {
     }
     ProviderScope.containerOf(context_).invalidate(provider);
   }
-
 }

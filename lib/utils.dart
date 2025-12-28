@@ -9,12 +9,7 @@ class Futures {
     return (values[0] as A, values[1] as B, values[2] as C);
   }
 
-  static Future<(A, B, C, D)> tuple4<A, B, C, D>(
-    Future<A> future1,
-    Future<B> future2,
-    Future<C> future3,
-    Future<D> future4,
-  ) async {
+  static Future<(A, B, C, D)> tuple4<A, B, C, D>(Future<A> future1, Future<B> future2, Future<C> future3, Future<D> future4) async {
     final values = await Future.wait([future1, future2, future3, future4]);
     return (values[0] as A, values[1] as B, values[2] as C, values[3] as D);
   }
@@ -52,9 +47,13 @@ String formatPlaylistDuration(Duration duration) {
 }
 
 extension IterableUtils<E> on Iterable<E> {
-  /// Returns a new lazy [Iterable] containing the results of applying the
-  /// given [transform] function to each element and its index in the original
-  /// collection.
+  Iterable<T> expandIndexed<T>(Iterable<T> Function(E, int index) toElements) sync* {
+    var index = 0;
+    for (final element in this) {
+      yield* toElements(element, index++);
+    }
+  }
+
   Iterable<R> mapIndexed<R>(R Function(E, int index) transform) sync* {
     var index = 0;
     for (final element in this) {
@@ -62,7 +61,6 @@ extension IterableUtils<E> on Iterable<E> {
     }
   }
 
-  /// Returns all elements that satisfy the given [predicate].
   Iterable<E> whereIndexed(bool Function(E, int index) predicate) sync* {
     var index = 0;
     for (final element in this) {
@@ -80,10 +78,7 @@ extension IterableUtils<E> on Iterable<E> {
     return map;
   }
 
-  List<E> sortBy(
-    Comparable Function(E element) selector, {
-    Comparable Function(E element)? thenBy,
-  }) {
+  List<E> sortBy(Comparable Function(E element) selector, {Comparable Function(E element)? thenBy}) {
     final list = toList();
     list.sort((a, b) {
       var result = selector(a).compareTo(selector(b));
@@ -174,4 +169,3 @@ String toDartString(dynamic value) {
     return safeToString(value);
   }
 }
-
