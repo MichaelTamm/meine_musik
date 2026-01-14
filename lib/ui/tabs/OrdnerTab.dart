@@ -9,6 +9,7 @@ import '../../model/AudioFile.dart';
 import '../../model/AudioFolder.dart';
 import '../../model/logic.dart';
 import '../../riverpod/media.dart';
+import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../LoadingIndicator.dart';
 
@@ -406,8 +407,8 @@ class _AudioFileListTile extends HookConsumerWidget {
         ],
       ),
       onTap: () {
-        debugPrint('Tap on $_AudioFileListTile for ${file.fileName} -- TODO: play audio file ...');
-        // TODO: ref.read(playerProvider).playSong(file);
+        debugPrint('Tap on $_AudioFileListTile for ${file.fileName} -- play audio file ...');
+        ref.read(playerProvider).playSong(file);
       },
     );
   }

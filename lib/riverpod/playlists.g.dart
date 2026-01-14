@@ -201,3 +201,51 @@ final class IsFavoriteSongPredicateProvider
 }
 
 String _$isFavoriteSongPredicateHash() => r'27432341621af69c44630239d63ad1008b7f8dfa';
+
+/// The playlist, to which a song is added, when the bookmark button is pressed.
+/// Initial value: Favoriten
+
+@ProviderFor(CurrentBookmarkTarget)
+const currentBookmarkTargetProvider = CurrentBookmarkTargetProvider._();
+
+/// The playlist, to which a song is added, when the bookmark button is pressed.
+/// Initial value: Favoriten
+final class CurrentBookmarkTargetProvider extends $AsyncNotifierProvider<CurrentBookmarkTarget, Playlist> {
+  /// The playlist, to which a song is added, when the bookmark button is pressed.
+  /// Initial value: Favoriten
+  const CurrentBookmarkTargetProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'currentBookmarkTargetProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$currentBookmarkTargetHash();
+
+  @$internal
+  @override
+  CurrentBookmarkTarget create() => CurrentBookmarkTarget();
+}
+
+String _$currentBookmarkTargetHash() => r'1c8e0bb45658b58faea41ce974215a1e026b43c2';
+
+/// The playlist, to which a song is added, when the bookmark button is pressed.
+/// Initial value: Favoriten
+
+abstract class _$CurrentBookmarkTarget extends $AsyncNotifier<Playlist> {
+  FutureOr<Playlist> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<Playlist>, Playlist>;
+    final element =
+        ref.element as $ClassProviderElement<AnyNotifier<AsyncValue<Playlist>, Playlist>, AsyncValue<Playlist>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
