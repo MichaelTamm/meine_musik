@@ -6,10 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:meine_musik/ui/player_widget/PlayerWidget.dart';
 
 import '../env.dart';
 import '../hooks.dart';
 import '../navigation.dart';
+import '../riverpod/player_state.dart';
 import '../theme.dart';
 import 'FileManager.dart';
 import 'tabs/AlbenTab.dart';
@@ -75,6 +77,7 @@ class _MeineMusikScaffold extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentPlaylist = ref.watch(currentPlaylistProvider);
     final tabController = DefaultTabController.of(context);
     final currentTabRef = useRef(tabController.index);
 
@@ -117,7 +120,7 @@ class _MeineMusikScaffold extends HookConsumerWidget {
         body: Column(
           children: [
             Expanded(child: TabBarView(children: [PlaylistsTab(), AlbenTab(), KuenstlerTab(), OrdnerTab()])),
-            // TODO: if (currentPlaylist.isNotEmpty) const PlayerWidget(),
+            if (currentPlaylist.isNotEmpty) const PlayerWidget(),
           ],
         ),
       ),

@@ -37,6 +37,22 @@ abstract class Playlist with IterableMixin<Song> {
   @override
   Iterator<Song> get iterator => _songs.iterator;
 
+  Song get firstSong {
+    if (isEmpty) {
+      throw StateError('$this is empty');
+    } else {
+      return this[playOrder[0]];
+    }
+  }
+
+  Song get lastSong {
+    if (isEmpty) {
+      throw StateError('$this is empty');
+    } else {
+      return this[playOrder[length - 1]];
+    }
+  }
+
   @override
   int get length => _songs.length;
 

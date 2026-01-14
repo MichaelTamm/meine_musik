@@ -190,3 +190,21 @@ Future<IsFavoriteSongPredicate> isFavoriteSongPredicate(Ref ref) async {
     return fallback;
   }
 }
+
+/// The playlist, to which a song is added, when the bookmark button is pressed.
+/// Initial value: Favoriten
+@Riverpod(keepAlive: true)
+class CurrentBookmarkTarget extends _$CurrentBookmarkTarget {
+  @override
+  Future<Playlist> build() {
+    final favoriten = ref.watch(favoriteSongsProvider.future);
+    return favoriten;
+  }
+
+  void set(Playlist playlist) {
+    if (!(playlist is FavoriteSongs || playlist is ManuallyCreatedPlaylist)) {
+      throw ArgumentError('Unexpected playlist: $playlist -- expected: $FavoriteSongs or $ManuallyCreatedPlaylist');
+    }
+    state = AsyncValue.data(playlist);
+  }
+}
