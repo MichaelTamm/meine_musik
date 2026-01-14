@@ -197,7 +197,7 @@ Future<IsFavoriteSongPredicate> isFavoriteSongPredicate(Ref ref) async {
 class CurrentBookmarkTarget extends _$CurrentBookmarkTarget {
   @override
   Future<Playlist> build() {
-    final favoriten = ref.watch(favoriteSongsProvider.future);
+    final favoriten = ref.read(favoriteSongsProvider.future);
     return favoriten;
   }
 

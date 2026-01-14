@@ -41,44 +41,28 @@ class RepeatModeButton extends ConsumerWidget {
           value: RepeatMode.none,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(MeineMusikIcons.repeatOff),
-              SizedBox(width: 8),
-              Expanded(child: Text('keine Wiederholung')),
-            ],
+            children: [Icon(MeineMusikIcons.repeatOff), SizedBox(width: 8), Text('keine Wiederholung')],
           ),
         ),
         PopupMenuItem<RepeatMode>(
           value: RepeatMode.repeatSongOnce,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.repeat_one),
-              SizedBox(width: 8),
-              Expanded(child: Text('Lied einmal wiederholen')),
-            ],
+            children: [Icon(Icons.repeat_one), SizedBox(width: 8), Text('Lied einmal wiederholen')],
           ),
         ),
         PopupMenuItem<RepeatMode>(
           value: RepeatMode.repeatSong,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.repeat),
-              SizedBox(width: 8),
-              Expanded(child: Text('Lied in Endlosschleife spielen')),
-            ],
+            children: [Icon(Icons.repeat), SizedBox(width: 8), Text('Lied in Endlosschleife spielen')],
           ),
         ),
         PopupMenuItem<RepeatMode>(
           value: RepeatMode.repeatPlaylist,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.repeat_on),
-              SizedBox(width: 8),
-              Expanded(child: Text('Playlist in Endlosschleife spielen')),
-            ],
+            children: [Icon(Icons.repeat_on), SizedBox(width: 8), Text('Playlist in Endlosschleife spielen')],
           ),
         ),
       ],

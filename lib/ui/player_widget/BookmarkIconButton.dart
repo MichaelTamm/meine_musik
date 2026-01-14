@@ -43,12 +43,19 @@ class BookmarkIconButton extends ConsumerWidget {
                         action: SnackBarAction(
                           label: 'andere Playlist ...',
                           onPressed: () async {
-                            debugPrint('Tap on andere Playlist ...');
+                            debugPrint('Tap on "andere Playlist ..."');
                             final otherPlaylist = await openBottomSheet<Playlist?>(SelectPlaylistBottomSheet.new);
                             if (otherPlaylist != null) {
-                              await currentBookmarkTarget.removeSong!(currentSong.song);
-                              await otherPlaylist.addSong!(currentSong.song);
-                              ref.read(currentBookmarkTargetProvider.notifier).set(otherPlaylist);
+                              try {
+                                await currentBookmarkTarget.removeSong!(currentSong.song);
+                                await otherPlaylist.addSong!(currentSong.song);
+                                ref.read(currentBookmarkTargetProvider.notifier).set(otherPlaylist);
+                              } catch (error, stack) {
+                                debugPrintStack(
+                                  label: 'Failed to move ${currentSong.song} from $currentBookmarkTarget to $otherPlaylist: $error',
+                                  stackTrace: stack,
+                                );
+                              }
                             } else {
                               debugPrint('SelectPlaylistBottomSheet closed without selecting a playlist');
                             }

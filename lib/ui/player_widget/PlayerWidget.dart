@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../riverpod/player_state.dart';
 import '../../model/PlayingPausedOrCompleted.dart';
+import '../../riverpod/player_state.dart';
 import './BookmarkIconButton.dart';
 import './RepeatModeButton.dart';
 
@@ -123,9 +123,9 @@ class _PlayerSlider extends ConsumerWidget {
     return Slider(
       value: currentSongPosition.inMilliseconds.toDouble().clamp(0, currentSongDuration),
       label: _formatCurrentSongPosition(currentSongPosition),
-      onChanged: (double newValue) => {ref.read(playerProvider).seekToPosition(Duration(milliseconds: newValue.round()))},
+      onChanged: (double newValue) => ref.read(playerProvider).seekToPosition(Duration(milliseconds: newValue.round())),
       min: 0,
-      max: currentSongDuration == 0 ? 1 : currentSongDuration,
+      max: currentSongDuration,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
   }

@@ -232,7 +232,7 @@ final class CurrentBookmarkTargetProvider extends $AsyncNotifierProvider<Current
   CurrentBookmarkTarget create() => CurrentBookmarkTarget();
 }
 
-String _$currentBookmarkTargetHash() => r'2cacf64726d8ac0b9af5db230c0e61df863f86f5';
+String _$currentBookmarkTargetHash() => r'1c8e0bb45658b58faea41ce974215a1e026b43c2';
 
 /// The playlist, to which a song is added, when the bookmark button is pressed.
 /// Initial value: Favoriten

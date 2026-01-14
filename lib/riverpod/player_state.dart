@@ -308,7 +308,7 @@ class Player extends _$Player {
 
 void _resetPlayerState(Ref ref, {bool setCurrentPlaylist = true}) {
   if (setCurrentPlaylist) {
-    // This will call _resetPlayerWidgetState with setCurrentPlaylist: false
+    // This will call _resetPlayerState with setCurrentPlaylist: false
     ref.read(currentPlaylistProvider.notifier).set(Playlist.empty);
   } else {
     ref.read(currentSongProvider.notifier)._reset();

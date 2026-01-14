@@ -43,7 +43,7 @@ final class CurrentPlaylistProvider extends $NotifierProvider<CurrentPlaylist, P
   }
 }
 
-String _$currentPlaylistHash() => r'd82ed13d83a511dc567afdfd38b955c1e57c5263';
+String _$currentPlaylistHash() => r'b65026ae68dcaa2a5b3044462a084228900ef822';
 
 /// The playlist, which is currently being played.
 /// Initial value: `Playlist.empty`
@@ -159,7 +159,7 @@ final class CurrentSongPositionProvider extends $NotifierProvider<CurrentSongPos
   }
 }
 
-String _$currentSongPositionHash() => r'a37a223d706afb36a94d109b864de9c572bc0b50';
+String _$currentSongPositionHash() => r'8a1f4954f9dbb9deeee044a7e4851de7c9817ea4';
 
 abstract class _$CurrentSongPosition extends $Notifier<Duration> {
   Duration build();
@@ -292,7 +292,7 @@ final class PlayerProvider extends $NotifierProvider<Player, AudioPlayerWrapper>
   }
 }
 
-String _$playerHash() => r'd0ddd0006d3542b5f7923f0ae349e30427187303';
+String _$playerHash() => r'9e0c649040175f34df4467b554a0509f63e1850c';
 
 abstract class _$Player extends $Notifier<AudioPlayerWrapper> {
   AudioPlayerWrapper build();
