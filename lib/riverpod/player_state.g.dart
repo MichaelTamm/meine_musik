@@ -69,7 +69,7 @@ const currentSongProvider = CurrentSongProvider._();
 /// The song currently being played.
 /// Initial value: [CurrentSong.none]
 final class CurrentSongProvider
-    extends $NotifierProvider<CurrentSong, ({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title})> {
+    extends $NotifierProvider<CurrentSong, ({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song})> {
   /// The song currently being played.
   /// Initial value: [CurrentSong.none]
   const CurrentSongProvider._()
@@ -91,21 +91,21 @@ final class CurrentSongProvider
   CurrentSong create() => CurrentSong();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title}) value) {
+  Override overrideWithValue(({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song}) value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title})>(value),
+      providerOverride: $SyncValueProvider<({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song})>(value),
     );
   }
 }
 
-String _$currentSongHash() => r'dde5b2ab6241725f6f64ec51fd474469ec85a705';
+String _$currentSongHash() => r'9bccff7ea85f6eb135b2d2b15550549d68951976';
 
 /// The song currently being played.
 /// Initial value: [CurrentSong.none]
 
-abstract class _$CurrentSong extends $Notifier<({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title})> {
-  ({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title}) build();
+abstract class _$CurrentSong extends $Notifier<({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song})> {
+  ({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song}) build();
   @$mustCallSuper
   @override
   void runBuild() {
@@ -113,17 +113,17 @@ abstract class _$CurrentSong extends $Notifier<({Duration duration, int playOrde
     final ref =
         this.ref
             as $Ref<
-              ({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title}),
-              ({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title})
+              ({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song}),
+              ({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song})
             >;
     final element =
         ref.element
             as $ClassProviderElement<
               AnyNotifier<
-                ({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title}),
-                ({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title})
+                ({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song}),
+                ({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song})
               >,
-              ({Duration duration, int playOrderIndex, int playlistIndex, Song song, String title}),
+              ({Duration duration, String label, int playOrderIndex, int playlistIndex, Song song}),
               Object?,
               Object?
             >;
@@ -292,7 +292,7 @@ final class PlayerProvider extends $NotifierProvider<Player, AudioPlayerWrapper>
   }
 }
 
-String _$playerHash() => r'9e0c649040175f34df4467b554a0509f63e1850c';
+String _$playerHash() => r'438602698dca3bae42e2c5dfcbf6b17234541cbd';
 
 abstract class _$Player extends $Notifier<AudioPlayerWrapper> {
   AudioPlayerWrapper build();

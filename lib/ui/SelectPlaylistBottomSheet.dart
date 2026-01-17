@@ -7,11 +7,12 @@ import '../riverpod/playlists.dart';
 class SelectPlaylistBottomSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final favoriten = ref.watch(favoriteSongsProvider).value;
+    final favoriten = ref.watch(favoritenProvider).value;
     final manuallyCreatedPlaylists = ref.watch(manuallyCreatedPlaylistsProvider).value;
     if (favoriten == null || manuallyCreatedPlaylists == null) {
       return Container();
     }
+    // TODO: Allow the user to create a new playlist
     return ListView.builder(
       itemCount: 1 + manuallyCreatedPlaylists.length,
       itemBuilder: (context, index) {

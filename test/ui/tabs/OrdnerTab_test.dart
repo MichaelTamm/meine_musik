@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meine_musik/env.dart';
+import 'package:meine_musik/ui/player_widget/PlayerWidget.dart';
 import 'package:meine_musik/ui/tabs/AlbenTab.dart';
 import 'package:meine_musik/ui/tabs/OrdnerTab.dart';
 import 'package:mocktail/mocktail.dart';
@@ -61,6 +62,16 @@ void main() {
     spot<OrdnerTab>().spot<ListTile>().existsExactlyNTimes(2);
     spot<OrdnerTab>().spot<ListTile>().spotText("Samsung").existsOnce();
     spot<OrdnerTab>().spot<ListTile>().spotText("Musik").existsOnce();
+  });
+
+  testWidgets('Tapping on an audio file will play it', (tester) async {
+    when(() => audioService.findAll()).thenAnswer((_) async => [anAudioFile(path: '/storage/emulated/0/some audio file.mp3')]);
+    await tester.startApp();
+    await act.tap(spot<TabBar>().spotText('Ordner'));
+    await tester.pumpAndSettle();
+    await act.tap(spotText('some audio file.mp3'));
+    await tester.pumpAndSettle();
+    spot<PlayerWidget>().spot<IconButton>().spotIcon(Icons.pause).existsOnce();
   });
 
   testWidgets('Current folder is restored when user switches tabs', (tester) async {

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,10 +15,6 @@ class PlayerWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentPlaylist = ref.watch(currentPlaylistProvider);
     final currentSong = ref.watch(currentSongProvider);
-    var label = currentSong.title;
-    if (currentSong.song.artist.isNotEmpty && !label.contains(currentSong.song.artist)) {
-      label = '${currentSong.song.artist}: $label';
-    }
     return Container(
       height: 16 /* padding */ + 20 /* song name */ + 44 /* slider */ + 64 /* buttons */ + 16 /* padding */,
       color: Theme.of(context).colorScheme.inversePrimary,
@@ -27,7 +25,7 @@ class PlayerWidget extends ConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                Expanded(child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis)),
+                Expanded(child: Text(currentSong.label, maxLines: 1, overflow: TextOverflow.ellipsis)),
                 Text(' (${currentSong.playlistIndex + 1}/${currentPlaylist.length})', maxLines: 1),
               ],
             ),
@@ -44,17 +42,17 @@ class PlayerWidget extends ConsumerWidget {
                   final currentSongPosition = ref.read(currentSongPositionProvider);
                   final debugMessagePrefix =
                       'Tap on skip to previous icon button, current song position: ${currentSongPosition.inSeconds}s';
-                  if (currentSongPosition >= Duration(seconds: 10)) {
-                    debugPrint('$debugMessagePrefix >= 10s -- seeking to start of current song ...');
-                    ref.read(playerProvider).seekToPosition(Duration.zero);
-                  } else if (currentSong.playOrderIndex == 0) {
+                  if (currentSong.playOrderIndex == 0) {
                     debugPrint(
                       '$debugMessagePrefix, current song is first song of current playlist -- seeking to start of current song ...',
                     );
                     ref.read(playerProvider).seekToPosition(Duration.zero);
-                  } else {
-                    debugPrint('$debugMessagePrefix < 10s -- play previous song ...');
+                  } else if (currentSongPosition < Duration(milliseconds: min(5000, (currentSong.duration.inMilliseconds / 5).round()))) {
+                    debugPrint('$debugMessagePrefix -- play previous song ...');
                     ref.read(playerProvider).playPreviousSong();
+                  } else {
+                    debugPrint('$debugMessagePrefix -- seeking to start of current song ...');
+                    ref.read(playerProvider).seekToPosition(Duration.zero);
                   }
                 },
               ),

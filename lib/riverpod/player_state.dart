@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meine_musik/utils.dart';
-import 'package:path/path.dart' show basenameWithoutExtension;
+import 'package:path/path.dart' show basename;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../model/PlayingPausedOrCompleted.dart';
@@ -36,25 +36,30 @@ class CurrentPlaylist extends _$CurrentPlaylist {
 /// Initial value: [CurrentSong.none]
 @Riverpod(keepAlive: true)
 class CurrentSong extends _$CurrentSong {
-  static final ({Song song, String title, Duration duration, int playlistIndex, int playOrderIndex}) none = (
+  static final ({Song song, String label, Duration duration, int playlistIndex, int playOrderIndex}) none = (
     song: _noSong,
-    title: '',
+    label: '',
     duration: Duration.zero,
     playlistIndex: -1,
     playOrderIndex: -1,
   );
 
   @override
-  ({Song song, String title, Duration duration, int playlistIndex, int playOrderIndex}) build() => none;
+  ({Song song, String label, Duration duration, int playlistIndex, int playOrderIndex}) build() => none;
 
   void _set(Song song, {required int playlistIndex, required int playOrderIndex}) {
-    var title = song.title;
-    if (title.isEmpty || title.startsWith('<') || title == 'unknown' || title == 'null') {
-      title = basenameWithoutExtension(song.fileName);
+    var label = song.title;
+    if (label.isEmpty || label.startsWith('<') || label == 'unknown' || label == 'null') {
+      label = basename(song.fileName);
+    } else {
+      final artist = song.artist;
+      if (artist.isNotEmpty && !artist.startsWith('<') && artist != 'unknown' && artist != 'null') {
+        label = '$artist: $label';
+      }
     }
     final newState = (
       song: song,
-      title: title,
+      label: label,
       duration: Duration(milliseconds: song.durationInMilliseconds),
       playlistIndex: playlistIndex,
       playOrderIndex: playOrderIndex,
@@ -114,8 +119,14 @@ class AudioPlayerWrapper {
 
   void playSong(Song song) {
     _seekToPosition = null;
-    _ref.read(currentPlaylistProvider.notifier).set(PlayASongPlaylist(song));
-    _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
+    final currentPlaylist = _ref.read(currentPlaylistProvider);
+    final indexes = currentPlaylist.indexesOf(song);
+    if (indexes != null) {
+      _ref.read(currentSongProvider.notifier)._set(song, playlistIndex: indexes.playlistIndex, playOrderIndex: indexes.playOrderIndex);
+    } else {
+      _ref.read(currentPlaylistProvider.notifier).set(PlayASongPlaylist(song));
+      _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
+    }
     _audioPlayer.play(song.source);
   }
 
@@ -237,6 +248,12 @@ class Player extends _$Player {
       ..setReleaseMode(ReleaseMode.stop);
     _streams.add(
       audioPlayer.onPositionChanged.listen((position) {
+        if (position == Duration.zero) {
+          if (ref.read(isPlayingPausedOrCompletedProvider) == completed) {
+            // Ignored: The slider in the PlayerWidget should remain at the end.
+            return;
+          }
+        }
         ref.read(currentSongPositionProvider.notifier).set(position);
       }),
     );
@@ -265,6 +282,9 @@ class Player extends _$Player {
                 } else {
                   debugPrint('Last song completed.');
                   ref.read(isPlayingPausedOrCompletedProvider.notifier).set(completed);
+                  // TODO: wenn das letzte Lied fertig abgespielt wurde, sollte
+                  // die progress bar nicht auf Anfang zurückgesetzt werden. Das
+                  // sollte erst passieren, wenn der Nutzer den Play-IconButton antippt.
                 }
               case RepeatMode.repeatSongOnce:
                 debugPrint('Current song completed, repeat it once ...');
