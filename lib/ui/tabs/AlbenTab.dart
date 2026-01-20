@@ -3,21 +3,30 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/Playlist.dart';
+import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../../theme.dart';
 import '../../utils.dart';
 import '../LoadingIndicator.dart';
+import '../PlaylistActions.dart';
+import '../PlaylistView.dart';
 
 class AlbenTab extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: '$AlbenTab.navigatorKey');
 
   static final viewDataProvider = FutureProvider<List<Album>>((ref) async {
-    final allSongs = await ref.watch(allSongsProvider.future);
+    final allSongs = await ref.watch(alleLiederProvider.future);
     final songsByAlbumName = allSongs.groupBy((it) => it.album);
     final viewData = <Album>[];
     for (final mapEntry in songsByAlbumName.entries) {
       final name = mapEntry.key;
       final songs = mapEntry.value.sortBy((it) => it.trackNumber, thenBy: (it) => it.path);
+      for (int i = 0; i < songs.length; ++i) {
+        final song = songs[i];
+        if (song.trackNumber == 0) {
+          song.trackNumber = i + 1;
+        }
+      }
       viewData.add(Album(name, songs));
     }
     ref.keepAlive();
@@ -111,7 +120,7 @@ class _AlleAlbenOverview extends StatelessWidget {
     navigator.push(
       MaterialPageRoute(
         settings: RouteSettings(name: '/${album.kuenstler} - ${album.name}', arguments: album),
-        builder: (_) => _AlbumView(album),
+        builder: (_) => PlaylistView(album, close: () => AlbenTab.navigatorKey.currentState?.pop()),
       ),
     );
   }
@@ -125,12 +134,11 @@ class _AlbumListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    /*
-    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it is Album && it.name == album.name));
-    */
+    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it == album));
     final textTheme = TextTheme.of(context);
     return ListTile(
-      selected: false /* TODO: isCurrentPlaylist */,
+      selectedTileColor: selectedPlaylistBackground,
+      selected: isCurrentPlaylist,
       contentPadding: EdgeInsets.only(left: 16),
       title: Column(
         mainAxisSize: MainAxisSize.min,
@@ -144,40 +152,11 @@ class _AlbumListTile extends ConsumerWidget {
         1 => '1 Lied (${formatPlaylistDuration(album.duration)})',
         _ => '${album.length} Lieder (${formatPlaylistDuration(album.duration)})',
       }),
-      trailing: null /* TODO: PlaylistActions(album) */,
+      trailing: PlaylistActions(album),
       onTap: () {
         debugPrint('Tap on $_AlbumListTile for ${album.name}');
         onTap();
       },
-    );
-  }
-}
-
-class _AlbumView extends StatelessWidget {
-  const _AlbumView(this.album);
-
-  final Album album;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          primary: false,
-          child: Row(
-            children: [
-              IconButton(onPressed: () => AlbenTab.navigatorKey.currentState?.pop(), icon: Icon(Icons.chevron_left_rounded)),
-              Text(
-                '${album.kuenstler} - ${album.name}',
-                style: TextStyle(color: colorScheme.onSurface.withAlpha(97), fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-        ),
-        Expanded(child: Placeholder()),
-      ],
     );
   }
 }

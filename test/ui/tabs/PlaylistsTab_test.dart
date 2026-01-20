@@ -20,7 +20,7 @@ void main() {
     await tester.pumpAndSettle();
     spotText('Alle Lieder').existsOnce();
     spotText('Favoriten').doesNotExist();
-    // TODO: spotText(song.title).existsOnce();
+    spotText(song.title).existsOnce();
   });
 
   testWidgets('An opened playlist is restored when user switches tabs', (tester) async {

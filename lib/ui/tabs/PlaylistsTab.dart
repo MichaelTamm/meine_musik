@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/Playlist.dart';
+import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../../theme.dart';
 import '../../utils.dart';
 import '../LoadingIndicator.dart';
+import '../PlaylistActions.dart';
+import '../PlaylistView.dart';
 
 class PlaylistsTab extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: '$PlaylistsTab.navigatorKey');
@@ -101,7 +104,7 @@ class _AllePlaylistsOverview extends StatelessWidget {
     navigator.push(
       MaterialPageRoute(
         settings: RouteSettings(name: '/${playlist.name}', arguments: playlist),
-        builder: (_) => _PlaylistView(playlist),
+        builder: (_) => PlaylistView(playlist, close: () => PlaylistsTab.navigatorKey.currentState?.pop()),
       ),
     );
   }
@@ -115,56 +118,26 @@ class _PlaylistListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it.name)) == playlist.name;
+    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it == playlist));
     return ListTile(
-      selected: false,
-      // TODO: isCurrentPlaylist,
+      selectedTileColor: selectedPlaylistBackground,
+      selected: isCurrentPlaylist,
       contentPadding: EdgeInsets.only(left: 16),
       title: Text(playlist.name),
       subtitle: Text(switch (playlist.length) {
         0 => switch (playlist) {
-          AllSongs() => 'keine Lieder gefunden',
-          FavoriteSongs() => 'noch keine Favoriten ausgewählt',
+          AlleLieder() => 'keine Lieder gefunden',
+          Favoriten() => 'noch keine Favoriten ausgewählt',
           _ => 'keine Lieder ausgewählt',
         },
         1 => '1 Lied (${formatPlaylistDuration(playlist.duration)})',
         _ => '${playlist.length} Lieder (${formatPlaylistDuration(playlist.duration)})',
       }),
-      trailing: null,
-      // TODO: PlaylistActions(playlist),
+      trailing: PlaylistActions(playlist),
       onTap: () {
         debugPrint('Tap on $_PlaylistListTile for ${playlist.name}');
         onTap();
       },
-    );
-  }
-}
-
-class _PlaylistView extends StatelessWidget {
-  const _PlaylistView(this.playlist);
-
-  final Playlist playlist;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          primary: false,
-          child: Row(
-            children: [
-              IconButton(onPressed: () => PlaylistsTab.navigatorKey.currentState?.pop(), icon: Icon(Icons.chevron_left_rounded)),
-              Text(
-                playlist.name,
-                style: TextStyle(color: colorScheme.onSurface.withAlpha(97), fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-        ),
-        Expanded(child: Placeholder()),
-      ],
     );
   }
 }

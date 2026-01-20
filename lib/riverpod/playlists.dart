@@ -25,8 +25,8 @@ part 'playlists.g.dart';
 @riverpod
 Future<List<Playlist>> playlists(Ref ref) async {
   final (allSongs, favoriteSongs, manuallyCreatedPlaylists) = await Futures.tuple3(
-    ref.watch(allSongsProvider.future),
-    ref.watch(favoriteSongsProvider.future),
+    ref.watch(alleLiederProvider.future),
+    ref.watch(favoritenProvider.future),
     ref.watch(manuallyCreatedPlaylistsProvider.future),
   );
   final playlists = [allSongs, favoriteSongs, ...manuallyCreatedPlaylists];
@@ -35,25 +35,25 @@ Future<List<Playlist>> playlists(Ref ref) async {
 }
 
 @riverpod
-Future<AllSongs> allSongs(Ref ref) async {
+Future<AlleLieder> alleLieder(Ref ref) async {
   final (audioFiles, isSongPredicate) = await Futures.tuple2(
     ref.watch(localAudioFilesProvider.future),
     ref.watch(isSongPredicateProvider.future),
   );
   final allSongs = [...audioFiles.where(isSongPredicate.call)];
   ref.keepAlive();
-  return AllSongs(allSongs);
+  return AlleLieder(allSongs);
 }
 
 @riverpod
-Future<FavoriteSongs> favoriteSongs(Ref ref) async {
+Future<Favoriten> favoriten(Ref ref) async {
   final (audioFiles, isFavoriteSongPredicate) = await Futures.tuple2(
     ref.watch(localAudioFilesProvider.future),
     ref.watch(isFavoriteSongPredicateProvider.future),
   );
   final favoriteSongs = [...audioFiles.where(isFavoriteSongPredicate.call)];
   ref.keepAlive();
-  return FavoriteSongs(
+  return Favoriten(
     favoriteSongs,
     addSong: (Song song) async {
       final dirFuture = getApplicationDocumentsDirectory();
@@ -197,13 +197,13 @@ Future<IsFavoriteSongPredicate> isFavoriteSongPredicate(Ref ref) async {
 class CurrentBookmarkTarget extends _$CurrentBookmarkTarget {
   @override
   Future<Playlist> build() {
-    final favoriten = ref.read(favoriteSongsProvider.future);
+    final favoriten = ref.read(favoritenProvider.future);
     return favoriten;
   }
 
   void set(Playlist playlist) {
-    if (!(playlist is FavoriteSongs || playlist is ManuallyCreatedPlaylist)) {
-      throw ArgumentError('Unexpected playlist: $playlist -- expected: $FavoriteSongs or $ManuallyCreatedPlaylist');
+    if (!(playlist is Favoriten || playlist is ManuallyCreatedPlaylist)) {
+      throw ArgumentError('Unexpected playlist: $playlist -- expected: $Favoriten or $ManuallyCreatedPlaylist');
     }
     state = AsyncValue.data(playlist);
   }

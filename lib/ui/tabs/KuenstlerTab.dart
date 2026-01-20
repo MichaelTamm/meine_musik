@@ -4,16 +4,19 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../model/Playlist.dart';
 import '../../model/Song.dart';
+import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../../theme.dart';
 import '../../utils.dart';
 import '../LoadingIndicator.dart';
+import '../PlaylistActions.dart';
+import '../PlaylistView.dart';
 
 class KuenstlerTab extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: '$KuenstlerTab.navigatorKey');
 
   static final viewDataProvider = FutureProvider<List<KuenstlerSongs>>((ref) async {
-    final allSongs = await ref.watch(allSongsProvider.future);
+    final allSongs = await ref.watch(alleLiederProvider.future);
     final songsByArtistName = <String, List<Song>>{};
     for (final song in allSongs) {
       // A song can be performed by multiple artists ...
@@ -118,67 +121,38 @@ class _AlleKuenstlerOverview extends StatelessWidget {
     navigator.push(
       MaterialPageRoute(
         settings: RouteSettings(name: '/${kuenstlerSongs.kuenstler}', arguments: kuenstlerSongs),
-        builder: (_) => _KuenstlerSongsView(kuenstlerSongs),
+        builder: (_) => PlaylistView(kuenstlerSongs, close: () => KuenstlerTab.navigatorKey.currentState?.pop()),
       ),
     );
   }
 }
 
 class _KuenstlerListTile extends ConsumerWidget {
-  _KuenstlerListTile(this.songs, {required this.onTap}) : kuenstler = songs.kuenstler, super(key: Key(songs.kuenstler));
+  _KuenstlerListTile(this.kuenstlerSongs, {required this.onTap})
+    : kuenstler = kuenstlerSongs.kuenstler,
+      super(key: Key(kuenstlerSongs.kuenstler));
 
   final String kuenstler;
-  final KuenstlerSongs songs;
+  final KuenstlerSongs kuenstlerSongs;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    /*
-    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it is Album && it.name == album.name));
-    */
+    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it == kuenstlerSongs));
     return ListTile(
-      selected: false /* TODO: isCurrentPlaylist */,
+      selectedTileColor: selectedPlaylistBackground,
+      selected: isCurrentPlaylist,
       contentPadding: EdgeInsets.only(left: 16),
       title: Text(kuenstler, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Text(switch (songs.length) {
-        1 => '1 Lied (${formatPlaylistDuration(songs.duration)})',
-        _ => '${songs.length} Lieder (${formatPlaylistDuration(songs.duration)})',
+      subtitle: Text(switch (kuenstlerSongs.length) {
+        1 => '1 Lied (${formatPlaylistDuration(kuenstlerSongs.duration)})',
+        _ => '${kuenstlerSongs.length} Lieder (${formatPlaylistDuration(kuenstlerSongs.duration)})',
       }),
-      trailing: null /* TODO: PlaylistActions(album) */,
+      trailing: PlaylistActions(kuenstlerSongs),
       onTap: () {
         debugPrint('Tap on $_KuenstlerListTile for $kuenstler');
         onTap();
       },
-    );
-  }
-}
-
-class _KuenstlerSongsView extends StatelessWidget {
-  _KuenstlerSongsView(this.songs) : kuenstler = songs.kuenstler;
-
-  final String kuenstler;
-  final KuenstlerSongs songs;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          primary: false,
-          child: Row(
-            children: [
-              IconButton(onPressed: () => KuenstlerTab.navigatorKey.currentState?.pop(), icon: Icon(Icons.chevron_left_rounded)),
-              Text(
-                kuenstler,
-                style: TextStyle(color: colorScheme.onSurface.withAlpha(97), fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
-        ),
-        Expanded(child: Placeholder()),
-      ],
     );
   }
 }

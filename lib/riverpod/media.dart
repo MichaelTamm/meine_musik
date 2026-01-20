@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,13 +18,24 @@ Future<List<AudioFile>> localAudioFiles(Ref ref) async {
     } else if (apiLevel < 33) {
       final permission = await Permission.storage.request();
       if (!permission.isGranted) {
-        throw Exception('Permission not granted');
+        throw Exception('Permission.storage not granted');
       }
     } else {
-      throw UnimplementedError();
+      final permission = await Permission.audio.request();
+      if (!permission.isGranted) {
+        throw Exception('Permission.audio not granted');
+      }
     }
   }
   final audioFiles = await audioService.findAll();
+
+  if (kDebugMode) {
+    debugPrint('Found ${audioFiles.length} audio files:');
+    for (final audioFile in audioFiles) {
+      debugPrint('    ${audioFile.path}');
+    }
+  }
+
   ref.keepAlive();
   return audioFiles;
 }

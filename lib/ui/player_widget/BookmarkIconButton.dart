@@ -15,14 +15,14 @@ class BookmarkIconButton extends ConsumerWidget {
     final isBookmarked = currentBookmarkTarget?.contains(currentSong.song) ?? false;
     return IconButton(
       icon: Icon(
-        currentBookmarkTarget == null || currentBookmarkTarget is FavoriteSongs
+        currentBookmarkTarget == null || currentBookmarkTarget is Favoriten
             ? (isBookmarked ? Icons.favorite_rounded : Icons.favorite_border_rounded)
             : (isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded),
       ),
       onPressed: currentBookmarkTarget == null
           ? null
           : () async {
-              if (currentBookmarkTarget is FavoriteSongs) {
+              if (currentBookmarkTarget is Favoriten) {
                 debugPrint('Tap on favorite icon button');
               } else {
                 debugPrint('Tap on bookmark icon button');

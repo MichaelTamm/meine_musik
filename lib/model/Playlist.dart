@@ -12,7 +12,7 @@ abstract class Playlist with IterableMixin<Song> {
   static final empty = _EmptyPlaylist();
 
   Playlist(this.name, Iterable<Song> songs, {this.upperTitle = '', this.setName, this.addSong, this.removeSong, this.delete})
-    : _songs = songs.toList(growable: false),
+    : _songs = UnmodifiableListView(songs.toList(growable: false)),
       playOrder = List.generate(songs.length, (index) => index),
       duration = Duration(milliseconds: songs.fold(0, (total, file) => total + file.durationInMilliseconds));
 
@@ -36,6 +36,15 @@ abstract class Playlist with IterableMixin<Song> {
 
   @override
   Iterator<Song> get iterator => _songs.iterator;
+
+  ({int playlistIndex, int playOrderIndex})? indexesOf(AudioFile song) {
+    final playlistIndex = _songs.indexOf(song);
+    if (playlistIndex < 0) {
+      return null;
+    } else {
+      return (playlistIndex: playlistIndex, playOrderIndex: playOrder.indexOf(playlistIndex));
+    }
+  }
 
   Song get firstSong {
     if (isEmpty) {
@@ -67,6 +76,12 @@ abstract class Playlist with IterableMixin<Song> {
         1 => '1 song: ${_songs.first}',
         _ => '$length songs',
       }})';
+
+  @override
+  bool operator ==(Object other);
+
+  @override
+  int get hashCode;
 }
 
 @immutable
@@ -81,18 +96,30 @@ class _EmptyPlaylist extends Playlist {
   toString() => 'Playlist.empty';
 }
 
-class AllSongs extends Playlist {
-  AllSongs(List<AudioFile> allSongs) : super('Alle Lieder', allSongs);
+class AlleLieder extends Playlist {
+  AlleLieder(List<AudioFile> allSongs) : super('Alle Lieder', allSongs);
 
   @override
-  toString() => '$AllSongs()';
+  toString() => '$AlleLieder()';
+
+  @override
+  bool operator ==(Object other) => other is AlleLieder;
+
+  @override
+  int get hashCode => 0;
 }
 
-class FavoriteSongs extends Playlist {
-  FavoriteSongs(List<AudioFile> favoriteSongs, {super.addSong, super.removeSong}) : super('Favoriten', favoriteSongs);
+class Favoriten extends Playlist {
+  Favoriten(List<AudioFile> favoriteSongs, {super.addSong, super.removeSong}) : super('Favoriten', favoriteSongs);
 
   @override
-  toString() => '$FavoriteSongs()';
+  toString() => '$Favoriten()';
+
+  @override
+  bool operator ==(Object other) => other is Favoriten;
+
+  @override
+  int get hashCode => 1;
 }
 
 class Album extends Playlist {
@@ -100,16 +127,34 @@ class Album extends Playlist {
   Album(super.name, super.songs) : super(upperTitle: songs.map((it) => it.artist).removeDuplicates().join(', '));
 
   String get kuenstler => upperTitle;
+
+  @override
+  bool operator ==(Object other) => other is Album && name == other.name && kuenstler == other.kuenstler;
+
+  @override
+  int get hashCode => Object.hash(name, kuenstler);
 }
 
 class KuenstlerSongs extends Playlist {
   KuenstlerSongs(super.name, super.songs) : super(upperTitle: 'Alle Lieder von');
 
   String get kuenstler => name;
+
+  @override
+  bool operator ==(Object other) => other is KuenstlerSongs && name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
 }
 
 class ManuallyCreatedPlaylist extends Playlist {
   ManuallyCreatedPlaylist(super.name, super.songs, {super.setName, super.addSong, super.removeSong, super.delete});
+
+  @override
+  bool operator ==(Object other) => other is ManuallyCreatedPlaylist && name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
 }
 
 class PlayASongPlaylist extends Playlist {
@@ -119,4 +164,10 @@ class PlayASongPlaylist extends Playlist {
   toString() {
     return '$PlayASongPlaylist($first)';
   }
+
+  @override
+  bool operator ==(Object other) => other is PlayASongPlaylist && first == other.first;
+
+  @override
+  int get hashCode => first.hashCode;
 }

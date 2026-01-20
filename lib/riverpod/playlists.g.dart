@@ -38,69 +38,69 @@ final class PlaylistsProvider extends $FunctionalProvider<AsyncValue<List<Playli
   }
 }
 
-String _$playlistsHash() => r'b9bd6b8c5455b5024cc381a6719e8975e119109d';
+String _$playlistsHash() => r'bb97eec4e596a48d6628485d634067e115a32671';
 
-@ProviderFor(allSongs)
-const allSongsProvider = AllSongsProvider._();
+@ProviderFor(alleLieder)
+const alleLiederProvider = AlleLiederProvider._();
 
-final class AllSongsProvider extends $FunctionalProvider<AsyncValue<AllSongs>, AllSongs, FutureOr<AllSongs>>
-    with $FutureModifier<AllSongs>, $FutureProvider<AllSongs> {
-  const AllSongsProvider._()
+final class AlleLiederProvider extends $FunctionalProvider<AsyncValue<AlleLieder>, AlleLieder, FutureOr<AlleLieder>>
+    with $FutureModifier<AlleLieder>, $FutureProvider<AlleLieder> {
+  const AlleLiederProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'allSongsProvider',
+        name: r'alleLiederProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$allSongsHash();
+  String debugGetCreateSourceHash() => _$alleLiederHash();
 
   @$internal
   @override
-  $FutureProviderElement<AllSongs> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+  $FutureProviderElement<AlleLieder> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
   @override
-  FutureOr<AllSongs> create(Ref ref) {
-    return allSongs(ref);
+  FutureOr<AlleLieder> create(Ref ref) {
+    return alleLieder(ref);
   }
 }
 
-String _$allSongsHash() => r'636a38b8f5fff0a91b3d48b577df75776132f87d';
+String _$alleLiederHash() => r'defd4c7abafe1642ef0192fc7b34a59b56ba59f0';
 
-@ProviderFor(favoriteSongs)
-const favoriteSongsProvider = FavoriteSongsProvider._();
+@ProviderFor(favoriten)
+const favoritenProvider = FavoritenProvider._();
 
-final class FavoriteSongsProvider extends $FunctionalProvider<AsyncValue<FavoriteSongs>, FavoriteSongs, FutureOr<FavoriteSongs>>
-    with $FutureModifier<FavoriteSongs>, $FutureProvider<FavoriteSongs> {
-  const FavoriteSongsProvider._()
+final class FavoritenProvider extends $FunctionalProvider<AsyncValue<Favoriten>, Favoriten, FutureOr<Favoriten>>
+    with $FutureModifier<Favoriten>, $FutureProvider<Favoriten> {
+  const FavoritenProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'favoriteSongsProvider',
+        name: r'favoritenProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$favoriteSongsHash();
+  String debugGetCreateSourceHash() => _$favoritenHash();
 
   @$internal
   @override
-  $FutureProviderElement<FavoriteSongs> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+  $FutureProviderElement<Favoriten> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
   @override
-  FutureOr<FavoriteSongs> create(Ref ref) {
-    return favoriteSongs(ref);
+  FutureOr<Favoriten> create(Ref ref) {
+    return favoriten(ref);
   }
 }
 
-String _$favoriteSongsHash() => r'b0475afcac8fb740b842adfff30d245aba72fe85';
+String _$favoritenHash() => r'31eff24c1145993726faa26270ef675afadee05d';
 
 @ProviderFor(manuallyCreatedPlaylists)
 const manuallyCreatedPlaylistsProvider = ManuallyCreatedPlaylistsProvider._();
@@ -232,7 +232,7 @@ final class CurrentBookmarkTargetProvider extends $AsyncNotifierProvider<Current
   CurrentBookmarkTarget create() => CurrentBookmarkTarget();
 }
 
-String _$currentBookmarkTargetHash() => r'1c8e0bb45658b58faea41ce974215a1e026b43c2';
+String _$currentBookmarkTargetHash() => r'56ee774a76c6522d42af4858ff54505f1dc12f63';
 
 /// The playlist, to which a song is added, when the bookmark button is pressed.
 /// Initial value: Favoriten

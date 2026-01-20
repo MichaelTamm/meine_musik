@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 final colorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
 
+final selectedPlaylistBackground = Color.lerp(Colors.purpleAccent, Colors.white, 0.875)!;
+final selectedSongBackground = Color.lerp(Colors.purpleAccent, Colors.white, 0.75)!;
+
 final themeData = ThemeData(
   useMaterial3: true,
   appBarTheme: AppBarTheme(toolbarHeight: 0),
@@ -16,7 +19,6 @@ final themeData = ThemeData(
     splashColor: colorScheme.onPrimaryContainer.withAlpha(26),
     shape: const CircleBorder(),
   ),
-  listTileTheme: ListTileThemeData(selectedTileColor: Color.lerp(Colors.purpleAccent, Colors.white, 0.75)),
   // The pageTransitionsTheme is used by the `OrdnerTab` when switching folders ...
   pageTransitionsTheme: PageTransitionsTheme(
     builders: Map<TargetPlatform, PageTransitionsBuilder>.fromIterable(

@@ -28,6 +28,8 @@ AudioFolder groupAudioFiles(List<AudioFile> audioFiles) {
       if (i > 0) {
         path = path.substring(i + 1);
       }
+    } else if (path.startsWith('/')) {
+      path = path.substring(1);
     }
     final pathComponents = path.split('/');
     final folderNames = pathComponents.sublist(0, pathComponents.length - 1);
