@@ -20,7 +20,7 @@ final class LocalAudioFilesProvider extends $FunctionalProvider<AsyncValue<List<
         argument: null,
         retry: null,
         name: r'localAudioFilesProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -38,7 +38,7 @@ final class LocalAudioFilesProvider extends $FunctionalProvider<AsyncValue<List<
   }
 }
 
-String _$localAudioFilesHash() => r'd3ed63f88973cd8554b60ec00a3d823898d21180';
+String _$localAudioFilesHash() => r'd1838b48ebd58103db770b46e0232fb849fb6d20';
 
 @ProviderFor(localAudioFilesById)
 const localAudioFilesByIdProvider = LocalAudioFilesByIdProvider._();
@@ -52,7 +52,7 @@ final class LocalAudioFilesByIdProvider
         argument: null,
         retry: null,
         name: r'localAudioFilesByIdProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -70,4 +70,4 @@ final class LocalAudioFilesByIdProvider
   }
 }
 
-String _$localAudioFilesByIdHash() => r'41030b5376f4e8efd4a0616e24caf87ae6e7ee06';
+String _$localAudioFilesByIdHash() => r'6a70f0c9295dfdbe01bf120198665caf06d26b7b';

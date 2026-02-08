@@ -90,10 +90,20 @@ class AudioFileList extends UnmodifiableListView<AudioFile> {
 }
 
 class _EmptyPlaylist extends Playlist {
-  _EmptyPlaylist() : super('', []);
+  static final _instance = _EmptyPlaylist._();
+
+  factory _EmptyPlaylist() => _instance;
+
+  _EmptyPlaylist._() : super('', []);
 
   @override
   toString() => 'Playlist.empty';
+
+  @override
+  bool operator ==(Object other) => other is _EmptyPlaylist;
+
+  @override
+  int get hashCode => 0;
 }
 
 class AlleLieder extends Playlist {
@@ -106,7 +116,7 @@ class AlleLieder extends Playlist {
   bool operator ==(Object other) => other is AlleLieder;
 
   @override
-  int get hashCode => 0;
+  int get hashCode => -1;
 }
 
 class Favoriten extends Playlist {
@@ -119,7 +129,7 @@ class Favoriten extends Playlist {
   bool operator ==(Object other) => other is Favoriten;
 
   @override
-  int get hashCode => 1;
+  int get hashCode => -2;
 }
 
 class Album extends Playlist {
@@ -148,13 +158,15 @@ class KuenstlerSongs extends Playlist {
 }
 
 class ManuallyCreatedPlaylist extends Playlist {
-  ManuallyCreatedPlaylist(super.name, super.songs, {super.setName, super.addSong, super.removeSong, super.delete});
+  ManuallyCreatedPlaylist(this.id, super.name, super.songs, {super.setName, super.addSong, super.removeSong, super.delete});
+
+  final int id;
 
   @override
-  bool operator ==(Object other) => other is ManuallyCreatedPlaylist && name == other.name;
+  bool operator ==(Object other) => other is ManuallyCreatedPlaylist && id == other.id;
 
   @override
-  int get hashCode => name.hashCode;
+  int get hashCode => id;
 }
 
 class PlayASongPlaylist extends Playlist {

@@ -1,17 +1,14 @@
 import 'dart:async';
-import 'dart:collection';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meine_musik/model/IsFavoriteSongPredicate.dart';
 import 'package:meine_musik/utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../drift/database.dart' hide Playlist;
-import '../env.dart';
 import '../model/AudioFile.dart';
 import '../model/AudioFolder.dart';
 import '../model/IsSongPredicate.dart';
@@ -22,115 +19,109 @@ import 'media.dart';
 
 part 'playlists.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<Playlist>> playlists(Ref ref) async {
   final (allSongs, favoriteSongs, manuallyCreatedPlaylists) = await Futures.tuple3(
     ref.watch(alleLiederProvider.future),
     ref.watch(favoritenProvider.future),
     ref.watch(manuallyCreatedPlaylistsProvider.future),
   );
-  final playlists = [allSongs, favoriteSongs, ...manuallyCreatedPlaylists];
-  ref.keepAlive();
-  return playlists;
+  return [allSongs, favoriteSongs, ...manuallyCreatedPlaylists];
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<AlleLieder> alleLieder(Ref ref) async {
   final (audioFiles, isSongPredicate) = await Futures.tuple2(
     ref.watch(localAudioFilesProvider.future),
     ref.watch(isSongPredicateProvider.future),
   );
   final allSongs = [...audioFiles.where(isSongPredicate.call)];
-  ref.keepAlive();
   return AlleLieder(allSongs);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<Favoriten> favoriten(Ref ref) async {
-  final (audioFiles, isFavoriteSongPredicate) = await Futures.tuple2(
-    ref.watch(localAudioFilesProvider.future),
-    ref.watch(isFavoriteSongPredicateProvider.future),
+  final (localAudioFilesById, favorites) = await Futures.tuple2(
+    ref.watch(localAudioFilesByIdProvider.future),
+    ref.watch(favoritesDatabaseRecordsProvider.future),
   );
-  final favoriteSongs = [...audioFiles.where(isFavoriteSongPredicate.call)];
-  ref.keepAlive();
+  final favoriteSongs = <Song>[];
+  for (final favorite in favorites) {
+    final song = localAudioFilesById[favorite.songId];
+    if (song != null) {
+      favoriteSongs.add(song);
+    }
+  }
   return Favoriten(
     favoriteSongs,
     addSong: (Song song) async {
-      final dirFuture = getApplicationDocumentsDirectory();
-      final oldIsFavoriteSongPredicate = await riverpodContainer.read(isFavoriteSongPredicateProvider.future);
-      final newIsFavoriteSongPredicate = oldIsFavoriteSongPredicate.addFile(song);
-      final dir = await dirFuture;
-      final configFile = File('${dir.path}/IsFavoriteSongPredicate.config');
-      await newIsFavoriteSongPredicate.writeToFile(configFile);
-      riverpodContainer.invalidate(isFavoriteSongPredicateProvider);
+      await db.favorites.insert().insert(FavoritesCompanion(songId: Value(song.id)));
     },
     removeSong: (Song song) async {
-      final dirFuture = getApplicationDocumentsDirectory();
-      final oldIsFavoriteSongPredicate = await riverpodContainer.read(isFavoriteSongPredicateProvider.future);
-      final newIsFavoriteSongPredicate = oldIsFavoriteSongPredicate.removeFile(song);
-      final dir = await dirFuture;
-      final configFile = File('${dir.path}/IsFavoriteSongPredicate.config');
-      await newIsFavoriteSongPredicate.writeToFile(configFile);
-      riverpodContainer.invalidate(isFavoriteSongPredicateProvider);
+      await db.favorites.delete().delete(FavoritesCompanion(songId: Value(song.id)));
     },
   );
 }
 
-@riverpod
-Future<List<ManuallyCreatedPlaylist>> manuallyCreatedPlaylists(Ref ref) async {
-  final (localAudioFilesById, playlistDatabaseRecords, playlistItems) = await Futures.tuple3(
-    ref.watch(localAudioFilesByIdProvider.future),
-    ref.watch(playlistDatabaseRecordsProvider.future),
-    ref.watch(playlistItemsDatabaseRecordsProvider.future),
-  );
-  final songsByPlaylistId = <int, List<Song>>{};
-  for (final playlistItem in playlistItems) {
-    final playlistId = playlistItem.playlistId;
-    final audioFileId = playlistItem.audioFileId;
-    final audioFile = localAudioFilesById[audioFileId];
-    if (audioFile != null) {
-      var songs = songsByPlaylistId[playlistId];
-      if (songs == null) {
-        songs = [];
-        songsByPlaylistId[playlistId] = songs;
-      }
-      songs.add(audioFile);
-    }
-  }
-  final manuallyCreatedPlaylists = playlistDatabaseRecords.map(
-    (record) => ManuallyCreatedPlaylist(
-      record.name,
-      songsByPlaylistId[record.id] ?? [],
-      setName: (String name) async {
-        await (db.playlists.update()..where((t) => t.id.equals(record.id))).write(PlaylistsCompanion(name: Value(name)));
-      },
-      addSong: (Song song) async {
-        await db.playlistItems.insert().insert(PlaylistItemsCompanion(playlistId: Value(record.id), audioFileId: Value(song.id)));
-      },
-      removeSong: (Song song) async {
-        await db.playlistItems.delete().delete(PlaylistItemsCompanion(playlistId: Value(record.id), audioFileId: Value(song.id)));
-      },
-      delete: () async {
-        await (db.playlists.delete()..where((t) => t.id.equals(record.id))).go();
-      },
-    ),
-  );
-  ref.keepAlive();
-  return UnmodifiableListView(manuallyCreatedPlaylists);
+@Riverpod(keepAlive: true)
+Future<List<int>> manuallyCreatedPlaylistIds(Ref ref) async {
+  final playlistsRecords = await ref.watch(playlistsDatabaseRecordsProvider.future);
+  final ids = playlistsRecords.map((it) => it.id).toList();
+  return ids;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
+Future<ManuallyCreatedPlaylist> manuallyCreatedPlaylist(Ref ref, int playlistId) async {
+  final (localAudioFilesById, playlistRecord, playlistItemsRecords) = await Futures.tuple3(
+    ref.watch(localAudioFilesByIdProvider.future),
+    ref.watch(playlistsDatabaseRecordsProvider.selectAsync((it) => it.firstWhere((it) => it.id == playlistId))),
+    ref.watch(playlistItemsDatabaseRecordsProvider(playlistId).future),
+  );
+  final songs = <Song>[];
+  for (final playlistItem in playlistItemsRecords) {
+    final song = localAudioFilesById[playlistItem.songId];
+    if (song != null) {
+      songs.add(song);
+    }
+  }
+  final playlist = ManuallyCreatedPlaylist(
+    playlistId,
+    playlistRecord.name,
+    songs,
+    setName: (String name) async {
+      await (db.playlists.update()..where((t) => t.id.equals(playlistId))).write(PlaylistsCompanion(name: Value(name)));
+    },
+    addSong: (Song song) async {
+      await db.playlistItems.insert().insert(PlaylistItemsCompanion(playlistId: Value(playlistId), songId: Value(song.id)));
+    },
+    removeSong: (Song song) async {
+      await db.playlistItems.delete().delete(PlaylistItemsCompanion(playlistId: Value(playlistId), songId: Value(song.id)));
+    },
+    delete: () async {
+      await (db.playlists.delete()..where((t) => t.id.equals(playlistId))).go();
+    },
+  );
+  return playlist;
+}
+
+@Riverpod(keepAlive: true)
+Future<List<ManuallyCreatedPlaylist>> manuallyCreatedPlaylists(Ref ref) async {
+  final playlistIds = ref.watch(manuallyCreatedPlaylistIdsProvider).value ?? [];
+  final futures = playlistIds.map((playlistId) => ref.watch(manuallyCreatedPlaylistProvider(playlistId).future));
+  final playlists = await Future.wait(futures);
+  return playlists;
+}
+
+@Riverpod(keepAlive: true)
 Future<IsSongPredicate> isSongPredicate(Ref ref) async {
   try {
     final dir = await getApplicationDocumentsDirectory();
     final configFile = File('${dir.path}/IsSongPredicate.config');
     final isSongPredicate = await IsSongPredicate.fromFile(configFile);
-    ref.keepAlive();
     return isSongPredicate;
   } catch (error, stack) {
     debugPrintStack(label: 'Failed to read IsSongPredicate.config: $error', stackTrace: stack);
     final fallback = IsSongPredicate();
-    ref.keepAlive();
     return fallback;
   }
 }
@@ -175,36 +166,31 @@ Future<void> blacklistFile(AudioFile file, WidgetRef ref) async {
   ref.invalidate(isSongPredicateProvider);
 }
 
-@riverpod
-Future<IsFavoriteSongPredicate> isFavoriteSongPredicate(Ref ref) async {
-  try {
-    final dir = await getApplicationDocumentsDirectory();
-    final configFile = File('${dir.path}/IsFavoriteSongPredicate.config');
-    final isFavoriteSongPredicate = await IsFavoriteSongPredicate.fromFile(configFile);
-    ref.keepAlive();
-    return isFavoriteSongPredicate;
-  } catch (error, stack) {
-    debugPrintStack(label: 'Failed to read IsFavoriteSongPredicate.config: $error', stackTrace: stack);
-    final fallback = IsFavoriteSongPredicate();
-    ref.keepAlive();
-    return fallback;
+/// The id of the manually created playlist, to which a song is added, when the bookmark button is pressed.
+/// If id == null the bookmark target is the Favoriten playlist.
+/// Initial value: null
+@Riverpod(keepAlive: true)
+class CurrentBookmarkTargetId extends _$CurrentBookmarkTargetId {
+  @override
+  int? build() => null;
+
+  void set(Playlist playlist) {
+    if (playlist is Favoriten) {
+      state = null;
+    } else if (playlist is ManuallyCreatedPlaylist) {
+      state = playlist.id;
+    } else {
+      throw ArgumentError('$playlist is not a valid bookmark target');
+    }
   }
 }
 
-/// The playlist, to which a song is added, when the bookmark button is pressed.
-/// Initial value: Favoriten
-@Riverpod(keepAlive: true)
-class CurrentBookmarkTarget extends _$CurrentBookmarkTarget {
-  @override
-  Future<Playlist> build() {
-    final favoriten = ref.read(favoritenProvider.future);
-    return favoriten;
-  }
-
-  void set(Playlist playlist) {
-    if (!(playlist is Favoriten || playlist is ManuallyCreatedPlaylist)) {
-      throw ArgumentError('Unexpected playlist: $playlist -- expected: $Favoriten or $ManuallyCreatedPlaylist');
-    }
-    state = AsyncValue.data(playlist);
+@Riverpod()
+Future<Playlist> currentBookmarkTarget(Ref ref) {
+  final currentBookmarkTargetId = ref.watch(currentBookmarkTargetIdProvider);
+  if (currentBookmarkTargetId == null) {
+    return ref.watch(favoritenProvider.future);
+  } else {
+    return ref.watch(manuallyCreatedPlaylistProvider(currentBookmarkTargetId).future);
   }
 }
