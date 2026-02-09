@@ -1,7 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:meine_musik/model/IsFavoriteSongPredicate.dart';
 import 'package:meine_musik/model/IsSongPredicate.dart';
 import 'package:meine_musik/riverpod/playlists.dart';
 import 'package:meine_musik/ui/MeineMusikApp.dart';
@@ -14,13 +13,7 @@ extension WidgetTesterExtension on WidgetTester {
       ..physicalSize = screenSize;
     await binding.setSurfaceSize(screenSize);
     await pumpWidget(
-      MeineMusikApp(
-        riverpodOverrides: [
-          ...riverpodOverrides,
-          isSongPredicateProvider.overrideWith((_) async => IsSongPredicate()),
-          isFavoriteSongPredicateProvider.overrideWith((_) async => IsFavoriteSongPredicate()),
-        ],
-      ),
+      MeineMusikApp(riverpodOverrides: [isSongPredicateProvider.overrideWith((_) async => IsSongPredicate()), ...riverpodOverrides]),
     );
     await loadAppFonts();
     await pumpAndSettle();

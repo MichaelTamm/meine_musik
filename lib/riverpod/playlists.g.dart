@@ -20,7 +20,7 @@ final class PlaylistsProvider extends $FunctionalProvider<AsyncValue<List<Playli
         argument: null,
         retry: null,
         name: r'playlistsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -38,7 +38,7 @@ final class PlaylistsProvider extends $FunctionalProvider<AsyncValue<List<Playli
   }
 }
 
-String _$playlistsHash() => r'bb97eec4e596a48d6628485d634067e115a32671';
+String _$playlistsHash() => r'12766938c42e41d515671961e979353bae171c54';
 
 @ProviderFor(alleLieder)
 const alleLiederProvider = AlleLiederProvider._();
@@ -51,7 +51,7 @@ final class AlleLiederProvider extends $FunctionalProvider<AsyncValue<AlleLieder
         argument: null,
         retry: null,
         name: r'alleLiederProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -69,7 +69,7 @@ final class AlleLiederProvider extends $FunctionalProvider<AsyncValue<AlleLieder
   }
 }
 
-String _$alleLiederHash() => r'defd4c7abafe1642ef0192fc7b34a59b56ba59f0';
+String _$alleLiederHash() => r'4ea3cefb784bf34cf8e10f073c66254a1c90c1cc';
 
 @ProviderFor(favoriten)
 const favoritenProvider = FavoritenProvider._();
@@ -82,7 +82,7 @@ final class FavoritenProvider extends $FunctionalProvider<AsyncValue<Favoriten>,
         argument: null,
         retry: null,
         name: r'favoritenProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -100,7 +100,102 @@ final class FavoritenProvider extends $FunctionalProvider<AsyncValue<Favoriten>,
   }
 }
 
-String _$favoritenHash() => r'31eff24c1145993726faa26270ef675afadee05d';
+String _$favoritenHash() => r'070df12961913aa3484b40820b0917ef7a5813b9';
+
+@ProviderFor(manuallyCreatedPlaylistIds)
+const manuallyCreatedPlaylistIdsProvider = ManuallyCreatedPlaylistIdsProvider._();
+
+final class ManuallyCreatedPlaylistIdsProvider extends $FunctionalProvider<AsyncValue<List<int>>, List<int>, FutureOr<List<int>>>
+    with $FutureModifier<List<int>>, $FutureProvider<List<int>> {
+  const ManuallyCreatedPlaylistIdsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'manuallyCreatedPlaylistIdsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$manuallyCreatedPlaylistIdsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<int>> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<int>> create(Ref ref) {
+    return manuallyCreatedPlaylistIds(ref);
+  }
+}
+
+String _$manuallyCreatedPlaylistIdsHash() => r'bde284e8f449a6bea41974c20b9f1abd26369c17';
+
+@ProviderFor(manuallyCreatedPlaylist)
+const manuallyCreatedPlaylistProvider = ManuallyCreatedPlaylistFamily._();
+
+final class ManuallyCreatedPlaylistProvider
+    extends $FunctionalProvider<AsyncValue<ManuallyCreatedPlaylist>, ManuallyCreatedPlaylist, FutureOr<ManuallyCreatedPlaylist>>
+    with $FutureModifier<ManuallyCreatedPlaylist>, $FutureProvider<ManuallyCreatedPlaylist> {
+  const ManuallyCreatedPlaylistProvider._({required ManuallyCreatedPlaylistFamily super.from, required int super.argument})
+    : super(
+        retry: null,
+        name: r'manuallyCreatedPlaylistProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$manuallyCreatedPlaylistHash();
+
+  @override
+  String toString() {
+    return r'manuallyCreatedPlaylistProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<ManuallyCreatedPlaylist> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<ManuallyCreatedPlaylist> create(Ref ref) {
+    final argument = this.argument as int;
+    return manuallyCreatedPlaylist(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ManuallyCreatedPlaylistProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$manuallyCreatedPlaylistHash() => r'da71d4d2923106b7a6857e9de6f4dca5ceecec7e';
+
+final class ManuallyCreatedPlaylistFamily extends $Family with $FunctionalFamilyOverride<FutureOr<ManuallyCreatedPlaylist>, int> {
+  const ManuallyCreatedPlaylistFamily._()
+    : super(
+        retry: null,
+        name: r'manuallyCreatedPlaylistProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
+
+  ManuallyCreatedPlaylistProvider call(int playlistId) => ManuallyCreatedPlaylistProvider._(argument: playlistId, from: this);
+
+  @override
+  String toString() => r'manuallyCreatedPlaylistProvider';
+}
 
 @ProviderFor(manuallyCreatedPlaylists)
 const manuallyCreatedPlaylistsProvider = ManuallyCreatedPlaylistsProvider._();
@@ -119,7 +214,7 @@ final class ManuallyCreatedPlaylistsProvider
         argument: null,
         retry: null,
         name: r'manuallyCreatedPlaylistsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -137,7 +232,7 @@ final class ManuallyCreatedPlaylistsProvider
   }
 }
 
-String _$manuallyCreatedPlaylistsHash() => r'f2e798c895deadecedcbed3269b5250aef87245b';
+String _$manuallyCreatedPlaylistsHash() => r'0eb39ecccfa38e44a8c002e2b3e4156f29f315f0';
 
 @ProviderFor(isSongPredicate)
 const isSongPredicateProvider = IsSongPredicateProvider._();
@@ -150,7 +245,7 @@ final class IsSongPredicateProvider extends $FunctionalProvider<AsyncValue<IsSon
         argument: null,
         retry: null,
         name: r'isSongPredicateProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -168,58 +263,76 @@ final class IsSongPredicateProvider extends $FunctionalProvider<AsyncValue<IsSon
   }
 }
 
-String _$isSongPredicateHash() => r'7c1340f34b24c5dd7bf288dba0ee0e4b63aa865d';
+String _$isSongPredicateHash() => r'05ff583a4e6c5116b991e791889f83a4c045cd02';
 
-@ProviderFor(isFavoriteSongPredicate)
-const isFavoriteSongPredicateProvider = IsFavoriteSongPredicateProvider._();
+/// The id of the manually created playlist, to which a song is added, when the bookmark button is pressed.
+/// If id == null the bookmark target is the Favoriten playlist.
+/// Initial value: null
 
-final class IsFavoriteSongPredicateProvider
-    extends $FunctionalProvider<AsyncValue<IsFavoriteSongPredicate>, IsFavoriteSongPredicate, FutureOr<IsFavoriteSongPredicate>>
-    with $FutureModifier<IsFavoriteSongPredicate>, $FutureProvider<IsFavoriteSongPredicate> {
-  const IsFavoriteSongPredicateProvider._()
+@ProviderFor(CurrentBookmarkTargetId)
+const currentBookmarkTargetIdProvider = CurrentBookmarkTargetIdProvider._();
+
+/// The id of the manually created playlist, to which a song is added, when the bookmark button is pressed.
+/// If id == null the bookmark target is the Favoriten playlist.
+/// Initial value: null
+final class CurrentBookmarkTargetIdProvider extends $NotifierProvider<CurrentBookmarkTargetId, int?> {
+  /// The id of the manually created playlist, to which a song is added, when the bookmark button is pressed.
+  /// If id == null the bookmark target is the Favoriten playlist.
+  /// Initial value: null
+  const CurrentBookmarkTargetIdProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'isFavoriteSongPredicateProvider',
-        isAutoDispose: true,
+        name: r'currentBookmarkTargetIdProvider',
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$isFavoriteSongPredicateHash();
+  String debugGetCreateSourceHash() => _$currentBookmarkTargetIdHash();
 
   @$internal
   @override
-  $FutureProviderElement<IsFavoriteSongPredicate> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+  CurrentBookmarkTargetId create() => CurrentBookmarkTargetId();
 
-  @override
-  FutureOr<IsFavoriteSongPredicate> create(Ref ref) {
-    return isFavoriteSongPredicate(ref);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int? value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<int?>(value));
   }
 }
 
-String _$isFavoriteSongPredicateHash() => r'27432341621af69c44630239d63ad1008b7f8dfa';
+String _$currentBookmarkTargetIdHash() => r'1ebcbd51fe18256b947784fdd83b74d01338c61c';
 
-/// The playlist, to which a song is added, when the bookmark button is pressed.
-/// Initial value: Favoriten
+/// The id of the manually created playlist, to which a song is added, when the bookmark button is pressed.
+/// If id == null the bookmark target is the Favoriten playlist.
+/// Initial value: null
 
-@ProviderFor(CurrentBookmarkTarget)
+abstract class _$CurrentBookmarkTargetId extends $Notifier<int?> {
+  int? build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int?, int?>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<int?, int?>, int?, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(currentBookmarkTarget)
 const currentBookmarkTargetProvider = CurrentBookmarkTargetProvider._();
 
-/// The playlist, to which a song is added, when the bookmark button is pressed.
-/// Initial value: Favoriten
-final class CurrentBookmarkTargetProvider extends $AsyncNotifierProvider<CurrentBookmarkTarget, Playlist> {
-  /// The playlist, to which a song is added, when the bookmark button is pressed.
-  /// Initial value: Favoriten
+final class CurrentBookmarkTargetProvider extends $FunctionalProvider<AsyncValue<Playlist>, Playlist, FutureOr<Playlist>>
+    with $FutureModifier<Playlist>, $FutureProvider<Playlist> {
   const CurrentBookmarkTargetProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'currentBookmarkTargetProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -229,23 +342,12 @@ final class CurrentBookmarkTargetProvider extends $AsyncNotifierProvider<Current
 
   @$internal
   @override
-  CurrentBookmarkTarget create() => CurrentBookmarkTarget();
-}
+  $FutureProviderElement<Playlist> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
-String _$currentBookmarkTargetHash() => r'56ee774a76c6522d42af4858ff54505f1dc12f63';
-
-/// The playlist, to which a song is added, when the bookmark button is pressed.
-/// Initial value: Favoriten
-
-abstract class _$CurrentBookmarkTarget extends $AsyncNotifier<Playlist> {
-  FutureOr<Playlist> build();
-  @$mustCallSuper
   @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<AsyncValue<Playlist>, Playlist>;
-    final element =
-        ref.element as $ClassProviderElement<AnyNotifier<AsyncValue<Playlist>, Playlist>, AsyncValue<Playlist>, Object?, Object?>;
-    element.handleValue(ref, created);
+  FutureOr<Playlist> create(Ref ref) {
+    return currentBookmarkTarget(ref);
   }
 }
+
+String _$currentBookmarkTargetHash() => r'f7e89566ac5348d2490c8ba4d9591076be88fd93';

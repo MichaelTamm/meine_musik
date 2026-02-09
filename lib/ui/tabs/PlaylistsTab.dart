@@ -29,7 +29,6 @@ class _PlaylistsTabState extends ConsumerState<PlaylistsTab> with AutomaticKeepA
   @override
   Widget build(BuildContext context) {
     super.build(context); // ... needed by AutomaticKeepAliveClientMixin
-    final playlistsAsync = ref.watch(playlistsProvider);
     final selectedPlaylist = ref.watch(PlaylistsTab.selectedPlaylistProvider);
 
     return PopScope(
@@ -44,22 +43,16 @@ class _PlaylistsTabState extends ConsumerState<PlaylistsTab> with AutomaticKeepA
           // TODO: display Toast: "Drücke die Zurück-Taste noch einmal, um die App zu beenden."
         }
       },
-      child: playlistsAsync.when(
-        loading: LoadingIndicator.new,
-        data: (playlists) => Navigator(
-          key: PlaylistsTab.navigatorKey,
-          observers: [_UpdateSelectedPlaylistObserver(context)],
-          initialRoute: '/',
-          onGenerateRoute: (settings) {
-            if (settings.name == '/') {
-              return MaterialPageRoute(builder: (_) => _AllePlaylistsOverview(playlists), settings: settings);
-            }
-            throw ArgumentError('Unexpected settings: $settings');
-          },
-        ),
-        // TODO: proper error handling
-        // TODO: if permission is not granted, show a meaningful text and a button to request permission
-        error: (error, stack) => Container(),
+      child: Navigator(
+        key: PlaylistsTab.navigatorKey,
+        observers: [_UpdateSelectedPlaylistObserver(context)],
+        initialRoute: '/',
+        onGenerateRoute: (settings) {
+          if (settings.name == '/') {
+            return MaterialPageRoute(builder: (_) => _AllePlaylistsOverview(), settings: settings);
+          }
+          throw ArgumentError('Unexpected settings: $settings');
+        },
       ),
     );
   }
@@ -80,19 +73,24 @@ class _UpdateSelectedPlaylistObserver extends NavigatorObserver {
   }
 }
 
-class _AllePlaylistsOverview extends StatelessWidget {
-  const _AllePlaylistsOverview(this.data);
-
-  final List<Playlist> data;
+class _AllePlaylistsOverview extends ConsumerWidget {
+  const _AllePlaylistsOverview();
 
   @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (_, index) {
-        final playlist = data[index];
-        return _PlaylistListTile(playlist, onTap: () => openPlaylist(playlist));
-      },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final playlistsAsync = ref.watch(playlistsProvider);
+    return playlistsAsync.when(
+      loading: LoadingIndicator.new,
+      data: (playlists) => ListView.builder(
+        itemCount: playlists.length,
+        itemBuilder: (_, index) {
+          final playlist = playlists[index];
+          return _PlaylistListTile(playlist, onTap: () => openPlaylist(playlist));
+        },
+      ),
+      // TODO: proper error handling
+      // TODO: if permission is not granted, show a meaningful text and a button to request permission
+      error: (error, stack) => Container(),
     );
   }
 
@@ -111,7 +109,8 @@ class _AllePlaylistsOverview extends StatelessWidget {
 }
 
 class _PlaylistListTile extends ConsumerWidget {
-  _PlaylistListTile(this.playlist, {required this.onTap}) : super(key: Key(playlist.name));
+  _PlaylistListTile(this.playlist, {required this.onTap})
+    : super(key: Key(playlist is ManuallyCreatedPlaylist ? playlist.id.toString() : playlist.name));
 
   final Playlist playlist;
   final VoidCallback onTap;

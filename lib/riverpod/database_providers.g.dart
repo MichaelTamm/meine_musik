@@ -9,24 +9,24 @@ part of 'database_providers.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(playlistDatabaseRecords)
-const playlistDatabaseRecordsProvider = PlaylistDatabaseRecordsProvider._();
+@ProviderFor(playlistsDatabaseRecords)
+const playlistsDatabaseRecordsProvider = PlaylistsDatabaseRecordsProvider._();
 
-final class PlaylistDatabaseRecordsProvider extends $FunctionalProvider<AsyncValue<List<Playlist>>, List<Playlist>, Stream<List<Playlist>>>
+final class PlaylistsDatabaseRecordsProvider extends $FunctionalProvider<AsyncValue<List<Playlist>>, List<Playlist>, Stream<List<Playlist>>>
     with $FutureModifier<List<Playlist>>, $StreamProvider<List<Playlist>> {
-  const PlaylistDatabaseRecordsProvider._()
+  const PlaylistsDatabaseRecordsProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'playlistDatabaseRecordsProvider',
-        isAutoDispose: true,
+        name: r'playlistsDatabaseRecordsProvider',
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$playlistDatabaseRecordsHash();
+  String debugGetCreateSourceHash() => _$playlistsDatabaseRecordsHash();
 
   @$internal
   @override
@@ -34,25 +34,23 @@ final class PlaylistDatabaseRecordsProvider extends $FunctionalProvider<AsyncVal
 
   @override
   Stream<List<Playlist>> create(Ref ref) {
-    return playlistDatabaseRecords(ref);
+    return playlistsDatabaseRecords(ref);
   }
 }
 
-String _$playlistDatabaseRecordsHash() => r'53181be4cae454aeef5021a91f3bec4b8c8c4b3c';
+String _$playlistsDatabaseRecordsHash() => r'0558d8fc3403e08311f59f44a086e2f6c494bc55';
 
 @ProviderFor(playlistItemsDatabaseRecords)
-const playlistItemsDatabaseRecordsProvider = PlaylistItemsDatabaseRecordsProvider._();
+const playlistItemsDatabaseRecordsProvider = PlaylistItemsDatabaseRecordsFamily._();
 
 final class PlaylistItemsDatabaseRecordsProvider
     extends $FunctionalProvider<AsyncValue<List<PlaylistItem>>, List<PlaylistItem>, Stream<List<PlaylistItem>>>
     with $FutureModifier<List<PlaylistItem>>, $StreamProvider<List<PlaylistItem>> {
-  const PlaylistItemsDatabaseRecordsProvider._()
+  const PlaylistItemsDatabaseRecordsProvider._({required PlaylistItemsDatabaseRecordsFamily super.from, required int super.argument})
     : super(
-        from: null,
-        argument: null,
         retry: null,
         name: r'playlistItemsDatabaseRecordsProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -60,14 +58,79 @@ final class PlaylistItemsDatabaseRecordsProvider
   @override
   String debugGetCreateSourceHash() => _$playlistItemsDatabaseRecordsHash();
 
+  @override
+  String toString() {
+    return r'playlistItemsDatabaseRecordsProvider'
+        ''
+        '($argument)';
+  }
+
   @$internal
   @override
   $StreamProviderElement<List<PlaylistItem>> $createElement($ProviderPointer pointer) => $StreamProviderElement(pointer);
 
   @override
   Stream<List<PlaylistItem>> create(Ref ref) {
-    return playlistItemsDatabaseRecords(ref);
+    final argument = this.argument as int;
+    return playlistItemsDatabaseRecords(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PlaylistItemsDatabaseRecordsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
-String _$playlistItemsDatabaseRecordsHash() => r'3cba95e8b51d0a8d6a2807f17130d88abee14baa';
+String _$playlistItemsDatabaseRecordsHash() => r'4d6a688566ab4ed777f1bc0319554984ffa33645';
+
+final class PlaylistItemsDatabaseRecordsFamily extends $Family with $FunctionalFamilyOverride<Stream<List<PlaylistItem>>, int> {
+  const PlaylistItemsDatabaseRecordsFamily._()
+    : super(
+        retry: null,
+        name: r'playlistItemsDatabaseRecordsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
+
+  PlaylistItemsDatabaseRecordsProvider call(int playlistId) => PlaylistItemsDatabaseRecordsProvider._(argument: playlistId, from: this);
+
+  @override
+  String toString() => r'playlistItemsDatabaseRecordsProvider';
+}
+
+@ProviderFor(favoritesDatabaseRecords)
+const favoritesDatabaseRecordsProvider = FavoritesDatabaseRecordsProvider._();
+
+final class FavoritesDatabaseRecordsProvider extends $FunctionalProvider<AsyncValue<List<Favorite>>, List<Favorite>, Stream<List<Favorite>>>
+    with $FutureModifier<List<Favorite>>, $StreamProvider<List<Favorite>> {
+  const FavoritesDatabaseRecordsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'favoritesDatabaseRecordsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$favoritesDatabaseRecordsHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<List<Favorite>> $createElement($ProviderPointer pointer) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<Favorite>> create(Ref ref) {
+    return favoritesDatabaseRecords(ref);
+  }
+}
+
+String _$favoritesDatabaseRecordsHash() => r'2478abd6942de49ea3634e471c485f142197add0';

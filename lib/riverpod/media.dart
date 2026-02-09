@@ -9,7 +9,7 @@ import '../model/AudioFile.dart';
 
 part 'media.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<List<AudioFile>> localAudioFiles(Ref ref) async {
   if (!kIsTest) {
     final apiLevel = await kMethodChannel.invokeMethod<int>("getApiLevel");
@@ -28,25 +28,21 @@ Future<List<AudioFile>> localAudioFiles(Ref ref) async {
     }
   }
   final audioFiles = await audioService.findAll();
-
   if (kDebugMode) {
     debugPrint('Found ${audioFiles.length} audio files:');
     for (final audioFile in audioFiles) {
       debugPrint('    ${audioFile.path}');
     }
   }
-
-  ref.keepAlive();
   return audioFiles;
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Future<Map<int, AudioFile>> localAudioFilesById(Ref ref) async {
   final localAudioFiles = await ref.watch(localAudioFilesProvider.future);
   final localAudioFilesById = <int, AudioFile>{};
   for (final audioFile in localAudioFiles) {
     localAudioFilesById[audioFile.id] = audioFile;
   }
-  ref.keepAlive();
   return localAudioFilesById;
 }
