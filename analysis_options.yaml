@@ -33,6 +33,7 @@ linter:
     empty_catches: false
     file_names: false
     use_key_in_widget_constructors: false
+    unawaited_futures: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

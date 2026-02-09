@@ -16,7 +16,6 @@ class $FavoritesTable extends Favorites
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    $customConstraints: 'UNIQUE NOT NULL',
   );
   @override
   List<GeneratedColumn> get $columns => [songId];

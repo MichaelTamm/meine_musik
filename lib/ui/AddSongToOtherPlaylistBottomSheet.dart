@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meine_musik/navigation.dart';
 
+import '../model/Playlist.dart';
 import '../model/Song.dart';
 import '../riverpod/playlists.dart';
+import 'CreatePlaylistDialog.dart';
 
 class AddSongToOtherPlaylistBottomSheet extends ConsumerWidget {
   const AddSongToOtherPlaylistBottomSheet(this.song);
@@ -24,9 +26,12 @@ class AddSongToOtherPlaylistBottomSheet extends ConsumerWidget {
           return ListTile(
             leading: Icon(Icons.add_rounded),
             title: Text('Neue Playlist ...'),
-            onTap: () {
+            onTap: () async {
               debugPrint('[$AddSongToOtherPlaylistBottomSheet] Tap on "Neue Playlist ..."');
-              // TODO: ...
+              final newPlaylist = await showDialog<Playlist?>(context: context, builder: ((_) => CreatePlaylistDialog()));
+              if (newPlaylist != null) {
+                closeBottomSheet(result: newPlaylist);
+              }
             },
           );
         } else if (index == 1) {
