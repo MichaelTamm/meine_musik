@@ -109,7 +109,8 @@ class _AllePlaylistsOverview extends ConsumerWidget {
 }
 
 class _PlaylistListTile extends ConsumerWidget {
-  _PlaylistListTile(this.playlist, {required this.onTap}) : super(key: Key(playlist.name));
+  _PlaylistListTile(this.playlist, {required this.onTap})
+    : super(key: Key(playlist is ManuallyCreatedPlaylist ? playlist.id.toString() : playlist.name));
 
   final Playlist playlist;
   final VoidCallback onTap;

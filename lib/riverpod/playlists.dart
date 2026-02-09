@@ -55,10 +55,10 @@ Future<Favoriten> favoriten(Ref ref) async {
   return Favoriten(
     favoriteSongs,
     addSong: (Song song) async {
-      await db.favorites.insert().insert(FavoritesCompanion(songId: Value(song.id)));
+      await db.favorites.insertOne(FavoritesCompanion(songId: Value(song.id)));
     },
     removeSong: (Song song) async {
-      await db.favorites.delete().delete(FavoritesCompanion(songId: Value(song.id)));
+      await db.favorites.deleteWhere((t) => t.songId.equals(song.id));
     },
   );
 }

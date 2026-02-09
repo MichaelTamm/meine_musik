@@ -100,7 +100,7 @@ final class FavoritenProvider extends $FunctionalProvider<AsyncValue<Favoriten>,
   }
 }
 
-String _$favoritenHash() => r'ae526dffa9e86ab95c5761a65a6f34d785866fd5';
+String _$favoritenHash() => r'070df12961913aa3484b40820b0917ef7a5813b9';
 
 @ProviderFor(manuallyCreatedPlaylistIds)
 const manuallyCreatedPlaylistIdsProvider = ManuallyCreatedPlaylistIdsProvider._();

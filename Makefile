@@ -26,6 +26,7 @@ format:
 	dart format lib/ pigeons/ test/
 
 lint: init
+	dart format --output none --set-exit-if-changed lib/ pigeons/ test/
 	flutter analyze
 	dart run custom_lint
 

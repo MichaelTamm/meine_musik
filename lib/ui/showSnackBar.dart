@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-void showSnackBar(BuildContext context, String text, {required, (String, VoidCallback)? action}) {
+void showSnackBar(BuildContext context, String text, {(String, VoidCallback)? action}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Column(

@@ -1,10 +1,15 @@
 import 'package:drift/drift.dart';
 
-import 'database.steps.dart';
-
 export '../env.dart' show db;
 
 part 'database.drift.dart';
+
+class Favorites extends Table {
+  late final songId = integer().customConstraint('UNIQUE NOT NULL')();
+
+  @override
+  Set<Column<Object>> get primaryKey => {songId};
+}
 
 class Playlists extends Table {
   late final id = integer().autoIncrement()();
@@ -12,38 +17,19 @@ class Playlists extends Table {
 }
 
 class PlaylistItems extends Table {
-  late final playlistId = integer().references(Playlists, #id)();
+  late final playlistId = integer().references(Playlists, #id, onDelete: KeyAction.restrict)();
   late final songId = integer()();
 
   @override
   Set<Column<Object>> get primaryKey => {playlistId, songId};
 }
 
-class Favorites extends Table {
-  late final songId = integer()();
-
-  @override
-  Set<Column<Object>> get primaryKey => {songId};
-}
-
-@DriftDatabase(tables: [Playlists, PlaylistItems, Favorites])
+@DriftDatabase(tables: [Favorites, Playlists, PlaylistItems])
 class Database extends _$Database {
   Database(super.e);
 
   @override
-  int get schemaVersion => 2;
-
-  @override
-  MigrationStrategy get migration {
-    return MigrationStrategy(
-      onUpgrade: stepByStep(
-        from1To2: (m, schema) async {
-          await m.renameColumn(schema.playlistItems, 'audio_file_id', schema.playlistItems.songId);
-          await m.createTable(schema.favorites);
-        },
-      ),
-    );
-  }
+  int get schemaVersion => 1;
 
   Future<int> createPlaylist(String name) {
     return into(playlists).insert(PlaylistsCompanion.insert(name: name));
