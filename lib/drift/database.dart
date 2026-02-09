@@ -5,7 +5,7 @@ export '../env.dart' show db;
 part 'database.drift.dart';
 
 class Favorites extends Table {
-  late final songId = integer().customConstraint('UNIQUE NOT NULL')();
+  late final songId = integer()();
 
   @override
   Set<Column<Object>> get primaryKey => {songId};
