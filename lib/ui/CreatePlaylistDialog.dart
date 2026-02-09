@@ -10,37 +10,35 @@ class CreatePlaylistDialog extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final navigatorState = Navigator.of(context);
     final nameController = useTextEditingController();
     final nameFocusNode = useFocusNode();
-    final name = nameController.text.trim();
-    final validationState = useState<bool>(false);
-    final navigatorState = Navigator.of(context);
+    final name = useValueListenable(nameController).text.trim();
+    final nameError = name.isEmpty ? 'Bitte hier den Namen eingeben.' : null;
+    final submittedOnceState = useState<bool>(false);
+    final submittedOnce = submittedOnceState.value;
 
-    void submit() async {
-      final name = nameController.text.trim();
-      if (name.isEmpty) {
-        validationState.value = true;
+    Future<void> submit() async {
+      submittedOnceState.value = true;
+      if (nameError != null) {
         nameFocusNode.requestFocus();
-        return;
+      } else {
+        final newPlaylistId = await db.createPlaylist(name);
+        final newPlaylist = await riverpodContainer.read(manuallyCreatedPlaylistProvider(newPlaylistId).future);
+        navigatorState.pop(newPlaylist);
       }
-      final newPlaylistId = await db.createPlaylist(name);
-      final newPlaylist = await riverpodContainer.read(manuallyCreatedPlaylistProvider(newPlaylistId).future);
-      navigatorState.pop(newPlaylist);
     }
 
     return SimpleDialog(
-      title: AutoSizeText('Neue Playlist', maxLines: 1, style: Theme.of(context).textTheme.titleLarge),
+      title: AutoSizeText('Neue Playlist', maxLines: 1, style: Theme.of(context).textTheme.titleMedium),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
           child: TextField(
+            controller: nameController,
             focusNode: nameFocusNode,
             autofocus: true,
-            controller: nameController,
-            decoration: InputDecoration(
-              labelText: 'Name',
-              errorText: validationState.value && name.isEmpty ? 'Bitte hier den Namen eingeben.' : null,
-            ),
+            decoration: InputDecoration(labelText: 'Name', errorText: submittedOnce ? nameError : null),
             onSubmitted: (_) => submit(),
           ),
         ),
