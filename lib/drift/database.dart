@@ -34,4 +34,11 @@ class Database extends _$Database {
   Future<int> createPlaylist(String name) {
     return into(playlists).insert(PlaylistsCompanion.insert(name: name));
   }
+
+  Future<void> deletePlaylist(int playlistId) async {
+    await transaction(() async {
+      await playlistItems.deleteWhere((t) => t.playlistId.equals(playlistId));
+      await playlists.deleteWhere((t) => t.id.equals(playlistId));
+    });
+  }
 }

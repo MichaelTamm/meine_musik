@@ -92,13 +92,13 @@ Future<ManuallyCreatedPlaylist> manuallyCreatedPlaylist(Ref ref, int playlistId)
       await (db.playlists.update()..where((t) => t.id.equals(playlistId))).write(PlaylistsCompanion(name: Value(name)));
     },
     addSong: (Song song) async {
-      await db.playlistItems.insert().insert(PlaylistItemsCompanion(playlistId: Value(playlistId), songId: Value(song.id)));
+      await db.playlistItems.insertOne(PlaylistItemsCompanion(playlistId: Value(playlistId), songId: Value(song.id)));
     },
     removeSong: (Song song) async {
-      await db.playlistItems.delete().delete(PlaylistItemsCompanion(playlistId: Value(playlistId), songId: Value(song.id)));
+      await db.playlistItems.deleteOne(PlaylistItemsCompanion(playlistId: Value(playlistId), songId: Value(song.id)));
     },
     delete: () async {
-      await (db.playlists.delete()..where((t) => t.id.equals(playlistId))).go();
+      await db.deletePlaylist(playlistId);
     },
   );
   return playlist;
