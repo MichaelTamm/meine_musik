@@ -2,6 +2,7 @@ package de.michaeltamm.meine_musik;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -80,6 +81,17 @@ public class AudioServiceImpl implements AudioApi.AudioService {
       return;
     }
     result.success(audioFiles);
+  }
+
+  @Override
+  public void getAlbumCover(@NonNull String path, @NonNull AudioApi.NullableResult<byte[]> result) {
+    try (final MediaMetadataRetriever mmr = new MediaMetadataRetriever()) {
+      mmr.setDataSource(path);
+      byte[] albumCover = mmr.getEmbeddedPicture();
+      result.success(albumCover);
+    } catch (Exception e) {
+      result.error(e);
+    }
   }
 
   static Long _parseTrackNumber(String s) {

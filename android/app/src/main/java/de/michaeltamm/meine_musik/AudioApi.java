@@ -361,6 +361,8 @@ public class AudioApi {
 
     void findAll(@NonNull Result<List<AudioFile>> result);
 
+    void getAlbumCover(@NonNull String path, @NonNull NullableResult<byte[]> result);
+
     /** The codec used by AudioService. */
     static @NonNull MessageCodec<Object> getCodec() {
       return PigeonCodec.INSTANCE;
@@ -393,6 +395,35 @@ public class AudioApi {
                     };
 
                 api.findAll(resultCallback);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.meine_musik.AudioService.getAlbumCover" + messageChannelSuffix, getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String pathArg = (String) args.get(0);
+                NullableResult<byte[]> resultCallback =
+                    new NullableResult<byte[]>() {
+                      public void success(byte[] result) {
+                        wrapped.add(0, result);
+                        reply.reply(wrapped);
+                      }
+
+                      public void error(Throwable error) {
+                        ArrayList<Object> wrappedError = wrapError(error);
+                        reply.reply(wrappedError);
+                      }
+                    };
+
+                api.getAlbumCover(pathArg, resultCallback);
               });
         } else {
           channel.setMessageHandler(null);

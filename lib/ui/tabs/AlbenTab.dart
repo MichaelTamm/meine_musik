@@ -7,6 +7,7 @@ import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../../theme.dart';
 import '../../utils.dart';
+import '../Thumbnail.dart';
 import '../LoadingIndicator.dart';
 import '../PlaylistActions.dart';
 import '../PlaylistView.dart';
@@ -139,19 +140,24 @@ class _AlbumListTile extends ConsumerWidget {
     return ListTile(
       selectedTileColor: selectedPlaylistBackground,
       selected: isCurrentPlaylist,
-      contentPadding: EdgeInsets.only(left: 16),
+      contentPadding: EdgeInsets.only(left: 8),
+      leading: Thumbnail.forAlbum(album),
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(album.kuenstler, maxLines: 1, style: textTheme.bodySmall, overflow: TextOverflow.ellipsis),
-          Text(album.name, style: textTheme.bodyLarge),
+          Text(album.kuenstler, style: textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+          Text(album.name, style: textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
         ],
       ),
-      subtitle: Text(switch (album.length) {
-        1 => '1 Lied (${formatPlaylistDuration(album.duration)})',
-        _ => '${album.length} Lieder (${formatPlaylistDuration(album.duration)})',
-      }),
+      subtitle: Text(
+        switch (album.length) {
+          1 => '1 Lied (${formatPlaylistDuration(album.duration)})',
+          _ => '${album.length} Lieder (${formatPlaylistDuration(album.duration)})',
+        },
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
       trailing: PlaylistActions(album),
       onTap: () {
         debugPrint('Tap on $_AlbumListTile for ${album.name}');

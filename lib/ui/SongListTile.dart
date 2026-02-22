@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meine_musik/theme.dart';
+import 'package:meine_musik/ui/Thumbnail.dart';
 
 import '../model/Playlist.dart';
 import '../model/Song.dart';
@@ -20,6 +21,8 @@ class SongListTile extends ConsumerWidget {
     return ListTile(
       selectedTileColor: selectedSongBackground,
       selected: isCurrentSong,
+      contentPadding: EdgeInsets.only(left: 8, right: 8),
+      leading: Thumbnail.forSong(song),
       title: playlist is Album
           ? Text('${song.trackNumber}. ${song.title}', style: textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis)
           : playlist is KuenstlerSongs
@@ -33,7 +36,7 @@ class SongListTile extends ConsumerWidget {
               ],
             ),
       subtitle: Text(formatSongDuration(Duration(milliseconds: song.durationInMilliseconds))),
-      // TODO: display animated playing icon when current song is playing
+      // TODO: display animated playing icon when this is the current song and it is currently being played
       trailing: const Icon(Icons.play_arrow),
       onTap: () {
         debugPrint('Tap on song ${song.fileName} -- playing file ...');
