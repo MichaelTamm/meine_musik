@@ -15,4 +15,7 @@ class AudioFile {
 abstract class AudioService {
   @async
   List<AudioFile> findAll();
+
+  @async
+  Uint8List? getAlbumCover(String path);
 }

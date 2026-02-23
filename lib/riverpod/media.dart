@@ -6,6 +6,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../env.dart';
 import '../model/AudioFile.dart';
+import '../model/Playlist.dart';
+import '../model/Song.dart';
 
 part 'media.g.dart';
 
@@ -45,4 +47,22 @@ Future<Map<int, AudioFile>> localAudioFilesById(Ref ref) async {
     localAudioFilesById[audioFile.id] = audioFile;
   }
   return localAudioFilesById;
+}
+
+@Riverpod(keepAlive: true)
+Future<Uint8List?> songThumbnail(Ref ref, Song song) async {
+  final albumCover = await audioService.getAlbumCover(song.path);
+  return albumCover;
+}
+
+@Riverpod(keepAlive: true)
+Future<Uint8List?> albumCover(Ref ref, Album album) async {
+  final albumCover = await audioService.getAlbumCover(album.firstSong.path);
+  return albumCover;
+}
+
+@Riverpod(keepAlive: true)
+Future<Uint8List?> artistImage(Ref ref, String artistName) async {
+  // TODO: ...
+  return null;
 }

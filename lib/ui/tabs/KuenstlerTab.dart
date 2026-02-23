@@ -11,6 +11,7 @@ import '../../utils.dart';
 import '../LoadingIndicator.dart';
 import '../PlaylistActions.dart';
 import '../PlaylistView.dart';
+import '../Thumbnail.dart';
 
 class KuenstlerTab extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: '$KuenstlerTab.navigatorKey');
@@ -142,12 +143,17 @@ class _KuenstlerListTile extends ConsumerWidget {
     return ListTile(
       selectedTileColor: selectedPlaylistBackground,
       selected: isCurrentPlaylist,
-      contentPadding: EdgeInsets.only(left: 16),
+      contentPadding: EdgeInsets.only(left: 8),
+      leading: Thumbnail.forArtist(kuenstler),
       title: Text(kuenstler, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Text(switch (kuenstlerSongs.length) {
-        1 => '1 Lied (${formatPlaylistDuration(kuenstlerSongs.duration)})',
-        _ => '${kuenstlerSongs.length} Lieder (${formatPlaylistDuration(kuenstlerSongs.duration)})',
-      }),
+      subtitle: Text(
+        switch (kuenstlerSongs.length) {
+          1 => '1 Lied (${formatPlaylistDuration(kuenstlerSongs.duration)})',
+          _ => '${kuenstlerSongs.length} Lieder (${formatPlaylistDuration(kuenstlerSongs.duration)})',
+        },
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
       trailing: PlaylistActions(kuenstlerSongs),
       onTap: () {
         debugPrint('Tap on $_KuenstlerListTile for $kuenstler');

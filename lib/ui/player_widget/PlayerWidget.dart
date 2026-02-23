@@ -26,7 +26,7 @@ class PlayerWidget extends ConsumerWidget {
             child: Row(
               children: [
                 Expanded(child: Text(currentSong.label, maxLines: 1, overflow: TextOverflow.ellipsis)),
-                Text(' (${currentSong.playlistIndex + 1}/${currentPlaylist.length})', maxLines: 1),
+                Text(' (${currentSong.playOrderIndex + 1}/${currentPlaylist.length})', maxLines: 1),
               ],
             ),
           ),

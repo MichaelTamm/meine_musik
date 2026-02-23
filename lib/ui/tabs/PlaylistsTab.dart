@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:meine_musik/ui/Thumbnail.dart';
 
 import '../../model/Playlist.dart';
 import '../../riverpod/player_state.dart';
@@ -121,17 +122,22 @@ class _PlaylistListTile extends ConsumerWidget {
     return ListTile(
       selectedTileColor: selectedPlaylistBackground,
       selected: isCurrentPlaylist,
-      contentPadding: EdgeInsets.only(left: 16),
-      title: Text(playlist.name),
-      subtitle: Text(switch (playlist.length) {
-        0 => switch (playlist) {
-          AlleLieder() => 'keine Lieder gefunden',
-          Favoriten() => 'noch keine Favoriten ausgewählt',
-          _ => 'keine Lieder ausgewählt',
+      contentPadding: EdgeInsets.only(left: 8),
+      leading: Thumbnail.forPlaylist(playlist),
+      title: Text(playlist.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+      subtitle: Text(
+        switch (playlist.length) {
+          0 => switch (playlist) {
+            AlleLieder() => 'keine Lieder gefunden',
+            Favoriten() => 'noch keine Favoriten ausgewählt',
+            _ => 'keine Lieder ausgewählt',
+          },
+          1 => '1 Lied (${formatPlaylistDuration(playlist.duration)})',
+          _ => '${playlist.length} Lieder (${formatPlaylistDuration(playlist.duration)})',
         },
-        1 => '1 Lied (${formatPlaylistDuration(playlist.duration)})',
-        _ => '${playlist.length} Lieder (${formatPlaylistDuration(playlist.duration)})',
-      }),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
       trailing: PlaylistActions(playlist),
       onTap: () {
         debugPrint('Tap on $_PlaylistListTile for ${playlist.name}');
