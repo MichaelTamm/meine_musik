@@ -49,19 +49,19 @@ Future<Map<int, AudioFile>> localAudioFilesById(Ref ref) async {
   return localAudioFilesById;
 }
 
-@Riverpod()
+@Riverpod(keepAlive: true)
 Future<Uint8List?> songThumbnail(Ref ref, Song song) async {
   final albumCover = await audioService.getAlbumCover(song.path);
   return albumCover;
 }
 
-@Riverpod()
+@Riverpod(keepAlive: true)
 Future<Uint8List?> albumCover(Ref ref, Album album) async {
   final albumCover = await audioService.getAlbumCover(album.firstSong.path);
   return albumCover;
 }
 
-@Riverpod()
+@Riverpod(keepAlive: true)
 Future<Uint8List?> artistImage(Ref ref, String artistName) async {
   // TODO: ...
   return null;

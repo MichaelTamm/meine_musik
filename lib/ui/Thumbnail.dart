@@ -44,7 +44,7 @@ class Thumbnail extends ConsumerWidget {
       decoration: BoxDecoration(color: colorScheme.primaryContainer),
       child: thumbnailAsync.when(
         loading: () => fallback(),
-        data: (albumCover) => albumCover == null ? fallback() : Image.memory(albumCover),
+        data: (albumCover) => albumCover == null ? fallback() : Image.memory(albumCover, fit: BoxFit.cover),
         error: (_, _) => const Icon(Icons.broken_image, size: 48),
       ),
     );
