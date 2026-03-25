@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../utils.dart';
 import 'AudioFile.dart';
 import 'Song.dart';
+import 'logic.dart';
 
 abstract class Playlist with IterableMixin<Song> {
   static final empty = _EmptyPlaylist();
@@ -133,8 +134,12 @@ class Favoriten extends Playlist {
 }
 
 class Album extends Playlist {
-  // TODO: it.artist might contain multiple artists comma separated -- handle this properly!
-  Album(super.name, super.songs) : super(upperTitle: songs.map((it) => it.artist).removeDuplicates().join(', '));
+  factory Album(String name, Iterable<Song> songs) {
+    final kuenstler = determineAlbumKuenstler(songs);
+    return Album._(name, songs, upperTitle: kuenstler);
+  }
+
+  Album._(super.name, super.songs, {required super.upperTitle});
 
   String get kuenstler => upperTitle;
 

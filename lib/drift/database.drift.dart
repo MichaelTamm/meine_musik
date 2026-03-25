@@ -546,12 +546,481 @@ class PlaylistItemsCompanion extends UpdateCompanion<PlaylistItem> {
   }
 }
 
+class $ArtistsTable extends Artists with TableInfo<$ArtistsTable, Artist> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ArtistsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _mbidMeta = const VerificationMeta('mbid');
+  @override
+  late final GeneratedColumn<String> mbid = GeneratedColumn<String>(
+    'mbid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [mbid, name, type];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'artists';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Artist> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('mbid')) {
+      context.handle(
+        _mbidMeta,
+        mbid.isAcceptableOrUnknown(data['mbid']!, _mbidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mbidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {mbid};
+  @override
+  Artist map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Artist(
+      mbid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mbid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+    );
+  }
+
+  @override
+  $ArtistsTable createAlias(String alias) {
+    return $ArtistsTable(attachedDatabase, alias);
+  }
+}
+
+class Artist extends DataClass implements Insertable<Artist> {
+  /// MusicBrainz Identifier, see https://musicbrainz.org/doc/MusicBrainz_Identifier
+  final String mbid;
+  final String name;
+  final String type;
+  const Artist({required this.mbid, required this.name, required this.type});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['mbid'] = Variable<String>(mbid);
+    map['name'] = Variable<String>(name);
+    map['type'] = Variable<String>(type);
+    return map;
+  }
+
+  ArtistsCompanion toCompanion(bool nullToAbsent) {
+    return ArtistsCompanion(
+      mbid: Value(mbid),
+      name: Value(name),
+      type: Value(type),
+    );
+  }
+
+  factory Artist.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Artist(
+      mbid: serializer.fromJson<String>(json['mbid']),
+      name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String>(json['type']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'mbid': serializer.toJson<String>(mbid),
+      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(type),
+    };
+  }
+
+  Artist copyWith({String? mbid, String? name, String? type}) => Artist(
+    mbid: mbid ?? this.mbid,
+    name: name ?? this.name,
+    type: type ?? this.type,
+  );
+  Artist copyWithCompanion(ArtistsCompanion data) {
+    return Artist(
+      mbid: data.mbid.present ? data.mbid.value : this.mbid,
+      name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Artist(')
+          ..write('mbid: $mbid, ')
+          ..write('name: $name, ')
+          ..write('type: $type')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(mbid, name, type);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Artist &&
+          other.mbid == this.mbid &&
+          other.name == this.name &&
+          other.type == this.type);
+}
+
+class ArtistsCompanion extends UpdateCompanion<Artist> {
+  final Value<String> mbid;
+  final Value<String> name;
+  final Value<String> type;
+  final Value<int> rowid;
+  const ArtistsCompanion({
+    this.mbid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.type = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ArtistsCompanion.insert({
+    required String mbid,
+    required String name,
+    required String type,
+    this.rowid = const Value.absent(),
+  }) : mbid = Value(mbid),
+       name = Value(name),
+       type = Value(type);
+  static Insertable<Artist> custom({
+    Expression<String>? mbid,
+    Expression<String>? name,
+    Expression<String>? type,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (mbid != null) 'mbid': mbid,
+      if (name != null) 'name': name,
+      if (type != null) 'type': type,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ArtistsCompanion copyWith({
+    Value<String>? mbid,
+    Value<String>? name,
+    Value<String>? type,
+    Value<int>? rowid,
+  }) {
+    return ArtistsCompanion(
+      mbid: mbid ?? this.mbid,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (mbid.present) {
+      map['mbid'] = Variable<String>(mbid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ArtistsCompanion(')
+          ..write('mbid: $mbid, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ReleasesTable extends Releases with TableInfo<$ReleasesTable, Release> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReleasesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _mbidMeta = const VerificationMeta('mbid');
+  @override
+  late final GeneratedColumn<String> mbid = GeneratedColumn<String>(
+    'mbid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _songIdsMeta = const VerificationMeta(
+    'songIds',
+  );
+  @override
+  late final GeneratedColumn<String> songIds = GeneratedColumn<String>(
+    'song_ids',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [mbid, songIds];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'releases';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Release> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('mbid')) {
+      context.handle(
+        _mbidMeta,
+        mbid.isAcceptableOrUnknown(data['mbid']!, _mbidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mbidMeta);
+    }
+    if (data.containsKey('song_ids')) {
+      context.handle(
+        _songIdsMeta,
+        songIds.isAcceptableOrUnknown(data['song_ids']!, _songIdsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_songIdsMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {mbid};
+  @override
+  Release map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Release(
+      mbid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mbid'],
+      )!,
+      songIds: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}song_ids'],
+      )!,
+    );
+  }
+
+  @override
+  $ReleasesTable createAlias(String alias) {
+    return $ReleasesTable(attachedDatabase, alias);
+  }
+}
+
+class Release extends DataClass implements Insertable<Release> {
+  /// MusicBrainz Identifier, see https://musicbrainz.org/doc/MusicBrainz_Identifier
+  final String mbid;
+
+  /// A string like '|13|14|15|' -- can be queried using Like '%|13|%'.
+  final String songIds;
+  const Release({required this.mbid, required this.songIds});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['mbid'] = Variable<String>(mbid);
+    map['song_ids'] = Variable<String>(songIds);
+    return map;
+  }
+
+  ReleasesCompanion toCompanion(bool nullToAbsent) {
+    return ReleasesCompanion(mbid: Value(mbid), songIds: Value(songIds));
+  }
+
+  factory Release.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Release(
+      mbid: serializer.fromJson<String>(json['mbid']),
+      songIds: serializer.fromJson<String>(json['songIds']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'mbid': serializer.toJson<String>(mbid),
+      'songIds': serializer.toJson<String>(songIds),
+    };
+  }
+
+  Release copyWith({String? mbid, String? songIds}) =>
+      Release(mbid: mbid ?? this.mbid, songIds: songIds ?? this.songIds);
+  Release copyWithCompanion(ReleasesCompanion data) {
+    return Release(
+      mbid: data.mbid.present ? data.mbid.value : this.mbid,
+      songIds: data.songIds.present ? data.songIds.value : this.songIds,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Release(')
+          ..write('mbid: $mbid, ')
+          ..write('songIds: $songIds')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(mbid, songIds);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Release &&
+          other.mbid == this.mbid &&
+          other.songIds == this.songIds);
+}
+
+class ReleasesCompanion extends UpdateCompanion<Release> {
+  final Value<String> mbid;
+  final Value<String> songIds;
+  final Value<int> rowid;
+  const ReleasesCompanion({
+    this.mbid = const Value.absent(),
+    this.songIds = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ReleasesCompanion.insert({
+    required String mbid,
+    required String songIds,
+    this.rowid = const Value.absent(),
+  }) : mbid = Value(mbid),
+       songIds = Value(songIds);
+  static Insertable<Release> custom({
+    Expression<String>? mbid,
+    Expression<String>? songIds,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (mbid != null) 'mbid': mbid,
+      if (songIds != null) 'song_ids': songIds,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ReleasesCompanion copyWith({
+    Value<String>? mbid,
+    Value<String>? songIds,
+    Value<int>? rowid,
+  }) {
+    return ReleasesCompanion(
+      mbid: mbid ?? this.mbid,
+      songIds: songIds ?? this.songIds,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (mbid.present) {
+      map['mbid'] = Variable<String>(mbid.value);
+    }
+    if (songIds.present) {
+      map['song_ids'] = Variable<String>(songIds.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReleasesCompanion(')
+          ..write('mbid: $mbid, ')
+          ..write('songIds: $songIds, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$Database extends GeneratedDatabase {
   _$Database(QueryExecutor e) : super(e);
   $DatabaseManager get managers => $DatabaseManager(this);
   late final $FavoritesTable favorites = $FavoritesTable(this);
   late final $PlaylistsTable playlists = $PlaylistsTable(this);
   late final $PlaylistItemsTable playlistItems = $PlaylistItemsTable(this);
+  late final $ArtistsTable artists = $ArtistsTable(this);
+  late final $ReleasesTable releases = $ReleasesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -560,6 +1029,8 @@ abstract class _$Database extends GeneratedDatabase {
     favorites,
     playlists,
     playlistItems,
+    artists,
+    releases,
   ];
   @override
   DriftDatabaseOptions get options =>
@@ -1163,6 +1634,295 @@ typedef $$PlaylistItemsTableProcessedTableManager =
       PlaylistItem,
       PrefetchHooks Function({bool playlistId})
     >;
+typedef $$ArtistsTableCreateCompanionBuilder =
+    ArtistsCompanion Function({
+      required String mbid,
+      required String name,
+      required String type,
+      Value<int> rowid,
+    });
+typedef $$ArtistsTableUpdateCompanionBuilder =
+    ArtistsCompanion Function({
+      Value<String> mbid,
+      Value<String> name,
+      Value<String> type,
+      Value<int> rowid,
+    });
+
+class $$ArtistsTableFilterComposer extends Composer<_$Database, $ArtistsTable> {
+  $$ArtistsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get mbid => $composableBuilder(
+    column: $table.mbid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ArtistsTableOrderingComposer
+    extends Composer<_$Database, $ArtistsTable> {
+  $$ArtistsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get mbid => $composableBuilder(
+    column: $table.mbid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ArtistsTableAnnotationComposer
+    extends Composer<_$Database, $ArtistsTable> {
+  $$ArtistsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get mbid =>
+      $composableBuilder(column: $table.mbid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+}
+
+class $$ArtistsTableTableManager
+    extends
+        RootTableManager<
+          _$Database,
+          $ArtistsTable,
+          Artist,
+          $$ArtistsTableFilterComposer,
+          $$ArtistsTableOrderingComposer,
+          $$ArtistsTableAnnotationComposer,
+          $$ArtistsTableCreateCompanionBuilder,
+          $$ArtistsTableUpdateCompanionBuilder,
+          (Artist, BaseReferences<_$Database, $ArtistsTable, Artist>),
+          Artist,
+          PrefetchHooks Function()
+        > {
+  $$ArtistsTableTableManager(_$Database db, $ArtistsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ArtistsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ArtistsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ArtistsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> mbid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ArtistsCompanion(
+                mbid: mbid,
+                name: name,
+                type: type,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String mbid,
+                required String name,
+                required String type,
+                Value<int> rowid = const Value.absent(),
+              }) => ArtistsCompanion.insert(
+                mbid: mbid,
+                name: name,
+                type: type,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ArtistsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Database,
+      $ArtistsTable,
+      Artist,
+      $$ArtistsTableFilterComposer,
+      $$ArtistsTableOrderingComposer,
+      $$ArtistsTableAnnotationComposer,
+      $$ArtistsTableCreateCompanionBuilder,
+      $$ArtistsTableUpdateCompanionBuilder,
+      (Artist, BaseReferences<_$Database, $ArtistsTable, Artist>),
+      Artist,
+      PrefetchHooks Function()
+    >;
+typedef $$ReleasesTableCreateCompanionBuilder =
+    ReleasesCompanion Function({
+      required String mbid,
+      required String songIds,
+      Value<int> rowid,
+    });
+typedef $$ReleasesTableUpdateCompanionBuilder =
+    ReleasesCompanion Function({
+      Value<String> mbid,
+      Value<String> songIds,
+      Value<int> rowid,
+    });
+
+class $$ReleasesTableFilterComposer
+    extends Composer<_$Database, $ReleasesTable> {
+  $$ReleasesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get mbid => $composableBuilder(
+    column: $table.mbid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get songIds => $composableBuilder(
+    column: $table.songIds,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ReleasesTableOrderingComposer
+    extends Composer<_$Database, $ReleasesTable> {
+  $$ReleasesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get mbid => $composableBuilder(
+    column: $table.mbid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get songIds => $composableBuilder(
+    column: $table.songIds,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ReleasesTableAnnotationComposer
+    extends Composer<_$Database, $ReleasesTable> {
+  $$ReleasesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get mbid =>
+      $composableBuilder(column: $table.mbid, builder: (column) => column);
+
+  GeneratedColumn<String> get songIds =>
+      $composableBuilder(column: $table.songIds, builder: (column) => column);
+}
+
+class $$ReleasesTableTableManager
+    extends
+        RootTableManager<
+          _$Database,
+          $ReleasesTable,
+          Release,
+          $$ReleasesTableFilterComposer,
+          $$ReleasesTableOrderingComposer,
+          $$ReleasesTableAnnotationComposer,
+          $$ReleasesTableCreateCompanionBuilder,
+          $$ReleasesTableUpdateCompanionBuilder,
+          (Release, BaseReferences<_$Database, $ReleasesTable, Release>),
+          Release,
+          PrefetchHooks Function()
+        > {
+  $$ReleasesTableTableManager(_$Database db, $ReleasesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReleasesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ReleasesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ReleasesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> mbid = const Value.absent(),
+                Value<String> songIds = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) =>
+                  ReleasesCompanion(mbid: mbid, songIds: songIds, rowid: rowid),
+          createCompanionCallback:
+              ({
+                required String mbid,
+                required String songIds,
+                Value<int> rowid = const Value.absent(),
+              }) => ReleasesCompanion.insert(
+                mbid: mbid,
+                songIds: songIds,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ReleasesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$Database,
+      $ReleasesTable,
+      Release,
+      $$ReleasesTableFilterComposer,
+      $$ReleasesTableOrderingComposer,
+      $$ReleasesTableAnnotationComposer,
+      $$ReleasesTableCreateCompanionBuilder,
+      $$ReleasesTableUpdateCompanionBuilder,
+      (Release, BaseReferences<_$Database, $ReleasesTable, Release>),
+      Release,
+      PrefetchHooks Function()
+    >;
 
 class $DatabaseManager {
   final _$Database _db;
@@ -1173,4 +1933,8 @@ class $DatabaseManager {
       $$PlaylistsTableTableManager(_db, _db.playlists);
   $$PlaylistItemsTableTableManager get playlistItems =>
       $$PlaylistItemsTableTableManager(_db, _db.playlistItems);
+  $$ArtistsTableTableManager get artists =>
+      $$ArtistsTableTableManager(_db, _db.artists);
+  $$ReleasesTableTableManager get releases =>
+      $$ReleasesTableTableManager(_db, _db.releases);
 }

@@ -1,5 +1,6 @@
 import 'AudioFile.dart';
 import 'AudioFolder.dart';
+import 'Song.dart';
 
 /// Heuristic to determine whether an audio file is a song or not.
 bool isSongHeuristic(AudioFile audioFile) {
@@ -40,4 +41,31 @@ AudioFolder groupAudioFiles(List<AudioFile> audioFiles) {
     folder.addFile(audioFile);
   }
   return root;
+}
+
+Iterable<String> splitArtistString(String artist) {
+  return artist.split(RegExp(r'(\s(and|und|feat\.|featuring)\s)|,|&')).map((it) => it.trim()).where((it) => it.isNotEmpty);
+}
+
+String determineAlbumKuenstler(Iterable<Song> songs) {
+  final artistHistogram = <String, int>{};
+  for (final song in songs) {
+    for (final artist in splitArtistString(song.artist)) {
+      artistHistogram[artist] = (artistHistogram[artist] ?? 0) + 1;
+    }
+  }
+  final list = artistHistogram.entries.toList()..sort((a, b) => b.value - a.value);
+  if (list.isEmpty) {
+    return '';
+  } else if (list.length == 1) {
+    return list[0].key;
+  } else {
+    final mapEntry1 = list[0];
+    final mapEntry2 = list[1];
+    // Heuristic: ...
+    if (mapEntry1.value >= songs.length * 0.8 && mapEntry2.value <= songs.length / 3) {
+      return mapEntry1.key;
+    }
+    return 'verschiedene Künstler';
+  }
 }

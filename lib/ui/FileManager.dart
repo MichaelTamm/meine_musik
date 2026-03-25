@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dartx/dartx.dart';
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:meine_musik/ui/FileViewer.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../env.dart';
 import '../model/Date.dart';
 import 'DeletableListTile.dart';
 
@@ -76,8 +78,32 @@ class FileManager extends HookWidget {
             return Future.delayed(Duration(milliseconds: 300));
           },
           child: ListView.builder(
-            itemCount: (currentDir == null ? 0 : 1) + dirs.length + files.length,
+            itemCount: 1 + dirs.length + files.length,
             itemBuilder: (_, index) {
+              if (index == 0) {
+                if (currentDir == null) {
+                  return ListTile(
+                    leading: Icon(Icons.table_chart_outlined),
+                    title: const Text('Database'),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => DriftDbViewer(db))),
+                  );
+                }
+                return ListTile(
+                  leading: Icon(Icons.folder_open_rounded),
+                  title: const Text('..'),
+                  onTap: () {
+                    final dataDir = dataDirNotifier.value;
+                    final supportDir = supportDirNotifier.value;
+                    final tempDir = tempDirNotifier.value;
+                    if (currentDir.path == dataDir?.path || currentDir.path == supportDir?.path || currentDir.path == tempDir?.path) {
+                      changeDir(null);
+                    } else {
+                      changeDir(currentDir.parent);
+                    }
+                  },
+                );
+              }
+              index -= 1;
               if (currentDir == null) {
                 final dir = dirs[index];
                 if (currentDir == null) {
@@ -98,23 +124,6 @@ class FileManager extends HookWidget {
                   );
                 }
               }
-              if (index == 0) {
-                return ListTile(
-                  leading: Icon(Icons.folder_open_rounded),
-                  title: const Text('..'),
-                  onTap: () {
-                    final dataDir = dataDirNotifier.value;
-                    final supportDir = supportDirNotifier.value;
-                    final tempDir = tempDirNotifier.value;
-                    if (currentDir.path == dataDir?.path || currentDir.path == supportDir?.path || currentDir.path == tempDir?.path) {
-                      changeDir(null);
-                    } else {
-                      changeDir(currentDir.parent);
-                    }
-                  },
-                );
-              }
-              index -= 1;
               if (index < dirs.length) {
                 final dir = dirs[index];
                 return DeletableListTile(

@@ -6,7 +6,7 @@ import 'package:meine_musik/model/logic.dart';
 import '../testdata.dart';
 
 void main() {
-  test("groupAudioFiles", () {
+  test('groupAudioFiles', () {
     final audioFiles = [
       '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3',
       '/storage/emulated/0/myrecording.mp3',
@@ -47,6 +47,11 @@ Dieses Gerät
 │           └── Spreeradio 105.5 . 2021-05-07 - Interview mit Bernd Hahn
 └── myrecording.mp3
 ''');
+  });
+
+  test('splitArtistString', () {
+    expect(splitArtistString('').toList(), equals([]));
+    expect(splitArtistString('Hans Zimmer & Lisa Gerrard').toList(), equals(['Hans Zimmer', 'Lisa Gerrard']));
   });
 }
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:meine_musik/env.dart';
 
 import '../../model/Playlist.dart';
 import '../../model/Song.dart';
+import '../../model/logic.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../../theme.dart';
@@ -21,7 +23,7 @@ class KuenstlerTab extends ConsumerStatefulWidget {
     final songsByArtistName = <String, List<Song>>{};
     for (final song in allSongs) {
       // A song can be performed by multiple artists ...
-      for (final artist in song.artist.split(',').map((it) => it.trim())) {
+      for (final artist in splitArtistString(song.artist)) {
         (songsByArtistName[artist] ??= []).add(song);
       }
     }
@@ -31,6 +33,7 @@ class KuenstlerTab extends ConsumerStatefulWidget {
       final songs = mapEntry.value.sortBy((it) => it.title);
       viewData.add(KuenstlerSongs(kuenstler, songs));
     }
+    viewData.sort((a, b) => a.kuenstler.compareTo(b.kuenstler));
     ref.keepAlive();
     return viewData;
   }, name: '$KuenstlerTab.viewDataProvider');
@@ -105,12 +108,18 @@ class _AlleKuenstlerOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return RefreshIndicator(
+        onRefresh: () {
+          riverpodContainer.invalidateAll();
+          return Future.delayed(Duration(milliseconds: 300));
+        },
+        child: ListView.builder(
       itemCount: data.length,
       itemBuilder: (context, index) {
         final kuenstlerSongs = data[index];
         return _KuenstlerListTile(kuenstlerSongs, onTap: () => openKuenstler(kuenstlerSongs));
       },
+    ),
     );
   }
 

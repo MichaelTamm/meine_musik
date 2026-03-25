@@ -10,7 +10,7 @@ import '../riverpod/media.dart';
 class Thumbnail extends ConsumerWidget {
   Thumbnail.forPlaylist(Playlist playlist)
     : load = ((_) => const AsyncData(null)),
-      fallback = (() => switch (playlist) {
+      fallback = ((_) => switch (playlist) {
         AlleLieder() => const Icon(Icons.my_library_music, size: 32),
         Favoriten() => const Icon(Icons.favorite, size: 32),
         _ => const Icon(Icons.list, size: 32),
@@ -18,22 +18,27 @@ class Thumbnail extends ConsumerWidget {
       super(key: ValueKey(playlist));
 
   Thumbnail.forAlbum(Album album)
-    : load = ((ref) => ref.watch(albumCoverProvider(album))),
-      fallback = (() => const Icon(Icons.album, size: 48)),
+    : load = ((ref) => ref.watch(albumCoverThumbnailProvider(album))),
+      fallback = ((_) => const Icon(Icons.album, size: 48)),
       super(key: ValueKey(album));
 
   Thumbnail.forArtist(String kuenstler)
-    : load = ((ref) => ref.watch(artistImageProvider(kuenstler))),
-      fallback = (() => const Icon(Icons.question_mark, size: 32)),
+    : load = ((ref) => ref.watch(artistThumbnailProvider(kuenstler))),
+      fallback = ((ref) => Icon(
+        ref
+            .watch(artistIconProvider(kuenstler))
+            .when(loading: () => Icons.question_mark, data: (icon) => icon, error: (_, _) => Icons.question_mark),
+        size: 32,
+      )),
       super(key: ValueKey(kuenstler));
 
   Thumbnail.forSong(Song song)
     : load = ((ref) => ref.watch(songThumbnailProvider(song))),
-      fallback = (() => const Icon(Icons.music_note, size: 32)),
+      fallback = ((_) => const Icon(Icons.music_note, size: 32)),
       super(key: ValueKey(song));
 
   final AsyncValue<Uint8List?> Function(WidgetRef ref) load;
-  final Widget Function() fallback;
+  final Widget Function(WidgetRef ref) fallback;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,8 +48,8 @@ class Thumbnail extends ConsumerWidget {
       constraints: BoxConstraints.tight(Size.square(56)),
       decoration: BoxDecoration(color: colorScheme.primaryContainer),
       child: thumbnailAsync.when(
-        loading: () => fallback(),
-        data: (albumCover) => albumCover == null ? fallback() : Image.memory(albumCover, fit: BoxFit.cover),
+        loading: () => fallback(ref),
+        data: (thumbnail) => thumbnail == null ? fallback(ref) : Image.memory(thumbnail, fit: BoxFit.cover),
         error: (_, _) => const Icon(Icons.broken_image, size: 48),
       ),
     );

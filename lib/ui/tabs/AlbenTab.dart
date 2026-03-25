@@ -19,6 +19,7 @@ class AlbenTab extends ConsumerStatefulWidget {
     final allSongs = await ref.watch(alleLiederProvider.future);
     final songsByAlbumName = allSongs.groupBy((it) => it.album);
     final viewData = <Album>[];
+    // TODO: What if there are multiple alben with the same name (e.g. "Greatest Hits") -- disambiguation by folder!
     for (final mapEntry in songsByAlbumName.entries) {
       final name = mapEntry.key;
       final songs = mapEntry.value.sortBy((it) => it.trackNumber, thenBy: (it) => it.path);
