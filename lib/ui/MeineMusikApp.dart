@@ -44,7 +44,7 @@ class _MeineMusikScaffoldWrapper extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useOnMount(() {
-      riverpodContainer.context = context;
+      riverpodContainer = ProviderScope.containerOf(context);
       SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
           // Set the status bar color to match the AppBar background color

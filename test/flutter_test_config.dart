@@ -5,6 +5,8 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meine_musik/drift/database.dart';
 import 'package:meine_musik/env.dart';
+import 'package:meine_musik/model/Logic.dart';
+import 'package:mocktail/mocktail.dart';
 
 import 'mocks.dart';
 import 'testdata.dart';
@@ -13,9 +15,19 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   initTestdata();
 
   setUp(() {
-    audioService = MockAudioService();
     // See https://drift.simonbinder.eu/testing/ ...
     db = Database(DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true));
+    logic = Logic();
+    audioService = MockAudioService();
+    when(() => audioService.findAll()).thenAnswer((_) async => [anAudioFile(
+      id: 1,
+      path: '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3',
+      artist: 'Samsung',
+      title: 'Over the Horizon',
+      album: 'Test AlbumBrand Music',
+    )]);
+    when(() => audioService.getAlbumCover(any())).thenAnswer((_) async => null);
+    musicBrainz = DummyMusicBrainz();
   });
 
   tearDown(() async {

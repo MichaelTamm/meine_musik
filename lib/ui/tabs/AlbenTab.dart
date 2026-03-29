@@ -29,7 +29,7 @@ class AlbenTab extends ConsumerStatefulWidget {
           song.trackNumber = i + 1;
         }
       }
-      viewData.add(Album(name, songs));
+      viewData.add(await Album.fromNameAndSongs(name, songs));
     }
     ref.keepAlive();
     return viewData;

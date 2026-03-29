@@ -5,7 +5,6 @@ import 'package:meine_musik/env.dart';
 
 import '../../model/Playlist.dart';
 import '../../model/Song.dart';
-import '../../model/logic.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../../theme.dart';
@@ -20,11 +19,17 @@ class KuenstlerTab extends ConsumerStatefulWidget {
 
   static final viewDataProvider = FutureProvider<List<KuenstlerSongs>>((ref) async {
     final allSongs = await ref.watch(alleLiederProvider.future);
+    // A song can be performed by multiple artists, therefore ...
+    final futures = [for (final song in allSongs) logic.splitArtistString(song.artist).then((artistNames) => (song, artistNames))];
     final songsByArtistName = <String, List<Song>>{};
-    for (final song in allSongs) {
-      // A song can be performed by multiple artists ...
-      for (final artist in splitArtistString(song.artist)) {
-        (songsByArtistName[artist] ??= []).add(song);
+    for (final future in futures) {
+      try {
+        final (song, artistNames) = await future;
+        for (final artistName in artistNames) {
+          (songsByArtistName[artistName] ??= []).add(song);
+        }
+      } catch (error, stack) {
+        debugPrintStack(label: '$error', stackTrace: stack);
       }
     }
     final viewData = <KuenstlerSongs>[];

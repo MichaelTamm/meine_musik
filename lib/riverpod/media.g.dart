@@ -75,8 +75,8 @@ String _$localAudioFilesByIdHash() => r'6a70f0c9295dfdbe01bf120198665caf06d26b7b
 @ProviderFor(artist)
 const artistProvider = ArtistFamily._();
 
-final class ArtistProvider extends $FunctionalProvider<AsyncValue<Artist?>, Artist?, FutureOr<Artist?>>
-    with $FutureModifier<Artist?>, $FutureProvider<Artist?> {
+final class ArtistProvider extends $FunctionalProvider<AsyncValue<MusicBrainzArtist?>, MusicBrainzArtist?, FutureOr<MusicBrainzArtist?>>
+    with $FutureModifier<MusicBrainzArtist?>, $FutureProvider<MusicBrainzArtist?> {
   const ArtistProvider._({required ArtistFamily super.from, required String super.argument})
     : super(retry: null, name: r'artistProvider', isAutoDispose: false, dependencies: null, $allTransitiveDependencies: null);
 
@@ -92,10 +92,10 @@ final class ArtistProvider extends $FunctionalProvider<AsyncValue<Artist?>, Arti
 
   @$internal
   @override
-  $FutureProviderElement<Artist?> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+  $FutureProviderElement<MusicBrainzArtist?> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
 
   @override
-  FutureOr<Artist?> create(Ref ref) {
+  FutureOr<MusicBrainzArtist?> create(Ref ref) {
     final argument = this.argument as String;
     return artist(ref, argument);
   }
@@ -111,9 +111,9 @@ final class ArtistProvider extends $FunctionalProvider<AsyncValue<Artist?>, Arti
   }
 }
 
-String _$artistHash() => r'f53fcd756abcea20e2a51878bf64010f8a779e8d';
+String _$artistHash() => r'94a909f79b539b7217d9b8794a23667ddf9a84c9';
 
-final class ArtistFamily extends $Family with $FunctionalFamilyOverride<FutureOr<Artist?>, String> {
+final class ArtistFamily extends $Family with $FunctionalFamilyOverride<FutureOr<MusicBrainzArtist?>, String> {
   const ArtistFamily._()
     : super(retry: null, name: r'artistProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: false);
 
@@ -129,7 +129,7 @@ const songThumbnailProvider = SongThumbnailFamily._();
 final class SongThumbnailProvider extends $FunctionalProvider<AsyncValue<Uint8List?>, Uint8List?, FutureOr<Uint8List?>>
     with $FutureModifier<Uint8List?>, $FutureProvider<Uint8List?> {
   const SongThumbnailProvider._({required SongThumbnailFamily super.from, required Song super.argument})
-    : super(retry: null, name: r'songThumbnailProvider', isAutoDispose: false, dependencies: null, $allTransitiveDependencies: null);
+    : super(retry: null, name: r'songThumbnailProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
 
   @override
   String debugGetCreateSourceHash() => _$songThumbnailHash();
@@ -162,11 +162,11 @@ final class SongThumbnailProvider extends $FunctionalProvider<AsyncValue<Uint8Li
   }
 }
 
-String _$songThumbnailHash() => r'f814227fb1208b43d87fa0693210ba6872babaa2';
+String _$songThumbnailHash() => r'e5fceb44ab38e57a22a2707a220a878feb2444f8';
 
 final class SongThumbnailFamily extends $Family with $FunctionalFamilyOverride<FutureOr<Uint8List?>, Song> {
   const SongThumbnailFamily._()
-    : super(retry: null, name: r'songThumbnailProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: false);
+    : super(retry: null, name: r'songThumbnailProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
 
   SongThumbnailProvider call(Song song) => SongThumbnailProvider._(argument: song, from: this);
 
@@ -180,7 +180,7 @@ const albumCoverThumbnailProvider = AlbumCoverThumbnailFamily._();
 final class AlbumCoverThumbnailProvider extends $FunctionalProvider<AsyncValue<Uint8List?>, Uint8List?, FutureOr<Uint8List?>>
     with $FutureModifier<Uint8List?>, $FutureProvider<Uint8List?> {
   const AlbumCoverThumbnailProvider._({required AlbumCoverThumbnailFamily super.from, required Album super.argument})
-    : super(retry: null, name: r'albumCoverThumbnailProvider', isAutoDispose: false, dependencies: null, $allTransitiveDependencies: null);
+    : super(retry: null, name: r'albumCoverThumbnailProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
 
   @override
   String debugGetCreateSourceHash() => _$albumCoverThumbnailHash();
@@ -213,11 +213,11 @@ final class AlbumCoverThumbnailProvider extends $FunctionalProvider<AsyncValue<U
   }
 }
 
-String _$albumCoverThumbnailHash() => r'246880b8ce75e001b41ed8ef890118f1f742b0ae';
+String _$albumCoverThumbnailHash() => r'b7e709efaf5657838e2dfbe97ae84ec7942e4377';
 
 final class AlbumCoverThumbnailFamily extends $Family with $FunctionalFamilyOverride<FutureOr<Uint8List?>, Album> {
   const AlbumCoverThumbnailFamily._()
-    : super(retry: null, name: r'albumCoverThumbnailProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: false);
+    : super(retry: null, name: r'albumCoverThumbnailProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
 
   AlbumCoverThumbnailProvider call(Album album) => AlbumCoverThumbnailProvider._(argument: album, from: this);
 
@@ -231,7 +231,7 @@ const artistThumbnailProvider = ArtistThumbnailFamily._();
 final class ArtistThumbnailProvider extends $FunctionalProvider<AsyncValue<Uint8List?>, Uint8List?, FutureOr<Uint8List?>>
     with $FutureModifier<Uint8List?>, $FutureProvider<Uint8List?> {
   const ArtistThumbnailProvider._({required ArtistThumbnailFamily super.from, required String super.argument})
-    : super(retry: null, name: r'artistThumbnailProvider', isAutoDispose: false, dependencies: null, $allTransitiveDependencies: null);
+    : super(retry: null, name: r'artistThumbnailProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
 
   @override
   String debugGetCreateSourceHash() => _$artistThumbnailHash();
@@ -264,11 +264,11 @@ final class ArtistThumbnailProvider extends $FunctionalProvider<AsyncValue<Uint8
   }
 }
 
-String _$artistThumbnailHash() => r'c0801710857bdf2a9dca6c1ae66c416f17fca9ef';
+String _$artistThumbnailHash() => r'10c2fceb966c477fa0e2d08bc9a99b3177e8e04a';
 
 final class ArtistThumbnailFamily extends $Family with $FunctionalFamilyOverride<FutureOr<Uint8List?>, String> {
   const ArtistThumbnailFamily._()
-    : super(retry: null, name: r'artistThumbnailProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: false);
+    : super(retry: null, name: r'artistThumbnailProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
 
   ArtistThumbnailProvider call(String artistName) => ArtistThumbnailProvider._(argument: artistName, from: this);
 

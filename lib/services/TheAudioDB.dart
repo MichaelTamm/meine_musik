@@ -21,7 +21,7 @@ class TheAudioDB {
       return result;
     } catch (error, stack) {
       if (!cached) {
-        debugPrintStack(label: 'Failed to get thumbnail for artist: $artistMbid -- $error', stackTrace: stack);
+        debugPrintStack(label: 'Failed to get thumbnail for artist $artistMbid -- $error', stackTrace: stack);
       }
       return null;
     }

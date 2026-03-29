@@ -24,7 +24,15 @@ class PlaylistItems extends Table {
   Set<Column<Object>> get primaryKey => {playlistId, songId};
 }
 
-class Artists extends Table {
+class ArtistSearchResults extends Table {
+  late final name = text()();
+  late final mbid = text()();
+
+  @override
+  Set<Column> get primaryKey => {name};
+}
+
+class MusicBrainzArtists extends Table {
   /// MusicBrainz Identifier, see https://musicbrainz.org/doc/MusicBrainz_Identifier
   late final mbid = text()();
   late final name = text()();
@@ -34,18 +42,18 @@ class Artists extends Table {
   Set<Column> get primaryKey => {mbid};
 }
 
-class Releases extends Table {
+class MusicBrainzReleases extends Table {
   /// MusicBrainz Identifier, see https://musicbrainz.org/doc/MusicBrainz_Identifier
   late final mbid = text()();
 
-  /// A string like '|13|14|15|' -- can be queried using Like '%|13|%'.
+  /// A string like '|13|14|15|' -- can be queried via: LIKE '%|13|%'.
   late final songIds = text()();
 
   @override
   Set<Column> get primaryKey => {mbid};
 }
 
-@DriftDatabase(tables: [Favorites, Playlists, PlaylistItems, Artists, Releases])
+@DriftDatabase(tables: [Favorites, Playlists, PlaylistItems, ArtistSearchResults, MusicBrainzArtists, MusicBrainzReleases])
 class Database extends _$Database {
   Database(super.e);
 
@@ -63,11 +71,17 @@ class Database extends _$Database {
     });
   }
 
-  Future<Artist?> findArtistByName(String name) async {
-    return (await (select(artists)..where((t) => t.name.equals(name))).get()).firstOrNull;
+  Future<MusicBrainzArtist?> findArtistByName(String name) async {
+    MusicBrainzArtist? result;
+    final searchResult = (await (select(artistSearchResults)..where((t) => t.name.equals(name))).get()).firstOrNull;
+    if (searchResult != null) {
+      final mbid = searchResult.mbid;
+      result = (await (select(musicBrainzArtists)..where((t) => t.mbid.equals(mbid))).get()).firstOrNull;
+    }
+    return result;
   }
 
-  Future<Release?> findReleaseBySongId(int songId) async {
-    return (await (select(releases)..where((t) => t.songIds.like('%|$songId|%'))).get()).firstOrNull;
+  Future<MusicBrainzRelease?> findReleaseBySongId(int songId) async {
+    return (await (select(musicBrainzReleases)..where((t) => t.songIds.like('%|$songId|%'))).get()).firstOrNull;
   }
 }

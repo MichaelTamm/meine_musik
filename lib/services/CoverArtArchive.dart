@@ -21,7 +21,7 @@ class CoverArtArchive {
       return result;
     } catch (error, stack) {
       if (!cached) {
-        debugPrintStack(label: 'Failed to get thumbnail for release: $releaseMbid -- $error', stackTrace: stack);
+        debugPrintStack(label: 'Failed to get thumbnail for release $releaseMbid -- $error', stackTrace: stack);
       }
       return null;
     }

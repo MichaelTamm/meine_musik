@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
-import 'package:meine_musik/drift/database.dart';
-import 'package:meine_musik/services/CoverArtArchive.dart';
-import 'package:meine_musik/services/TheAudioDB.dart';
-import 'package:musicbrainz_api_client/musicbrainz_api_client.dart';
 
+import 'drift/database.dart';
+import 'model/Logic.dart';
 import 'services/AudioApi.dart';
+import 'services/CoverArtArchive.dart';
+import 'services/MusicBrainz.dart';
+import 'services/TheAudioDB.dart';
 
 /// Set to true to slow down animations (e.g. for testing purposes).
 const kSlowDownAnimations = false;
@@ -27,10 +28,12 @@ const kDebugRiverpod = false;
 late Directory applicationDocumentsDirectory;
 late Directory applicationCacheDirectory;
 late AudioService audioService;
-late Database db;
-late MusicBrainzApiClient musicBrainz;
-late TheAudioDB theAudioDB;
 late CoverArtArchive coverArtArchive;
+late Database db;
+late Logic logic;
+late MusicBrainz musicBrainz;
+late ProviderContainer riverpodContainer;
+late TheAudioDB theAudioDB;
 
 final class _RiverpodObserver extends ProviderObserver {
   static const _blacklist = {'currentSongPositionProvider'};
@@ -107,43 +110,10 @@ final class _RiverpodObserver extends ProviderObserver {
 
 final riverpodObserver = _RiverpodObserver();
 
-class _RiverpodContainer {
-  BuildContext? context;
-
-  T read<T>(ProviderListenable<T> provider) {
-    final context_ = context;
-    if (context_ == null) {
-      throw StateError('MeineMusikApp not mounted');
-    }
-    return ProviderScope.containerOf(context_, listen: false).read(provider);
-  }
-
-  void refresh(ProviderBase provider) {
-    final context_ = context;
-    if (context_ == null) {
-      throw StateError('MeineMusikApp not mounted');
-    }
-    ProviderScope.containerOf(context_).refresh(provider);
-  }
-
-  void invalidate(ProviderBase provider) {
-    final context_ = context;
-    if (context_ == null) {
-      throw StateError('MeineMusikApp not mounted');
-    }
-    ProviderScope.containerOf(context_).invalidate(provider);
-  }
-
+extension InvalidateAllExtendsion on ProviderContainer {
   void invalidateAll() {
-    final context_ = context;
-    if (context_ == null) {
-      throw StateError('MeineMusikApp not mounted');
-    }
-    final providerScope = ProviderScope.containerOf(context_);
     for (final provider in riverpodObserver.activeProviders) {
-      providerScope.invalidate(provider);
+      invalidate(provider);
     }
   }
 }
-
-final riverpodContainer = _RiverpodContainer();

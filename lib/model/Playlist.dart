@@ -4,10 +4,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../env.dart';
 import '../utils.dart';
 import 'AudioFile.dart';
 import 'Song.dart';
-import 'logic.dart';
 
 abstract class Playlist with IterableMixin<Song> {
   static final empty = _EmptyPlaylist();
@@ -134,8 +134,8 @@ class Favoriten extends Playlist {
 }
 
 class Album extends Playlist {
-  factory Album(String name, Iterable<Song> songs) {
-    final kuenstler = determineAlbumKuenstler(songs);
+  static Future<Album> fromNameAndSongs(String name, Iterable<Song> songs) async {
+    final kuenstler = await logic.determineAlbumKuenstler(songs);
     return Album._(name, songs, upperTitle: kuenstler);
   }
 

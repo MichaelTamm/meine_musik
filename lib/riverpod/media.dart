@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:string_normalizer/string_normalizer.dart';
 
 import '../drift/database.dart';
 import '../env.dart';
@@ -36,7 +34,8 @@ Future<List<AudioFile>> localAudioFiles(Ref ref) async {
   }
   final audioFiles = await audioService.findAll();
   if (kDebugMode) {
-    debugPrint('Found ${audioFiles.length} audio files:');
+    final n = audioFiles.length;
+    debugPrint(n == 0 ? 'Did not find an audio file.' : n == 1 ? 'Found 1 audio file:' : 'Found $n audio files:');
     for (final audioFile in audioFiles) {
       debugPrint('    ${audioFile.path} (artist: ${audioFile.artist}, title: ${audioFile.title}, album: ${audioFile.album})');
     }
@@ -55,67 +54,22 @@ Future<Map<int, AudioFile>> localAudioFilesById(Ref ref) async {
 }
 
 @Riverpod(keepAlive: true)
-Future<Artist?> artist(Ref ref, String artistName) async {
-  final artist = await db.findArtistByName(artistName);
-  if (artist == null) {
-    final data = await musicBrainz.artists.search(artistName, limit: 5);
-    final normalizedArtistName = artistName.normalize();
-    final matches = (data['artists'] as List<dynamic>)
-        .where((it) => (it['score'] as num) == 100 || (it['name'] as String).normalize() == normalizedArtistName)
-        .toList();
-    if (matches.length == 1) {
-      final id = matches[0]['id'] as String;
-      final type = matches[0]['type'] as String;
-      await db.artists.insertOne(ArtistsCompanion.insert(mbid: id, name: artistName, type: type));
-      return Artist(mbid: id, name: artistName, type: type);
-    } else {
-      // TODO: Disambiguate by querying and comparing known songs.
-    }
-  }
-  return artist;
+Future<MusicBrainzArtist?> artist(Ref ref, String artistName) {
+  return musicBrainz.searchArtistByName(artistName);
 }
 
-@Riverpod(keepAlive: true)
+@Riverpod(keepAlive: false)
 Future<Uint8List?> songThumbnail(Ref ref, Song song) async {
   final albumCover = await audioService.getAlbumCover(song.path);
+  // TODO: try to find album cover on the internet
   return albumCover;
 }
 
-@Riverpod(keepAlive: true)
+@Riverpod(keepAlive: false)
 Future<Uint8List?> albumCoverThumbnail(Ref ref, Album album) async {
   var albumCover = await audioService.getAlbumCover(album.firstSong.path);
   if (albumCover == null) {
-    var release = await db.findReleaseBySongId(album.firstSong.id);
-    if (release == null) {
-      final kuenstler = album.kuenstler;
-      if (kuenstler.isNotEmpty && kuenstler != 'verschiedene Künstler') {
-        // Search release groups of artist ...
-        final artist = await ref.watch(artistProvider(kuenstler).future);
-        if (artist != null) {
-          // TODO: ...final data = await musicBrainz.releaseGroups.search(album.name, artist: artist.mbid);
-        }
-      } else {
-        // Search by album title ...
-        final data = await musicBrainz.releases.search(album.name);
-        final normalizedAlbumName = album.name.normalize();
-        final matches = (data['releases'] as List<dynamic>)
-            .where((it) => (it['score'] as num) == 100 || (it['title'] as String).normalize() == normalizedAlbumName)
-            .toList();
-        if (matches.length == 1) {
-          final mbid = matches[0]['id'] as String;
-          final songIds = '|${album.map((song) => song.id).join('|')}|';
-          await db.releases.insertOne(ReleasesCompanion.insert(mbid: mbid, songIds: songIds));
-          release = Release(mbid: mbid, songIds: songIds);
-        } else {
-          // TODO: Disambiguate by songs ...
-          // for (final match in matches) {
-          //   final id = match['id'] as String;
-          //   final releaseData = await musicBrainz.releases.get(id, inc: ['recordings']);
-          //   ...
-          // }
-        }
-      }
-    }
+    final release = await musicBrainz.searchReleaseByAlbum(album);
     if (release != null) {
       final mbid = release.mbid;
       final thumbnailDir = Directory('${applicationCacheDirectory.path}/album-thumbnails/${mbid.substring(0, 2)}');
@@ -136,7 +90,7 @@ Future<Uint8List?> albumCoverThumbnail(Ref ref, Album album) async {
   return albumCover;
 }
 
-@Riverpod(keepAlive: true)
+@Riverpod(keepAlive: false)
 Future<Uint8List?> artistThumbnail(Ref ref, String artistName) async {
   Uint8List? thumbnail;
   final artist = await ref.watch(artistProvider(artistName).future);

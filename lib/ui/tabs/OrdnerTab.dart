@@ -5,9 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meine_musik/model/IsSongPredicate.dart';
 import 'package:meine_musik/utils.dart';
 
+import '../../env.dart';
 import '../../model/AudioFile.dart';
 import '../../model/AudioFolder.dart';
-import '../../model/logic.dart';
 import '../../riverpod/media.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
@@ -19,7 +19,7 @@ class OrdnerTab extends ConsumerStatefulWidget {
   /// All audio files on the device.
   static final thisDeviceProvider = FutureProvider<AudioFolder>((ref) async {
     final audioFiles = await ref.watch(localAudioFilesProvider.future);
-    final root = groupAudioFiles(audioFiles);
+    final root = logic.groupAudioFiles(audioFiles);
     ref.keepAlive();
     return root;
   }, name: '$OrdnerTab.thisDeviceProvider');

@@ -1,11 +1,15 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meine_musik/env.dart';
 import 'package:meine_musik/model/AudioFile.dart';
 import 'package:meine_musik/model/AudioFolder.dart';
-import 'package:meine_musik/model/logic.dart';
+import 'package:meine_musik/services/MusicBrainz.dart';
 
+import '../RecordPlaybackHttpClient.dart';
 import '../testdata.dart';
 
 void main() {
+
   test('groupAudioFiles', () {
     final audioFiles = [
       '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3',
@@ -22,7 +26,7 @@ void main() {
       '/storage/0000-0000/Musik/Alicia Keys - Songs In A Minor/04 - Alicia Keys - Fallin\'.mp3',
       '/storage/0000-0000/Musik/Alicia Keys - Songs In A Minor/05 - Alicia Keys - Troubles.mp3',
     ].map((path) => anAudioFile(path: path)).toList();
-    expect(groupAudioFiles(audioFiles).prettyPrint(), '''
+    expect(logic.groupAudioFiles(audioFiles).prettyPrint(), '''
 Dieses Gerät
 ├── Musik
 │   └── Alicia Keys - Songs In A Minor
@@ -49,9 +53,13 @@ Dieses Gerät
 ''');
   });
 
-  test('splitArtistString', () {
-    expect(splitArtistString('').toList(), equals([]));
-    expect(splitArtistString('Hans Zimmer & Lisa Gerrard').toList(), equals(['Hans Zimmer', 'Lisa Gerrard']));
+  test('splitArtistString', () async {
+    riverpodContainer = ProviderContainer.test();
+    musicBrainz = MusicBrainz(RecordPlaybackHttpClient());
+    expect(await logic.splitArtistString(''), equals([]));
+    expect(await logic.splitArtistString('Simon & Garfunkel'), equals(['Simon & Garfunkel']));
+    expect(await logic.splitArtistString('Simon and Garfunkel'), equals(['Simon & Garfunkel']));
+    expect(await logic.splitArtistString('Hans Zimmer & Lisa Gerrard'), equals(['Lisa Gerrard', 'Hans Zimmer']));
   });
 }
 
