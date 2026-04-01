@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meine_musik/drift/database.dart';
 import 'package:meine_musik/env.dart';
@@ -17,6 +18,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   setUp(() {
     // See https://drift.simonbinder.eu/testing/ ...
     db = Database(DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true));
+    riverpodContainer = ProviderContainer.test();
     logic = Logic();
     audioService = MockAudioService();
     when(() => audioService.findAll()).thenAnswer((_) async => [anAudioFile(
@@ -24,7 +26,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
       path: '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3',
       artist: 'Samsung',
       title: 'Over the Horizon',
-      album: 'Test AlbumBrand Music',
+      album: 'Brand Music',
     )]);
     when(() => audioService.getAlbumCover(any())).thenAnswer((_) async => null);
     musicBrainz = DummyMusicBrainz();

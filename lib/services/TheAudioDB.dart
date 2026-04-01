@@ -35,13 +35,15 @@ class TheAudioDB {
     }
     final data = jsonDecode(utf8.decode(response1.bodyBytes)) as Map<String, dynamic>;
     final artists = data['artists'] as List<dynamic>?;
-    if (artists != null) {
-      final uri2 = (artists[0] as Map<String, dynamic>)['strArtistThumb'] as String;
-      final response2 = await _httpClient.get(Uri.parse(uri2));
-      if (response2.statusCode != 200) {
-        throw Exception('HTTP GET $uri2 => HTTP Status code: ${response2.statusCode}\n${response2.body}');
+    if (artists != null && artists.isNotEmpty) {
+      final thumbUrl = (artists[0] as Map<String, dynamic>)['strArtistThumb'] as String?;
+      if (thumbUrl != null && thumbUrl.isNotEmpty) {
+        final response2 = await _httpClient.get(Uri.parse(thumbUrl));
+        if (response2.statusCode != 200) {
+          throw Exception('HTTP GET $thumbUrl => HTTP Status code: ${response2.statusCode}\n${response2.body}');
+        }
+        return response2.bodyBytes;
       }
-      return response2.bodyBytes;
     }
     return null;
   }

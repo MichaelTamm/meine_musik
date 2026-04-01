@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meine_musik/env.dart';
 import 'package:meine_musik/model/AudioFile.dart';
@@ -54,7 +53,6 @@ Dieses Gerät
   });
 
   test('splitArtistString', () async {
-    riverpodContainer = ProviderContainer.test();
     musicBrainz = MusicBrainz(RecordPlaybackHttpClient());
     expect(await logic.splitArtistString(''), equals([]));
     expect(await logic.splitArtistString('Simon & Garfunkel'), equals(['Simon & Garfunkel']));

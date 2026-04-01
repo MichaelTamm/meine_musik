@@ -26,7 +26,8 @@ class PlaylistItems extends Table {
 
 class ArtistSearchResults extends Table {
   late final name = text()();
-  late final mbid = text()();
+  late final mbid = text().nullable()();
+  // TODO: save timestamp (and retry search if mbid == null and timestamp is older than 7 days)
 
   @override
   Set<Column> get primaryKey => {name};
@@ -76,7 +77,9 @@ class Database extends _$Database {
     final searchResult = (await (select(artistSearchResults)..where((t) => t.name.equals(name))).get()).firstOrNull;
     if (searchResult != null) {
       final mbid = searchResult.mbid;
-      result = (await (select(musicBrainzArtists)..where((t) => t.mbid.equals(mbid))).get()).firstOrNull;
+      if (mbid != null) {
+        result = (await (select(musicBrainzArtists)..where((t) => t.mbid.equals(mbid))).get()).firstOrNull;
+      }
     }
     return result;
   }

@@ -22,6 +22,7 @@ class KuenstlerTab extends ConsumerStatefulWidget {
     // A song can be performed by multiple artists, therefore ...
     final futures = [for (final song in allSongs) logic.splitArtistString(song.artist).then((artistNames) => (song, artistNames))];
     final songsByArtistName = <String, List<Song>>{};
+    // TODO: start rendering as soon as we have a kuenstler, keep processing songs in the background ...
     for (final future in futures) {
       try {
         final (song, artistNames) = await future;
@@ -114,17 +115,20 @@ class _AlleKuenstlerOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-        onRefresh: () {
-          riverpodContainer.invalidateAll();
-          return Future.delayed(Duration(milliseconds: 300));
-        },
-        child: ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (context, index) {
-        final kuenstlerSongs = data[index];
-        return _KuenstlerListTile(kuenstlerSongs, onTap: () => openKuenstler(kuenstlerSongs));
+      onRefresh: () {
+        riverpodContainer.invalidateAll();
+        return Future.delayed(Duration(milliseconds: 300));
       },
-    ),
+      child: ListView.builder(
+        // With the default ListView physics, RefreshIndicator won't trigger
+        // when the content is shorter than the viewport, therefore ...
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          final kuenstlerSongs = data[index];
+          return _KuenstlerListTile(kuenstlerSongs, onTap: () => openKuenstler(kuenstlerSongs));
+        },
+      ),
     );
   }
 

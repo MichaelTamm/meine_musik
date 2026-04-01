@@ -68,7 +68,7 @@ class Logic {
           if (a2.length > 1 && a2.contains(artist.name)) {
             a2 = a2.where((it) => it != artist.name);
           } else {
-            return;
+            continue;
           }
         }
       } catch (error, stack) {

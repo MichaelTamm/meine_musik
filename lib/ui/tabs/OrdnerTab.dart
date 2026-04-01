@@ -190,26 +190,35 @@ class _AudioFolderView extends ConsumerWidget {
     final folderAsync = folder_ == null ? ref.watch(OrdnerTab.thisDeviceProvider) : AsyncData(folder_);
     return folderAsync.when(
       loading: LoadingIndicator.new,
-      data: (folder) => ListView.builder(
-        itemCount: folder.subfolders.length + folder.files.length,
-        itemBuilder: (context, index) {
-          final numFolders = folder.subfolders.length;
-          if (index < 0) {
-            return null;
-          } else if (index < numFolders) {
-            final subfolder = folder.subfolders[index];
-            return _AudioFolderListTile(subfolder, onTap: () => openFolder(subfolder, this.folder));
-          } else {
-            index -= numFolders;
-            final numFiles = folder.files.length;
-            if (index < numFiles) {
-              final file = folder.files[index];
-              return _AudioFileListTile(file);
-            } else {
-              return null;
-            }
-          }
+      data: (folder) => RefreshIndicator(
+        onRefresh: () {
+          riverpodContainer.invalidateAll();
+          return Future.delayed(Duration(milliseconds: 300));
         },
+        child: ListView.builder(
+          // With the default ListView physics, RefreshIndicator won't trigger
+          // when the content is shorter than the viewport, therefore ...
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: folder.subfolders.length + folder.files.length,
+          itemBuilder: (context, index) {
+            final numFolders = folder.subfolders.length;
+            if (index < 0) {
+              return null;
+            } else if (index < numFolders) {
+              final subfolder = folder.subfolders[index];
+              return _AudioFolderListTile(subfolder, onTap: () => openFolder(subfolder, this.folder));
+            } else {
+              index -= numFolders;
+              final numFiles = folder.files.length;
+              if (index < numFiles) {
+                final file = folder.files[index];
+                return _AudioFileListTile(file);
+              } else {
+                return null;
+              }
+            }
+          },
+        ),
       ),
       // TODO: if permission is not granted, show a meaningful text and a button to request permission
       error: (error, stack) => Container(),

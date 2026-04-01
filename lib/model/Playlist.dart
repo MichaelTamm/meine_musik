@@ -134,7 +134,7 @@ class Favoriten extends Playlist {
 }
 
 class Album extends Playlist {
-  static Future<Album> fromNameAndSongs(String name, Iterable<Song> songs) async {
+  static Future<Album> fromNameAndSongs(String name, List<Song> songs) async {
     final kuenstler = await logic.determineAlbumKuenstler(songs);
     return Album._(name, songs, upperTitle: kuenstler);
   }

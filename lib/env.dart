@@ -76,6 +76,7 @@ final class _RiverpodObserver extends ProviderObserver {
 
   @override
   void didDisposeProvider(ProviderObserverContext context) {
+    activeProviders.remove(context.provider);
     if (!kDebugRiverpod) {
       return;
     }

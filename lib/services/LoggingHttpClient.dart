@@ -9,4 +9,9 @@ class LoggingHttpClient extends http.BaseClient {
     debugPrint('HTTP ${request.method} ${request.url} ...');
     return _inner.send(request);
   }
+
+  @override
+  void close() {
+    _inner.close();
+  }
 }

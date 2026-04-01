@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../env.dart';
 import '../../model/Playlist.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../../theme.dart';
 import '../../utils.dart';
-import '../Thumbnail.dart';
 import '../LoadingIndicator.dart';
 import '../PlaylistActions.dart';
 import '../PlaylistView.dart';
+import '../Thumbnail.dart';
 
 class AlbenTab extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: '$AlbenTab.navigatorKey');
@@ -105,12 +106,21 @@ class _AlleAlbenOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (_, index) {
-        final album = data[index];
-        return _AlbumListTile(album, onTap: () => openAlbum(album));
+    return RefreshIndicator(
+      onRefresh: () {
+        riverpodContainer.invalidateAll();
+        return Future.delayed(Duration(milliseconds: 300));
       },
+      child: ListView.builder(
+        // With the default ListView physics, RefreshIndicator won't trigger
+        // when the content is shorter than the viewport, therefore ...
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: data.length,
+        itemBuilder: (_, index) {
+          final album = data[index];
+          return _AlbumListTile(album, onTap: () => openAlbum(album));
+        },
+      ),
     );
   }
 

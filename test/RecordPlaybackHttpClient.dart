@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 
-// ignore: constant_identifier_names
-const bool CI = bool.fromEnvironment('CI');
+// ignore: non_constant_identifier_names
+final bool CI = Platform.environment.containsKey('CI');
 
 class RecordPlaybackHttpClient implements http.Client {
   final http.Client _httpClient = http.Client();

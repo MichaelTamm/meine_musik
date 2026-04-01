@@ -1,3 +1,5 @@
+import 'package:string_normalizer/string_normalizer.dart';
+
 class Futures {
   static Future<(A, B)> tuple2<A, B>(Future<A> future1, Future<B> future2) async {
     final values = await Future.wait([future1, future2]);
@@ -114,6 +116,19 @@ extension ListUtils<E> on List<E> {
       result.add(transform(element, index++));
     }
     return result;
+  }
+}
+
+extension StringUtils on String {
+  String normalize() {
+    var s = StringNormalizer.normalize(this);
+    s = s.replaceAll('...', '…');
+    s = s.replaceAll('“', '"');
+    s = s.replaceAll('”', '"');
+    s = s.replaceAll("´", "'");
+    s = s.replaceAll("`", "'");
+    s = s.replaceAll("’", "'");
+    return s;
   }
 }
 

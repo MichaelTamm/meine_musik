@@ -35,7 +35,13 @@ Future<List<AudioFile>> localAudioFiles(Ref ref) async {
   final audioFiles = await audioService.findAll();
   if (kDebugMode) {
     final n = audioFiles.length;
-    debugPrint(n == 0 ? 'Did not find an audio file.' : n == 1 ? 'Found 1 audio file:' : 'Found $n audio files:');
+    debugPrint(
+      n == 0
+          ? 'Did not find an audio file.'
+          : n == 1
+          ? 'Found 1 audio file:'
+          : 'Found $n audio files:',
+    );
     for (final audioFile in audioFiles) {
       debugPrint('    ${audioFile.path} (artist: ${audioFile.artist}, title: ${audioFile.title}, album: ${audioFile.album})');
     }
@@ -72,19 +78,8 @@ Future<Uint8List?> albumCoverThumbnail(Ref ref, Album album) async {
     final release = await musicBrainz.searchReleaseByAlbum(album);
     if (release != null) {
       final mbid = release.mbid;
-      final thumbnailDir = Directory('${applicationCacheDirectory.path}/album-thumbnails/${mbid.substring(0, 2)}');
-      final thumbnailFile = File('${thumbnailDir.path}/$mbid.thumbnail');
-      if (thumbnailFile.existsSync()) {
-        albumCover = await thumbnailFile.readAsBytes();
-      } else {
-        albumCover = await coverArtArchive.getAlbumCoverThumbnail(mbid);
-        if (albumCover != null) {
-          if (!thumbnailDir.existsSync()) {
-            thumbnailDir.createSync(recursive: true);
-          }
-          await thumbnailFile.writeAsBytes(albumCover);
-        }
-      }
+      final thumbnailsDir = Directory('${applicationCacheDirectory.path}/album-thumbnails');
+      albumCover = await _loadOrFetchThumbnail(thumbnailsDir, mbid, fetch: () => coverArtArchive.getAlbumCoverThumbnail(mbid));
     }
   }
   return albumCover;
@@ -96,19 +91,8 @@ Future<Uint8List?> artistThumbnail(Ref ref, String artistName) async {
   final artist = await ref.watch(artistProvider(artistName).future);
   if (artist != null) {
     final mbid = artist.mbid;
-    final thumbnailDir = Directory('${applicationCacheDirectory.path}/artist-thumbnails/${mbid.substring(0, 2)}');
-    final thumbnailFile = File('${thumbnailDir.path}/$mbid.thumbnail');
-    if (thumbnailFile.existsSync()) {
-      thumbnail = await thumbnailFile.readAsBytes();
-    } else {
-      thumbnail = await theAudioDB.getArtistThumbnail(mbid);
-      if (thumbnail != null) {
-        if (!thumbnailDir.existsSync()) {
-          thumbnailDir.createSync(recursive: true);
-        }
-        await thumbnailFile.writeAsBytes(thumbnail);
-      }
-    }
+    final thumbnailsDir = Directory('${applicationCacheDirectory.path}/artist-thumbnails');
+    thumbnail = await _loadOrFetchThumbnail(thumbnailsDir, mbid, fetch: () => theAudioDB.getArtistThumbnail(mbid));
   }
   return thumbnail;
 }
@@ -121,4 +105,20 @@ Future<IconData> artistIcon(Ref ref, String artistName) async {
     return type == 'Person' || type == 'Character' ? Icons.person : Icons.group;
   }
   return Icons.question_mark;
+}
+
+Future<Uint8List?> _loadOrFetchThumbnail(Directory thumbnailsDir, String mbid, {required Future<Uint8List?> Function() fetch}) async {
+  final thumbnailDir = Directory('${thumbnailsDir.path}/${mbid.substring(0, 2)}');
+  final thumbnailFile = File('${thumbnailDir.path}/$mbid.thumbnail');
+  if (thumbnailFile.existsSync()) {
+    return thumbnailFile.readAsBytes();
+  }
+  final data = await fetch();
+  if (data != null) {
+    if (!thumbnailDir.existsSync()) {
+      thumbnailDir.createSync(recursive: true);
+    }
+    await thumbnailFile.writeAsBytes(data);
+  }
+  return data;
 }

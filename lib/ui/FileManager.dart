@@ -106,23 +106,21 @@ class FileManager extends HookWidget {
               index -= 1;
               if (currentDir == null) {
                 final dir = dirs[index];
-                if (currentDir == null) {
-                  return ListTile(
-                    leading: Icon(Icons.folder_open_rounded),
-                    title: AutoSizeText(
-                      dir.path == dataDir?.path
-                          ? 'Application Documents Directory'
-                          : dir.path == supportDir?.path
-                          ? 'Application Support Directory'
-                          : dir.path == tempDir?.path
-                          ? 'Temporary Directory'
-                          : '???',
-                      maxLines: 1,
-                      minFontSize: 3,
-                    ),
-                    onTap: () => changeDir(dir),
-                  );
-                }
+                return ListTile(
+                  leading: Icon(Icons.folder_open_rounded),
+                  title: AutoSizeText(
+                    dir.path == dataDir?.path
+                        ? 'Application Documents Directory'
+                        : dir.path == supportDir?.path
+                        ? 'Application Support Directory'
+                        : dir.path == tempDir?.path
+                        ? 'Temporary Directory'
+                        : '???',
+                    maxLines: 1,
+                    minFontSize: 3,
+                  ),
+                  onTap: () => changeDir(dir),
+                );
               }
               if (index < dirs.length) {
                 final dir = dirs[index];

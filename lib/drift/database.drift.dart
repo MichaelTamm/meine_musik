@@ -566,9 +566,9 @@ class $ArtistSearchResultsTable extends ArtistSearchResults
   late final GeneratedColumn<String> mbid = GeneratedColumn<String>(
     'mbid',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   @override
   List<GeneratedColumn> get $columns => [name, mbid];
@@ -597,8 +597,6 @@ class $ArtistSearchResultsTable extends ArtistSearchResults
         _mbidMeta,
         mbid.isAcceptableOrUnknown(data['mbid']!, _mbidMeta),
       );
-    } else if (isInserting) {
-      context.missing(_mbidMeta);
     }
     return context;
   }
@@ -616,7 +614,7 @@ class $ArtistSearchResultsTable extends ArtistSearchResults
       mbid: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}mbid'],
-      )!,
+      ),
     );
   }
 
@@ -629,18 +627,23 @@ class $ArtistSearchResultsTable extends ArtistSearchResults
 class ArtistSearchResult extends DataClass
     implements Insertable<ArtistSearchResult> {
   final String name;
-  final String mbid;
-  const ArtistSearchResult({required this.name, required this.mbid});
+  final String? mbid;
+  const ArtistSearchResult({required this.name, this.mbid});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['name'] = Variable<String>(name);
-    map['mbid'] = Variable<String>(mbid);
+    if (!nullToAbsent || mbid != null) {
+      map['mbid'] = Variable<String>(mbid);
+    }
     return map;
   }
 
   ArtistSearchResultsCompanion toCompanion(bool nullToAbsent) {
-    return ArtistSearchResultsCompanion(name: Value(name), mbid: Value(mbid));
+    return ArtistSearchResultsCompanion(
+      name: Value(name),
+      mbid: mbid == null && nullToAbsent ? const Value.absent() : Value(mbid),
+    );
   }
 
   factory ArtistSearchResult.fromJson(
@@ -650,7 +653,7 @@ class ArtistSearchResult extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ArtistSearchResult(
       name: serializer.fromJson<String>(json['name']),
-      mbid: serializer.fromJson<String>(json['mbid']),
+      mbid: serializer.fromJson<String?>(json['mbid']),
     );
   }
   @override
@@ -658,12 +661,17 @@ class ArtistSearchResult extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'name': serializer.toJson<String>(name),
-      'mbid': serializer.toJson<String>(mbid),
+      'mbid': serializer.toJson<String?>(mbid),
     };
   }
 
-  ArtistSearchResult copyWith({String? name, String? mbid}) =>
-      ArtistSearchResult(name: name ?? this.name, mbid: mbid ?? this.mbid);
+  ArtistSearchResult copyWith({
+    String? name,
+    Value<String?> mbid = const Value.absent(),
+  }) => ArtistSearchResult(
+    name: name ?? this.name,
+    mbid: mbid.present ? mbid.value : this.mbid,
+  );
   ArtistSearchResult copyWithCompanion(ArtistSearchResultsCompanion data) {
     return ArtistSearchResult(
       name: data.name.present ? data.name.value : this.name,
@@ -692,7 +700,7 @@ class ArtistSearchResult extends DataClass
 
 class ArtistSearchResultsCompanion extends UpdateCompanion<ArtistSearchResult> {
   final Value<String> name;
-  final Value<String> mbid;
+  final Value<String?> mbid;
   final Value<int> rowid;
   const ArtistSearchResultsCompanion({
     this.name = const Value.absent(),
@@ -701,10 +709,9 @@ class ArtistSearchResultsCompanion extends UpdateCompanion<ArtistSearchResult> {
   });
   ArtistSearchResultsCompanion.insert({
     required String name,
-    required String mbid,
+    this.mbid = const Value.absent(),
     this.rowid = const Value.absent(),
-  }) : name = Value(name),
-       mbid = Value(mbid);
+  }) : name = Value(name);
   static Insertable<ArtistSearchResult> custom({
     Expression<String>? name,
     Expression<String>? mbid,
@@ -719,7 +726,7 @@ class ArtistSearchResultsCompanion extends UpdateCompanion<ArtistSearchResult> {
 
   ArtistSearchResultsCompanion copyWith({
     Value<String>? name,
-    Value<String>? mbid,
+    Value<String?>? mbid,
     Value<int>? rowid,
   }) {
     return ArtistSearchResultsCompanion(
@@ -1866,13 +1873,13 @@ typedef $$PlaylistItemsTableProcessedTableManager =
 typedef $$ArtistSearchResultsTableCreateCompanionBuilder =
     ArtistSearchResultsCompanion Function({
       required String name,
-      required String mbid,
+      Value<String?> mbid,
       Value<int> rowid,
     });
 typedef $$ArtistSearchResultsTableUpdateCompanionBuilder =
     ArtistSearchResultsCompanion Function({
       Value<String> name,
-      Value<String> mbid,
+      Value<String?> mbid,
       Value<int> rowid,
     });
 
@@ -1976,7 +1983,7 @@ class $$ArtistSearchResultsTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> name = const Value.absent(),
-                Value<String> mbid = const Value.absent(),
+                Value<String?> mbid = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ArtistSearchResultsCompanion(
                 name: name,
@@ -1986,7 +1993,7 @@ class $$ArtistSearchResultsTableTableManager
           createCompanionCallback:
               ({
                 required String name,
-                required String mbid,
+                Value<String?> mbid = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => ArtistSearchResultsCompanion.insert(
                 name: name,

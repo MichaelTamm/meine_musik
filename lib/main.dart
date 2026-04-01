@@ -15,22 +15,26 @@ import 'services/TheAudioDB.dart';
 import 'ui/MeineMusikApp.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  timeDilation = kSlowDownAnimations ? 10 : 1;
-  final getApplicationDocumentsDirectoryFuture = getApplicationDocumentsDirectory();
-  final getApplicationCacheDirectoryFuture = getApplicationCacheDirectory();
-  final session = await AudioSession.instance;
-  final sessionConfigureFuture = session.configure(AudioSessionConfiguration.music());
-  audioService = AudioService();
-  db = Database(driftDatabase(name: 'database'));
-  logic = Logic();
-  final loggingHttpClient = LoggingHttpClient();
-  musicBrainz = MusicBrainz(loggingHttpClient);
-  theAudioDB = TheAudioDB(loggingHttpClient);
-  coverArtArchive = CoverArtArchive(loggingHttpClient);
-  applicationDocumentsDirectory = await getApplicationDocumentsDirectoryFuture;
-  applicationCacheDirectory = await getApplicationCacheDirectoryFuture;
-  await sessionConfigureFuture;
-  // ignore: missing_provider_scope
-  runApp(const MeineMusikApp());
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    timeDilation = kSlowDownAnimations ? 10 : 1;
+    final getApplicationDocumentsDirectoryFuture = getApplicationDocumentsDirectory();
+    final getApplicationCacheDirectoryFuture = getApplicationCacheDirectory();
+    final session = await AudioSession.instance;
+    final sessionConfigureFuture = session.configure(AudioSessionConfiguration.music());
+    audioService = AudioService();
+    db = Database(driftDatabase(name: 'database'));
+    logic = Logic();
+    final loggingHttpClient = LoggingHttpClient();
+    musicBrainz = MusicBrainz(loggingHttpClient);
+    theAudioDB = TheAudioDB(loggingHttpClient);
+    coverArtArchive = CoverArtArchive(loggingHttpClient);
+    applicationDocumentsDirectory = await getApplicationDocumentsDirectoryFuture;
+    applicationCacheDirectory = await getApplicationCacheDirectoryFuture;
+    await sessionConfigureFuture;
+    // ignore: missing_provider_scope
+    runApp(const MeineMusikApp());
+  } catch (error, stack) {
+    debugPrintStack(label: 'main() failed -- $error', stackTrace: stack);
+  }
 }

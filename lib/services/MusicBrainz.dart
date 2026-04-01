@@ -1,12 +1,10 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:meine_musik/env.dart';
 import 'package:musicbrainz_api_client/musicbrainz_api_client.dart' show MusicBrainzApiClient;
-import 'package:string_normalizer/string_normalizer.dart';
 
 import '../drift/database.dart';
 import '../model/Playlist.dart';
@@ -31,12 +29,32 @@ class MusicBrainz {
           if (artist != null) {
             try {
               await db.musicBrainzArtists.insertOne(artist.toCompanion(true));
-            } on SqliteException catch (error) {
-              if (error.extendedResultCode == 1555 /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */) {
+            } catch (error) {
+              if ('$error'.startsWith('SqliteException(1555):') /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */) {
                 // Ignored.
               } else {
                 rethrow;
               }
+            }
+            if (artist.name != name) {
+              try {
+                await db.artistSearchResults.insertOne(ArtistSearchResult(name: name, mbid: artist.mbid).toCompanion(true));
+              } catch (error) {
+                if ('$error'.startsWith('SqliteException(1555):') /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */) {
+                  // Ignored.
+                } else {
+                  rethrow;
+                }
+              }
+            }
+          }
+          try {
+            await db.artistSearchResults.insertOne(ArtistSearchResult(name: name, mbid: artist?.mbid).toCompanion(true));
+          } catch (error) {
+            if ('$error'.startsWith('SqliteException(1555):') /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */) {
+              // Ignored.
+            } else {
+              rethrow;
             }
           }
         }
@@ -89,12 +107,7 @@ class MusicBrainz {
         if (release == null) {
           release = await _searchReleaseByAlbum(album);
           if (release != null) {
-            try {
-              await db.musicBrainzReleases.insertOne(release.toCompanion(true));
-            } catch (error) {
-              // TODO: handle row already exists
-              rethrow;
-            }
+            await db.musicBrainzReleases.insertOne(release.toCompanion(true));
           }
         }
         return release;
@@ -111,10 +124,53 @@ class MusicBrainz {
 
   Future<MusicBrainzRelease?> _searchReleaseByAlbum(Album album) async {
     final kuenstler = album.kuenstler;
+
+    MusicBrainzRelease toMusicBrainzRelease(Map<String, dynamic> releaseData) {
+      final id = releaseData['id'] as String;
+      final title = releaseData['title'] as String;
+      debugPrint('Found release ${toDartString(title)} for $album in MusicBrainz database: https://musicbrainz.org/release/$id');
+      return MusicBrainzRelease(mbid: id, songIds: '|${album.map((song) => song.id).join('|')}|');
+    }
+
     if (kuenstler.isNotEmpty && kuenstler != 'verschiedene Künstler') {
-      // Search release groups of artist ...
       final artist = await riverpodContainer.read(artistProvider(kuenstler).future);
-      final query = artist == null ? 'artistname:$kuenstler release:${album.name}' : 'arid:${artist.mbid} release:${album.name}';
+      if (artist != null) {
+        final data = await _apiClient.artists.get(artist.mbid, inc: ['release-groups']);
+        final releaseGroups = (data['release-groups'] as List<dynamic>).cast<Map<String, dynamic>>();
+        final normalizedAlbumName = album.name.normalize().toLowerCase();
+        for (final releaseGroup in releaseGroups) {
+          final primaryType = releaseGroup['primary-type'] as String?;
+          if (primaryType != 'Album') {
+            continue;
+          }
+          final title = releaseGroup['title'] as String? ?? '';
+          if (title.normalize().toLowerCase() == normalizedAlbumName) {
+            final id = releaseGroup['id'] as String;
+            debugPrint('Found release-group ${toDartString(title)} for $album in MusicBrainz database: https://musicbrainz.org/release-group/$id');
+            final data = await _apiClient.releaseGroups.get(id, inc: ['releases']);
+            final releases = (data['releases'] as List<dynamic>).cast<Map<String, dynamic>>();
+            final officialReleases = releases.where((it) => it['status'] == 'Official');
+            // 1st round: search for release with disambiguation == "" and country != "XW" ...
+            for (final release in officialReleases) {
+              final disambiguation = release['disambiguation'] as String?;
+              final country = release['country'] as String?;
+              if ((disambiguation == null || disambiguation.isEmpty) && country != 'XW') {
+                return toMusicBrainzRelease(release);
+              }
+            }
+            // 2nd round: search for release with disambiguation == ""
+            for (final release in officialReleases) {
+              final disambiguation = release['disambiguation'] as String?;
+              if (disambiguation == null || disambiguation.isEmpty) {
+                return toMusicBrainzRelease(release);
+              }
+            }
+            // Fallback ...
+            return toMusicBrainzRelease(officialReleases.firstOrNull ?? releases.first);
+          }
+        }
+      }
+      final query = artist == null ? 'artistname:"$kuenstler" release:"${album.name}"' : 'arid:${artist.mbid} release:"${album.name}"';
       final data = await _apiClient.releaseGroups.search(query, limit: 10);
       final searchResult = data['release-groups'] as List<dynamic>;
       final normalizedAlbumName = album.name.normalize();
