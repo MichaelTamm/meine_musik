@@ -8,7 +8,6 @@ import '../RecordPlaybackHttpClient.dart';
 import '../testdata.dart';
 
 void main() {
-
   test('groupAudioFiles', () {
     final audioFiles = [
       '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3',

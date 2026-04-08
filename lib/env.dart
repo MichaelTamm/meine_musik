@@ -113,7 +113,8 @@ final riverpodObserver = _RiverpodObserver();
 
 extension InvalidateAllExtendsion on ProviderContainer {
   void invalidateAll() {
-    for (final provider in riverpodObserver.activeProviders) {
+    final activeProvidersSnapshot = [...riverpodObserver.activeProviders];
+    for (final provider in activeProvidersSnapshot) {
       invalidate(provider);
     }
   }

@@ -30,7 +30,9 @@ class MusicBrainz {
             try {
               await db.musicBrainzArtists.insertOne(artist.toCompanion(true));
             } catch (error) {
-              if ('$error'.startsWith('SqliteException(1555):') /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */) {
+              if ('$error'.startsWith(
+                'SqliteException(1555):',
+              ) /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */ ) {
                 // Ignored.
               } else {
                 rethrow;
@@ -38,9 +40,11 @@ class MusicBrainz {
             }
             if (artist.name != name) {
               try {
-                await db.artistSearchResults.insertOne(ArtistSearchResult(name: name, mbid: artist.mbid).toCompanion(true));
+                await db.artistSearchResults.insertOne(ArtistSearchResult(name: artist.name, mbid: artist.mbid).toCompanion(true));
               } catch (error) {
-                if ('$error'.startsWith('SqliteException(1555):') /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */) {
+                if ('$error'.startsWith(
+                  'SqliteException(1555):',
+                ) /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */ ) {
                   // Ignored.
                 } else {
                   rethrow;
@@ -51,7 +55,9 @@ class MusicBrainz {
           try {
             await db.artistSearchResults.insertOne(ArtistSearchResult(name: name, mbid: artist?.mbid).toCompanion(true));
           } catch (error) {
-            if ('$error'.startsWith('SqliteException(1555):') /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */) {
+            if ('$error'.startsWith(
+              'SqliteException(1555):',
+            ) /* <-- SQLITE_CONSTRAINT_PRIMARYKEY, see https://sqlite.org/rescode.html#constraint_primarykey */ ) {
               // Ignored.
             } else {
               rethrow;
@@ -146,7 +152,9 @@ class MusicBrainz {
           final title = releaseGroup['title'] as String? ?? '';
           if (title.normalize().toLowerCase() == normalizedAlbumName) {
             final id = releaseGroup['id'] as String;
-            debugPrint('Found release-group ${toDartString(title)} for $album in MusicBrainz database: https://musicbrainz.org/release-group/$id');
+            debugPrint(
+              'Found release-group ${toDartString(title)} for $album in MusicBrainz database: https://musicbrainz.org/release-group/$id',
+            );
             final data = await _apiClient.releaseGroups.get(id, inc: ['releases']);
             final releases = (data['releases'] as List<dynamic>).cast<Map<String, dynamic>>();
             final officialReleases = releases.where((it) => it['status'] == 'Official');
@@ -175,7 +183,7 @@ class MusicBrainz {
       final searchResult = data['release-groups'] as List<dynamic>;
       final normalizedAlbumName = album.name.normalize();
       final matches = searchResult
-          .where((it) => (it['score'] as num) == 100 || (it['name'] as String).normalize() == normalizedAlbumName)
+          .where((it) => (it['score'] as num) == 100 || (it['title'] as String).normalize() == normalizedAlbumName)
           .toList();
       if (matches.isEmpty) {
         if (searchResult.isEmpty) {

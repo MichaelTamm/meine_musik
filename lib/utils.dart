@@ -128,6 +128,7 @@ extension StringUtils on String {
     s = s.replaceAll("´", "'");
     s = s.replaceAll("`", "'");
     s = s.replaceAll("’", "'");
+    s = s.replaceAll("‘", "'");
     return s;
   }
 }

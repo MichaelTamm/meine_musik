@@ -12,7 +12,7 @@ class RecordPlaybackHttpClient implements http.Client {
 
   @override
   void close() {
-    // TODO: implement close
+    _httpClient.close();
   }
 
   @override
@@ -93,11 +93,7 @@ class RecordPlaybackHttpClient implements http.Client {
       body = base64.encode(response.bodyBytes);
     }
     file.writeAsStringSync(
-      JsonEncoder.withIndent('  ', ).convert({
-        'statusCode': response.statusCode,
-        'headers': response.headers,
-        'body': body,
-      })
+      JsonEncoder.withIndent('  ').convert({'statusCode': response.statusCode, 'headers': response.headers, 'body': body}),
     );
   }
 

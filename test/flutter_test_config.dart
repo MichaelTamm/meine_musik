@@ -21,13 +21,17 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
     riverpodContainer = ProviderContainer.test();
     logic = Logic();
     audioService = MockAudioService();
-    when(() => audioService.findAll()).thenAnswer((_) async => [anAudioFile(
-      id: 1,
-      path: '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3',
-      artist: 'Samsung',
-      title: 'Over the Horizon',
-      album: 'Brand Music',
-    )]);
+    when(() => audioService.findAll()).thenAnswer(
+      (_) async => [
+        anAudioFile(
+          id: 1,
+          path: '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3',
+          artist: 'Samsung',
+          title: 'Over the Horizon',
+          album: 'Brand Music',
+        ),
+      ],
+    );
     when(() => audioService.getAlbumCover(any())).thenAnswer((_) async => null);
     musicBrainz = DummyMusicBrainz();
   });
