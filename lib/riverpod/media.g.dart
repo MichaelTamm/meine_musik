@@ -38,7 +38,7 @@ final class LocalAudioFilesProvider extends $FunctionalProvider<AsyncValue<List<
   }
 }
 
-String _$localAudioFilesHash() => r'53cdce630930158f5331b65e0947e2bbb15adb14';
+String _$localAudioFilesHash() => r'829573ed132851b74cf306f542dfd3c921536fc2';
 
 @ProviderFor(localAudioFilesById)
 const localAudioFilesByIdProvider = LocalAudioFilesByIdProvider._();

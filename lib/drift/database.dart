@@ -47,6 +47,9 @@ class MusicBrainzReleases extends Table {
   /// MusicBrainz Identifier, see https://musicbrainz.org/doc/MusicBrainz_Identifier
   late final mbid = text()();
 
+  /// MusicBrainz Identifier, see https://musicbrainz.org/doc/MusicBrainz_Identifier
+  late final releaseGroupMbid = text()();
+
   /// A string like '|13|14|15|' -- can be queried via: LIKE '%|13|%'.
   late final songIds = text()();
 

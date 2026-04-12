@@ -1039,6 +1039,17 @@ class $MusicBrainzReleasesTable extends MusicBrainzReleases
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _releaseGroupMbidMeta = const VerificationMeta(
+    'releaseGroupMbid',
+  );
+  @override
+  late final GeneratedColumn<String> releaseGroupMbid = GeneratedColumn<String>(
+    'release_group_mbid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _songIdsMeta = const VerificationMeta(
     'songIds',
   );
@@ -1051,7 +1062,7 @@ class $MusicBrainzReleasesTable extends MusicBrainzReleases
     requiredDuringInsert: true,
   );
   @override
-  List<GeneratedColumn> get $columns => [mbid, songIds];
+  List<GeneratedColumn> get $columns => [mbid, releaseGroupMbid, songIds];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1071,6 +1082,17 @@ class $MusicBrainzReleasesTable extends MusicBrainzReleases
       );
     } else if (isInserting) {
       context.missing(_mbidMeta);
+    }
+    if (data.containsKey('release_group_mbid')) {
+      context.handle(
+        _releaseGroupMbidMeta,
+        releaseGroupMbid.isAcceptableOrUnknown(
+          data['release_group_mbid']!,
+          _releaseGroupMbidMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_releaseGroupMbidMeta);
     }
     if (data.containsKey('song_ids')) {
       context.handle(
@@ -1093,6 +1115,10 @@ class $MusicBrainzReleasesTable extends MusicBrainzReleases
         DriftSqlType.string,
         data['${effectivePrefix}mbid'],
       )!,
+      releaseGroupMbid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}release_group_mbid'],
+      )!,
       songIds: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}song_ids'],
@@ -1111,13 +1137,21 @@ class MusicBrainzRelease extends DataClass
   /// MusicBrainz Identifier, see https://musicbrainz.org/doc/MusicBrainz_Identifier
   final String mbid;
 
+  /// MusicBrainz Identifier, see https://musicbrainz.org/doc/MusicBrainz_Identifier
+  final String releaseGroupMbid;
+
   /// A string like '|13|14|15|' -- can be queried via: LIKE '%|13|%'.
   final String songIds;
-  const MusicBrainzRelease({required this.mbid, required this.songIds});
+  const MusicBrainzRelease({
+    required this.mbid,
+    required this.releaseGroupMbid,
+    required this.songIds,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['mbid'] = Variable<String>(mbid);
+    map['release_group_mbid'] = Variable<String>(releaseGroupMbid);
     map['song_ids'] = Variable<String>(songIds);
     return map;
   }
@@ -1125,6 +1159,7 @@ class MusicBrainzRelease extends DataClass
   MusicBrainzReleasesCompanion toCompanion(bool nullToAbsent) {
     return MusicBrainzReleasesCompanion(
       mbid: Value(mbid),
+      releaseGroupMbid: Value(releaseGroupMbid),
       songIds: Value(songIds),
     );
   }
@@ -1136,6 +1171,7 @@ class MusicBrainzRelease extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return MusicBrainzRelease(
       mbid: serializer.fromJson<String>(json['mbid']),
+      releaseGroupMbid: serializer.fromJson<String>(json['releaseGroupMbid']),
       songIds: serializer.fromJson<String>(json['songIds']),
     );
   }
@@ -1144,18 +1180,26 @@ class MusicBrainzRelease extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'mbid': serializer.toJson<String>(mbid),
+      'releaseGroupMbid': serializer.toJson<String>(releaseGroupMbid),
       'songIds': serializer.toJson<String>(songIds),
     };
   }
 
-  MusicBrainzRelease copyWith({String? mbid, String? songIds}) =>
-      MusicBrainzRelease(
-        mbid: mbid ?? this.mbid,
-        songIds: songIds ?? this.songIds,
-      );
+  MusicBrainzRelease copyWith({
+    String? mbid,
+    String? releaseGroupMbid,
+    String? songIds,
+  }) => MusicBrainzRelease(
+    mbid: mbid ?? this.mbid,
+    releaseGroupMbid: releaseGroupMbid ?? this.releaseGroupMbid,
+    songIds: songIds ?? this.songIds,
+  );
   MusicBrainzRelease copyWithCompanion(MusicBrainzReleasesCompanion data) {
     return MusicBrainzRelease(
       mbid: data.mbid.present ? data.mbid.value : this.mbid,
+      releaseGroupMbid: data.releaseGroupMbid.present
+          ? data.releaseGroupMbid.value
+          : this.releaseGroupMbid,
       songIds: data.songIds.present ? data.songIds.value : this.songIds,
     );
   }
@@ -1164,43 +1208,51 @@ class MusicBrainzRelease extends DataClass
   String toString() {
     return (StringBuffer('MusicBrainzRelease(')
           ..write('mbid: $mbid, ')
+          ..write('releaseGroupMbid: $releaseGroupMbid, ')
           ..write('songIds: $songIds')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(mbid, songIds);
+  int get hashCode => Object.hash(mbid, releaseGroupMbid, songIds);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is MusicBrainzRelease &&
           other.mbid == this.mbid &&
+          other.releaseGroupMbid == this.releaseGroupMbid &&
           other.songIds == this.songIds);
 }
 
 class MusicBrainzReleasesCompanion extends UpdateCompanion<MusicBrainzRelease> {
   final Value<String> mbid;
+  final Value<String> releaseGroupMbid;
   final Value<String> songIds;
   final Value<int> rowid;
   const MusicBrainzReleasesCompanion({
     this.mbid = const Value.absent(),
+    this.releaseGroupMbid = const Value.absent(),
     this.songIds = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   MusicBrainzReleasesCompanion.insert({
     required String mbid,
+    required String releaseGroupMbid,
     required String songIds,
     this.rowid = const Value.absent(),
   }) : mbid = Value(mbid),
+       releaseGroupMbid = Value(releaseGroupMbid),
        songIds = Value(songIds);
   static Insertable<MusicBrainzRelease> custom({
     Expression<String>? mbid,
+    Expression<String>? releaseGroupMbid,
     Expression<String>? songIds,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (mbid != null) 'mbid': mbid,
+      if (releaseGroupMbid != null) 'release_group_mbid': releaseGroupMbid,
       if (songIds != null) 'song_ids': songIds,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1208,11 +1260,13 @@ class MusicBrainzReleasesCompanion extends UpdateCompanion<MusicBrainzRelease> {
 
   MusicBrainzReleasesCompanion copyWith({
     Value<String>? mbid,
+    Value<String>? releaseGroupMbid,
     Value<String>? songIds,
     Value<int>? rowid,
   }) {
     return MusicBrainzReleasesCompanion(
       mbid: mbid ?? this.mbid,
+      releaseGroupMbid: releaseGroupMbid ?? this.releaseGroupMbid,
       songIds: songIds ?? this.songIds,
       rowid: rowid ?? this.rowid,
     );
@@ -1223,6 +1277,9 @@ class MusicBrainzReleasesCompanion extends UpdateCompanion<MusicBrainzRelease> {
     final map = <String, Expression>{};
     if (mbid.present) {
       map['mbid'] = Variable<String>(mbid.value);
+    }
+    if (releaseGroupMbid.present) {
+      map['release_group_mbid'] = Variable<String>(releaseGroupMbid.value);
     }
     if (songIds.present) {
       map['song_ids'] = Variable<String>(songIds.value);
@@ -1237,6 +1294,7 @@ class MusicBrainzReleasesCompanion extends UpdateCompanion<MusicBrainzRelease> {
   String toString() {
     return (StringBuffer('MusicBrainzReleasesCompanion(')
           ..write('mbid: $mbid, ')
+          ..write('releaseGroupMbid: $releaseGroupMbid, ')
           ..write('songIds: $songIds, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2203,12 +2261,14 @@ typedef $$MusicBrainzArtistsTableProcessedTableManager =
 typedef $$MusicBrainzReleasesTableCreateCompanionBuilder =
     MusicBrainzReleasesCompanion Function({
       required String mbid,
+      required String releaseGroupMbid,
       required String songIds,
       Value<int> rowid,
     });
 typedef $$MusicBrainzReleasesTableUpdateCompanionBuilder =
     MusicBrainzReleasesCompanion Function({
       Value<String> mbid,
+      Value<String> releaseGroupMbid,
       Value<String> songIds,
       Value<int> rowid,
     });
@@ -2224,6 +2284,11 @@ class $$MusicBrainzReleasesTableFilterComposer
   });
   ColumnFilters<String> get mbid => $composableBuilder(
     column: $table.mbid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get releaseGroupMbid => $composableBuilder(
+    column: $table.releaseGroupMbid,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2247,6 +2312,11 @@ class $$MusicBrainzReleasesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get releaseGroupMbid => $composableBuilder(
+    column: $table.releaseGroupMbid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get songIds => $composableBuilder(
     column: $table.songIds,
     builder: (column) => ColumnOrderings(column),
@@ -2264,6 +2334,11 @@ class $$MusicBrainzReleasesTableAnnotationComposer
   });
   GeneratedColumn<String> get mbid =>
       $composableBuilder(column: $table.mbid, builder: (column) => column);
+
+  GeneratedColumn<String> get releaseGroupMbid => $composableBuilder(
+    column: $table.releaseGroupMbid,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get songIds =>
       $composableBuilder(column: $table.songIds, builder: (column) => column);
@@ -2313,20 +2388,24 @@ class $$MusicBrainzReleasesTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> mbid = const Value.absent(),
+                Value<String> releaseGroupMbid = const Value.absent(),
                 Value<String> songIds = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => MusicBrainzReleasesCompanion(
                 mbid: mbid,
+                releaseGroupMbid: releaseGroupMbid,
                 songIds: songIds,
                 rowid: rowid,
               ),
           createCompanionCallback:
               ({
                 required String mbid,
+                required String releaseGroupMbid,
                 required String songIds,
                 Value<int> rowid = const Value.absent(),
               }) => MusicBrainzReleasesCompanion.insert(
                 mbid: mbid,
+                releaseGroupMbid: releaseGroupMbid,
                 songIds: songIds,
                 rowid: rowid,
               ),

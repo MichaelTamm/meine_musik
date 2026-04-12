@@ -1,0 +1,300 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "x-ratelimit-limit": "1200",
+    "transfer-encoding": "chunked",
+    "date": "Sun, 12 Apr 2026 11:29:08 GMT",
+    "x-ratelimit-reset": "1775993350",
+    "access-control-allow-origin": "*",
+    "content-encoding": "gzip",
+    "vary": "Accept-Encoding",
+    "x-ratelimit-remaining": "1191",
+    "content-type": "application/json; charset=utf-8",
+    "server": "Plack::Handler::Starlet",
+    "keep-alive": "timeout=15",
+    "etag": "W/\"5422b56afedc8a4122f17abadbc3080c\"",
+    "x-runtime": "0.035528",
+    "x-cache-status": "MISS"
+  },
+  "body": {
+    "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+    "disambiguation": "",
+    "secondary-type-ids": [
+      "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+    ],
+    "title": "Greatest Hits",
+    "id": "da73b89c-5d14-3f2e-afb8-d88871b49edc",
+    "primary-type": "Album",
+    "first-release-date": "1996-03-01",
+    "releases": [
+      {
+        "country": "GB",
+        "packaging-id": null,
+        "id": "3cabde57-66c4-4a11-9df2-26482d8c8764",
+        "packaging": null,
+        "title": "Greatest Hits",
+        "text-representation": {
+          "script": "Latn",
+          "language": "eng"
+        },
+        "quality": "normal",
+        "disambiguation": "",
+        "date": "1996-03-01",
+        "release-events": [
+          {
+            "area": {
+              "disambiguation": "",
+              "id": "8a754a16-0027-3a29-b6d7-2b40ea0481ed",
+              "iso-3166-1-codes": [
+                "GB"
+              ],
+              "sort-name": "United Kingdom",
+              "type-id": null,
+              "name": "United Kingdom",
+              "type": null
+            },
+            "date": "1996-03-01"
+          }
+        ],
+        "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+        "barcode": null,
+        "status": "Official"
+      },
+      {
+        "country": "GB",
+        "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+        "title": "Greatest Hits",
+        "packaging": "Jewel Case",
+        "id": "a4f1aecf-7bda-4120-a552-9afd8502a9da",
+        "text-representation": {
+          "language": "eng",
+          "script": "Latn"
+        },
+        "disambiguation": "",
+        "quality": "normal",
+        "date": "1996-03-21",
+        "release-events": [
+          {
+            "area": {
+              "sort-name": "United Kingdom",
+              "iso-3166-1-codes": [
+                "GB"
+              ],
+              "id": "8a754a16-0027-3a29-b6d7-2b40ea0481ed",
+              "disambiguation": "",
+              "type": null,
+              "name": "United Kingdom",
+              "type-id": null
+            },
+            "date": "1996-03-21"
+          }
+        ],
+        "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+        "barcode": "743213555829",
+        "status": "Official"
+      },
+      {
+        "country": "JP",
+        "disambiguation": "",
+        "quality": "normal",
+        "text-representation": {
+          "language": "eng",
+          "script": "Latn"
+        },
+        "packaging": "Jewel Case",
+        "title": "Greatest Hits",
+        "id": "8de244ef-7067-4cbf-a344-cdd288fe8dbf",
+        "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+        "release-events": [
+          {
+            "date": "1996-04-03",
+            "area": {
+              "iso-3166-1-codes": [
+                "JP"
+              ],
+              "sort-name": "Japan",
+              "id": "2db42837-c832-3c27-b4a3-08198f75693c",
+              "disambiguation": "",
+              "name": "Japan",
+              "type": null,
+              "type-id": null
+            }
+          }
+        ],
+        "date": "1996-04-03",
+        "status": "Official",
+        "barcode": "4988017062432",
+        "status-id": "4e304316-386d-3409-af2e-78857eec5cfe"
+      },
+      {
+        "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+        "barcode": "743213555829",
+        "status": "Official",
+        "date": "1996",
+        "release-events": [
+          {
+            "area": {
+              "type-id": null,
+              "name": "Australia",
+              "type": null,
+              "id": "106e0bec-b638-3b37-b731-f53d507dc00e",
+              "disambiguation": "",
+              "sort-name": "Australia",
+              "iso-3166-1-codes": [
+                "AU"
+              ]
+            },
+            "date": "1996"
+          }
+        ],
+        "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+        "packaging": "Jewel Case",
+        "title": "Greatest Hits",
+        "id": "27f2d5cf-6550-4cd9-890b-3b5c26b997bd",
+        "text-representation": {
+          "script": "Latn",
+          "language": "eng"
+        },
+        "quality": "normal",
+        "disambiguation": "",
+        "country": "AU"
+      },
+      {
+        "text-representation": {
+          "language": "eng",
+          "script": "Latn"
+        },
+        "disambiguation": "",
+        "quality": "normal",
+        "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+        "id": "b1392c0b-13c4-410f-9e6e-7e7d11a1624b",
+        "title": "Greatest Hits",
+        "packaging": "Jewel Case",
+        "date": "1996",
+        "release-events": [
+          {
+            "area": {
+              "type-id": null,
+              "name": "China",
+              "type": null,
+              "id": "7c81bb69-a99b-3487-b6d4-0f76d7a29ca0",
+              "disambiguation": "",
+              "sort-name": "China",
+              "iso-3166-1-codes": [
+                "CN"
+              ]
+            },
+            "date": "1996"
+          }
+        ],
+        "country": "CN",
+        "status": "Official",
+        "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+        "barcode": "9787884751464"
+      },
+      {
+        "status-id": "4e304316-386d-3409-af2e-78857eec5cfe",
+        "barcode": "743213555829",
+        "status": "Official",
+        "date": "1996",
+        "release-events": [
+          {
+            "area": {
+              "type-id": null,
+              "type": null,
+              "name": "Europe",
+              "disambiguation": "",
+              "id": "89a675c2-3e37-3518-b83c-418bad59a85a",
+              "sort-name": "Europe",
+              "iso-3166-1-codes": [
+                "XE"
+              ]
+            },
+            "date": "1996"
+          }
+        ],
+        "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+        "title": "Greatest Hits",
+        "id": "1251c53a-b11c-437b-bebb-ddcc94df2f37",
+        "packaging": "Jewel Case",
+        "text-representation": {
+          "script": "Latn",
+          "language": "eng"
+        },
+        "quality": "normal",
+        "disambiguation": "",
+        "country": "XE"
+      },
+      {
+        "country": "XE",
+        "quality": "normal",
+        "disambiguation": "",
+        "text-representation": {
+          "script": "Latn",
+          "language": "eng"
+        },
+        "title": "Greatest Hits",
+        "packaging": "Jewel Case",
+        "id": "5cc3da00-d262-4a0d-a74a-cb7019174671",
+        "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+        "release-events": [
+          {
+            "area": {
+              "type-id": null,
+              "type": null,
+              "name": "Europe",
+              "disambiguation": "",
+              "id": "89a675c2-3e37-3518-b83c-418bad59a85a",
+              "sort-name": "Europe",
+              "iso-3166-1-codes": [
+                "XE"
+              ]
+            },
+            "date": "1996"
+          }
+        ],
+        "date": "1996",
+        "status": "Official",
+        "barcode": "743213732220",
+        "status-id": "4e304316-386d-3409-af2e-78857eec5cfe"
+      },
+      {
+        "status-id": "1156806e-d06a-38bd-83f0-cf2284a808b9",
+        "barcode": "",
+        "status": "Bootleg",
+        "country": "RU",
+        "packaging-id": "ec27701a-4a22-37f4-bfac-6616e0f9750a",
+        "title": "Greatest Hits",
+        "id": "cf907cef-6548-421e-ae61-63fd9b692c10",
+        "packaging": "Jewel Case",
+        "text-representation": {
+          "script": "Latn",
+          "language": "eng"
+        },
+        "quality": "normal",
+        "disambiguation": "",
+        "date": "1997",
+        "release-events": [
+          {
+            "area": {
+              "type-id": null,
+              "type": null,
+              "name": "Russia",
+              "disambiguation": "",
+              "id": "1f1fc3a4-9500-39b8-9f10-f0a465557eef",
+              "iso-3166-1-codes": [
+                "RU"
+              ],
+              "sort-name": "Russia"
+            },
+            "date": "1997"
+          }
+        ]
+      }
+    ],
+    "secondary-types": [
+      "Compilation"
+    ]
+  }
+}

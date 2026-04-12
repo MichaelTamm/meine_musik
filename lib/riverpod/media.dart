@@ -43,7 +43,7 @@ Future<List<AudioFile>> localAudioFiles(Ref ref) async {
           : 'Found $n audio files:',
     );
     for (final audioFile in audioFiles) {
-      debugPrint('    ${audioFile.path} (artist: ${audioFile.artist}, title: ${audioFile.title}, album: ${audioFile.album})');
+      debugPrint('    $audioFile');
     }
   }
   return audioFiles;

@@ -131,11 +131,11 @@ class MusicBrainz {
   Future<MusicBrainzRelease?> _searchReleaseByAlbum(Album album) async {
     final kuenstler = album.kuenstler;
 
-    MusicBrainzRelease toMusicBrainzRelease(Map<String, dynamic> releaseData) {
+    MusicBrainzRelease toMusicBrainzRelease(Map<String, dynamic> releaseData, String releaseGroupMbid) {
       final id = releaseData['id'] as String;
       final title = releaseData['title'] as String;
       debugPrint('Found release ${toDartString(title)} for $album in MusicBrainz database: https://musicbrainz.org/release/$id');
-      return MusicBrainzRelease(mbid: id, songIds: '|${album.map((song) => song.id).join('|')}|');
+      return MusicBrainzRelease(mbid: id, releaseGroupMbid: releaseGroupMbid, songIds: '|${album.map((song) => song.id).join('|')}|');
     }
 
     if (kuenstler.isNotEmpty && kuenstler != 'verschiedene Künstler') {
@@ -151,30 +151,48 @@ class MusicBrainz {
           }
           final title = releaseGroup['title'] as String? ?? '';
           if (title.normalize().toLowerCase() == normalizedAlbumName) {
-            final id = releaseGroup['id'] as String;
+            final releaseGroupId = releaseGroup['id'] as String;
             debugPrint(
-              'Found release-group ${toDartString(title)} for $album in MusicBrainz database: https://musicbrainz.org/release-group/$id',
+              'Found release-group ${toDartString(title)} for $album in MusicBrainz database: https://musicbrainz.org/release-group/$releaseGroupId',
             );
-            final data = await _apiClient.releaseGroups.get(id, inc: ['releases']);
+            final data = await _apiClient.releaseGroups.get(releaseGroupId, inc: ['releases']);
             final releases = (data['releases'] as List<dynamic>).cast<Map<String, dynamic>>();
             final officialReleases = releases.where((it) => it['status'] == 'Official');
-            // 1st round: search for release with disambiguation == "" and country != "XW" ...
-            for (final release in officialReleases) {
-              final disambiguation = release['disambiguation'] as String?;
-              final country = release['country'] as String?;
-              if ((disambiguation == null || disambiguation.isEmpty) && country != 'XW') {
-                return toMusicBrainzRelease(release);
+            // 1st round: search for release with no disambiguation and country != "XW" ...
+            final candidates1 = officialReleases.where((it) {
+              final disambiguation = it['disambiguation'] as String?;
+              final country = it['country'] as String?;
+              return (disambiguation == null || disambiguation.isEmpty) && country != 'XW';
+            }).toList();
+            if (candidates1.length == 1) {
+              return toMusicBrainzRelease(candidates1[0], releaseGroupId);
+            } else if (candidates1.length > 1) {
+              // Prefer release with known packaging ...
+              final candidates1_ = candidates1.where((it) => it['packaging-id'] != null);
+              if (candidates1_.isNotEmpty) {
+                return toMusicBrainzRelease(candidates1_.first, releaseGroupId);
+              } else {
+                return toMusicBrainzRelease(candidates1[0], releaseGroupId);
               }
             }
-            // 2nd round: search for release with disambiguation == ""
-            for (final release in officialReleases) {
-              final disambiguation = release['disambiguation'] as String?;
-              if (disambiguation == null || disambiguation.isEmpty) {
-                return toMusicBrainzRelease(release);
+            // 2nd round: search for release with no disambiguation
+            final candidates2 = officialReleases.where((it) {
+              final disambiguation = it['disambiguation'] as String?;
+              return disambiguation == null || disambiguation.isEmpty;
+            }).toList();
+            if (candidates2.length == 1) {
+              return toMusicBrainzRelease(candidates2[0], releaseGroupId);
+            } else if (candidates2.length > 1) {
+              // Prefer release with known packaging ...
+              final candidates2_ = candidates1.where((it) => it['packaging-id'] != null);
+              if (candidates2_.isNotEmpty) {
+                return toMusicBrainzRelease(candidates2_.first, releaseGroupId);
+              } else {
+                return toMusicBrainzRelease(candidates2[0], releaseGroupId);
               }
             }
             // Fallback ...
-            return toMusicBrainzRelease(officialReleases.firstOrNull ?? releases.first);
+            return toMusicBrainzRelease(officialReleases.firstOrNull ?? releases.first, releaseGroupId);
           }
         }
       }
@@ -222,7 +240,7 @@ class MusicBrainz {
       } else if (matches.length == 1) {
         final id = matches[0]['id'] as String;
         debugPrint('Found release ${toDartString(album.name)} in MusicBrainz database: https://musicbrainz.org/release/$id');
-        final release = MusicBrainzRelease(mbid: id, songIds: '|${album.map((song) => song.id).join('|')}|');
+        final release = MusicBrainzRelease(mbid: id, releaseGroupMbid: 'TODO', songIds: '|${album.map((song) => song.id).join('|')}|');
         return release;
       } else {
         debugPrint('Found ${matches.length} matches for album ${toDartString(album.name)} -- TODO: disambiguate');
