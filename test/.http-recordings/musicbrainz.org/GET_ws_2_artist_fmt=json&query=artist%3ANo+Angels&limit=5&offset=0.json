@@ -2,27 +2,27 @@
   "statusCode": 200,
   "headers": {
     "connection": "keep-alive",
-    "last-modified": "Wed, 01 Apr 2026 21:13:09 GMT",
+    "last-modified": "Sun, 12 Apr 2026 09:54:32 GMT",
     "access-control-allow-origin": "*",
     "x-ratelimit-limit": "1200",
-    "date": "Wed, 01 Apr 2026 21:21:04 GMT",
-    "x-ratelimit-reset": "1775078465",
+    "date": "Sun, 12 Apr 2026 09:56:03 GMT",
+    "x-ratelimit-reset": "1775987765",
     "content-encoding": "gzip",
     "vary": "Accept-Encoding",
-    "x-ratelimit-remaining": "507",
+    "x-ratelimit-remaining": "1152",
     "content-type": "application/json",
     "x-xss-protection": "1; mode=block",
     "keep-alive": "timeout=15",
-    "content-length": "3419",
-    "etag": "\"NzE3ZTQwMDAwMDAwMDAwU29scg==--gzip\"",
+    "content-length": "3415",
+    "etag": "\"M2Y3ZDE0MDAwMDAwMDAwMFNvbHI=--gzip\"",
     "x-frame-options": "SAMEORIGIN",
     "x-content-type-options": "nosniff",
     "content-security-policy": "default-src 'none'; base-uri 'none'; connect-src 'self'; form-action 'self'; font-src 'self'; frame-ancestors 'none'; img-src 'self' data:; media-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; worker-src 'self';",
-    "x-cache-status": "STALE"
+    "x-cache-status": "MISS"
   },
   "body": {
-    "created": "2026-04-01T21:14:03.586Z",
-    "count": 3770,
+    "created": "2026-04-12T09:56:03.785Z",
+    "count": 3784,
     "offset": 0,
     "artists": [
       {
@@ -1342,7 +1342,7 @@
         "id": "359e1d48-5121-463b-a408-54e5aa83a40d",
         "type": "Group",
         "type-id": "e431f5f6-b5d2-343d-8b36-72607fffb74b",
-        "score": 86,
+        "score": 85,
         "name": "The Angels",
         "sort-name": "Angels, The",
         "country": "US",
@@ -1388,64 +1388,36 @@
         ]
       },
       {
-        "id": "05071a7e-e71c-4306-a509-591cd3686893",
+        "id": "39110568-e506-4232-bfe5-3d7e997f967d",
         "type": "Group",
         "type-id": "e431f5f6-b5d2-343d-8b36-72607fffb74b",
         "score": 83,
-        "name": "Angels & Airwaves",
-        "sort-name": "Angels & Airwaves",
-        "country": "US",
+        "name": "生でドキ!!っ天使ロリィ",
+        "sort-name": "Nama de Doki Tenshi Roli",
+        "country": "JP",
         "area": {
-          "id": "489ce91b-6658-3307-9877-795b68554c98",
+          "id": "2db42837-c832-3c27-b4a3-08198f75693c",
           "type": "Country",
           "type-id": "06dd0ae4-8c74-30bb-b43d-95dcedf961de",
-          "name": "United States",
-          "sort-name": "United States",
-          "life-span": {
-            "ended": null
-          }
-        },
-        "begin-area": {
-          "id": "82f3a697-ba65-404d-a1ed-360147af7d10",
-          "type": "City",
-          "type-id": "6fd8f29a-3d0a-32fc-980d-ea697b69da78",
-          "name": "San Diego",
-          "sort-name": "San Diego",
+          "name": "Japan",
+          "sort-name": "Japan",
           "life-span": {
             "ended": null
           }
         },
         "life-span": {
-          "begin": "2005",
           "ended": null
         },
         "aliases": [
           {
-            "sort-name": "Angels and Airwaves",
-            "name": "Angels and Airwaves",
-            "locale": null,
-            "type": null,
-            "primary": null,
+            "sort-name": "ROLI ANGELS",
+            "type-id": "894afba6-2816-3c24-8072-eadb66bd04bc",
+            "name": "ROLI ANGELS",
+            "locale": "en",
+            "type": "Artist name",
+            "primary": true,
             "begin-date": null,
             "end-date": null
-          }
-        ],
-        "tags": [
-          {
-            "count": 0,
-            "name": "rock and indie"
-          },
-          {
-            "count": 2,
-            "name": "alternative rock"
-          },
-          {
-            "count": 1,
-            "name": "pop rock"
-          },
-          {
-            "count": 1,
-            "name": "space rock"
           }
         ]
       }

@@ -1,16 +1,13 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:meine_musik/env.dart';
-import 'package:meine_musik/riverpod/media.dart';
-import 'package:meine_musik/utils.dart';
 
 import 'AudioFile.dart';
 import 'AudioFolder.dart';
 import 'Song.dart';
 
-class Logic {
-  final Map<String, Future<List<String>>> _splitArtistStringCache = {};
+final _featuringRegExp = RegExp(r'(\s(ft\.|feat\.|featuring)\s)|,|(, and)');
+final _andRegExp = RegExp(r'\s(and|et|e|und|y|&|\+)\s');
 
+class Logic {
   /// Heuristic to determine whether an audio file is a song or not.
   bool isSongHeuristic(AudioFile audioFile) {
     if (audioFile.path.contains('/WhatsApp/')) {
@@ -52,57 +49,42 @@ class Logic {
     return root;
   }
 
-  Future<List<String>> splitArtistString(String s) => _splitArtistStringCache.putIfAbsent(s, () => _splitArtistString(s).toList());
-
-  Stream<String> _splitArtistString(String s) async* {
-    final a1 = s.split(RegExp(r'(\s(ft\.|feat\.|featuring)\s)|,')).map((it) => it.trim()).where((it) => it.isNotEmpty);
+  /// Heuristic based algorithm to split an artist string into a list of artist names.
+  Iterable<String> splitArtistStringHeuristic(String s) sync* {
+    final a1 = s.split(_featuringRegExp).map((it) => it.trim()).where((it) => it.isNotEmpty);
     for (final a in a1) {
-      var a2 = a.split(RegExp(r'\s(and|und|&)\s')).map((it) => it.trim()).where((it) => it.isNotEmpty);
-      try {
-        final artist = await riverpodContainer.read(artistProvider(a).future);
-        if (artist != null) {
-          // Use the actual artist name to avoid duplicates in the Künstler tab ...
-          yield artist.name;
-          // When searching for "Hans Zimmer & Lisa Gerrard" the artist "Lisa Gerrard" is returned.
-          // Make sure we don't ignore "Hans Zimmer" in such a case ...
-          if (a2.length > 1 && a2.contains(artist.name)) {
-            a2 = a2.where((it) => it != artist.name);
-          } else {
-            continue;
-          }
-        }
-      } catch (error, stack) {
-        if (kIsTest) {
-          rethrow;
-        } else {
-          debugPrintStack(label: 'Failed to get artist ${toDartString(a)} -- $error', stackTrace: stack);
-        }
+      final m = _andRegExp.firstMatch(a.toLowerCase());
+      if (m == null) {
+        yield a;
+        continue;
       }
-      for (final a in a2) {
-        try {
-          final artist = await riverpodContainer.read(artistProvider(a).future);
-          if (artist != null) {
-            // Use the actual artist name to avoid duplicates in the Künstler tab ...
-            yield artist.name;
-          } else {
-            yield a;
-          }
-        } catch (error, stack) {
-          if (kIsTest) {
-            rethrow;
-          } else {
-            debugPrintStack(label: 'Failed to get artist ${toDartString(a)} -- $error', stackTrace: stack);
-            yield a;
-          }
+      final name1 = a.substring(0, m.start).trim();
+      final name2 = a.substring(m.end).trim();
+      final m2 = _andRegExp.firstMatch(name2);
+      if (m2 == null) {
+        // Heuristic:
+        // - if either name1 or name2 is a single word keep the names together
+        // - if name2 starts with "the" keep the names together
+        // - otherwise split the names
+        if (!name1.contains(' ') || !name2.contains(' ') || name2.toLowerCase().startsWith('the ')) {
+          yield a;
+        } else {
+          yield name1;
+          yield name2;
         }
+      } else {
+        // This is very unlikely, let's keep things simple ...
+        final names = a.split(_andRegExp).map((it) => it.trim());
+        yield* names;
       }
     }
   }
 
-  Future<String> determineAlbumKuenstler(Iterable<Song> songs) async {
+  /// Heuristic based algorithm to determine the artist of an album.
+  /// Returns 'verschiedene Künstler' if no dominant artist is found.
+  String determineAlbumKuenstlerHeuristic(Iterable<Song> songsOfAlbum) {
     final artistHistogram = <String, int>{};
-    final artistNamesFutures = [for (final song in songs) splitArtistString(song.artist)];
-    for (final artistName in (await Future.wait(artistNamesFutures)).flattened) {
+    for (final artistName in [for (final song in songsOfAlbum) splitArtistStringHeuristic(song.artist)].flattened) {
       artistHistogram[artistName] = (artistHistogram[artistName] ?? 0) + 1;
     }
     final sortedList = artistHistogram.entries.toList()..sort((a, b) => b.value - a.value);
@@ -114,7 +96,7 @@ class Logic {
       final mapEntry1 = sortedList[0];
       final mapEntry2 = sortedList[1];
       // Heuristic: ...
-      if (mapEntry1.value >= songs.length * 0.8 && mapEntry2.value <= songs.length / 3) {
+      if (mapEntry1.value >= songsOfAlbum.length * 0.8 && mapEntry2.value <= songsOfAlbum.length / 3) {
         return mapEntry1.key;
       }
       return 'verschiedene Künstler';

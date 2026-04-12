@@ -2,9 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:meine_musik/env.dart';
 import 'package:meine_musik/model/AudioFile.dart';
 import 'package:meine_musik/model/AudioFolder.dart';
-import 'package:meine_musik/services/MusicBrainz.dart';
 
-import '../RecordPlaybackHttpClient.dart';
 import '../testdata.dart';
 
 void main() {
@@ -51,12 +49,11 @@ Dieses Gerät
 ''');
   });
 
-  test('splitArtistString', () async {
-    musicBrainz = MusicBrainz(RecordPlaybackHttpClient());
-    expect(await logic.splitArtistString(''), equals([]));
-    expect(await logic.splitArtistString('Simon & Garfunkel'), equals(['Simon & Garfunkel']));
-    expect(await logic.splitArtistString('Simon and Garfunkel'), equals(['Simon & Garfunkel']));
-    expect(await logic.splitArtistString('Hans Zimmer & Lisa Gerrard'), equals(['Lisa Gerrard', 'Hans Zimmer']));
+  test('splitArtistStringHeuristic', () async {
+    expect(logic.splitArtistStringHeuristic(''), equals([]));
+    expect(logic.splitArtistStringHeuristic('Simon & Garfunkel'), equals(['Simon & Garfunkel']));
+    expect(logic.splitArtistStringHeuristic('Simon and Garfunkel'), equals(['Simon and Garfunkel']));
+    expect(logic.splitArtistStringHeuristic('Hans Zimmer & Lisa Gerrard'), equals(['Hans Zimmer', 'Lisa Gerrard']));
   });
 }
 

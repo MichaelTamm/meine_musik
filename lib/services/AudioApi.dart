@@ -91,6 +91,11 @@ class AudioFile {
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hashAll(_toList());
+
+  String get dir {
+    final i = path.lastIndexOf('/');
+    return i <= 0 ? '' : path.substring(0, i);
+  }
 }
 
 class _PigeonCodec extends StandardMessageCodec {

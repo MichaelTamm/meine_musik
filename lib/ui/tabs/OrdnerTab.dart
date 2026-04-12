@@ -194,9 +194,11 @@ class _AudioFolderView extends ConsumerWidget {
         final numFolders = folder.subfolders.length;
         final numFiles = folder.files.length;
         return RefreshIndicator(
-          onRefresh: () {
+          onRefresh: () async {
+            // [UX] Show refresh indicator for 300 ms ...
+            await Future.delayed(Duration(milliseconds: 300));
             riverpodContainer.invalidateAll();
-            return Future.delayed(Duration(milliseconds: 300));
+            OrdnerTab.navigatorKey.currentState!.popUntil((it) => it.settings.name == '/');
           },
           child: ListView.builder(
             // With the default ListView physics, RefreshIndicator won't trigger

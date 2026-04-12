@@ -20,17 +20,20 @@ class AlbenTab extends ConsumerStatefulWidget {
     final allSongs = await ref.watch(alleLiederProvider.future);
     final songsByAlbumName = allSongs.groupBy((it) => it.album);
     final viewData = <Album>[];
-    // TODO: What if there are multiple alben with the same name (e.g. "Greatest Hits") -- disambiguation by folder!
     for (final mapEntry in songsByAlbumName.entries) {
       final name = mapEntry.key;
-      final songs = mapEntry.value.sortBy((it) => it.trackNumber, thenBy: (it) => it.path);
-      for (int i = 0; i < songs.length; ++i) {
-        final song = songs[i];
-        if (song.trackNumber == 0) {
-          song.trackNumber = i + 1;
+      // There might be multiple alben with the same name (e.g. "Greatest Hits") -- disambiguate by folder ...
+      final songsByDir = mapEntry.value.groupBy((it) => it.dir);
+      for (final songs in songsByDir.values) {
+        final songs_ = songs.sortBy((it) => it.trackNumber);
+        for (int i = 0; i < songs_.length; ++i) {
+          final song = songs_[i];
+          if (song.trackNumber == 0) {
+            song.trackNumber = i + 1;
+          }
         }
+        viewData.add(Album.fromNameAndSongs(name, songs_));
       }
-      viewData.add(await Album.fromNameAndSongs(name, songs));
     }
     ref.keepAlive();
     return viewData;
@@ -107,9 +110,10 @@ class _AlleAlbenOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () {
+      onRefresh: () async {
+        // [UX] Show refresh indicator for 300 ms ...
+        await Future.delayed(Duration(milliseconds: 300));
         riverpodContainer.invalidateAll();
-        return Future.delayed(Duration(milliseconds: 300));
       },
       child: ListView.builder(
         // With the default ListView physics, RefreshIndicator won't trigger

@@ -4,328 +4,328 @@
     "connection": "keep-alive",
     "x-ratelimit-limit": "1200",
     "transfer-encoding": "chunked",
-    "date": "Wed, 01 Apr 2026 21:32:34 GMT",
-    "x-ratelimit-reset": "1775079154",
+    "date": "Sun, 12 Apr 2026 09:56:03 GMT",
+    "x-ratelimit-reset": "1775987765",
     "access-control-allow-origin": "*",
     "content-encoding": "gzip",
     "vary": "Accept-Encoding",
-    "x-ratelimit-remaining": "308",
+    "x-ratelimit-remaining": "1052",
     "content-type": "application/json; charset=utf-8",
     "server": "Plack::Handler::Starlet",
     "keep-alive": "timeout=15",
-    "etag": "W/\"accbdb42e84042feeae1cd17061a9848\"",
-    "x-runtime": "0.048985",
+    "etag": "W/\"56ab8afd12ef748d98c64ee3783fdedd\"",
+    "x-runtime": "0.061585",
     "x-cache-status": "MISS"
   },
   "body": {
-    "id": "dfae58d5-6b0e-4a4d-8d85-4f51b7e9e2fa",
-    "gender": null,
-    "gender-id": null,
     "country": "DE",
-    "ipis": [],
-    "type-id": "e431f5f6-b5d2-343d-8b36-72607fffb74b",
-    "life-span": {
-      "ended": false,
-      "end": null,
-      "begin": "2000"
-    },
-    "disambiguation": "",
-    "sort-name": "No Angels",
     "name": "No Angels",
-    "begin-area": {
-      "sort-name": "Germany",
-      "disambiguation": "",
-      "name": "Germany",
-      "iso-3166-1-codes": [
-        "DE"
-      ],
-      "type": null,
-      "type-id": null,
-      "id": "85752fda-13c4-31a3-bee5-0e5cb1f51dad"
+    "id": "dfae58d5-6b0e-4a4d-8d85-4f51b7e9e2fa",
+    "life-span": {
+      "begin": "2000",
+      "ended": false,
+      "end": null
     },
-    "area": {
-      "id": "85752fda-13c4-31a3-bee5-0e5cb1f51dad",
-      "type-id": null,
-      "name": "Germany",
-      "disambiguation": "",
-      "sort-name": "Germany",
-      "type": null,
-      "iso-3166-1-codes": [
-        "DE"
-      ]
-    },
-    "isnis": [
-      "0000000110133235"
-    ],
+    "sort-name": "No Angels",
     "release-groups": [
       {
         "first-release-date": "2001-01-01",
+        "title": "Elle'Ments",
+        "primary-type": "Album",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
         "secondary-types": [],
         "disambiguation": "",
-        "primary-type": "Album",
         "secondary-type-ids": [],
-        "id": "8825e326-b204-31ce-9cba-27b149adc9c8",
-        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
-        "title": "Elle'Ments"
+        "id": "8825e326-b204-31ce-9cba-27b149adc9c8"
       },
       {
-        "secondary-type-ids": [],
-        "id": "4ee26f92-6cba-3cca-9774-f1a04c7a8f1d",
-        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
         "primary-type": "Album",
         "first-release-date": "2002-06-24",
-        "disambiguation": "",
-        "secondary-types": [],
-        "title": "Now… Us!"
-      },
-      {
-        "title": "When the Angels Swing",
-        "first-release-date": "2002-11-29",
-        "disambiguation": "",
-        "secondary-types": [],
-        "id": "e02d65d2-3a7a-3bf9-8d05-ee2ec93fce94",
+        "title": "Now… Us!",
         "secondary-type-ids": [],
-        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
-        "primary-type": "Album"
-      },
-      {
-        "secondary-type-ids": [],
-        "id": "68d05f34-6387-3dee-b290-e3149fddda9e",
-        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
-        "primary-type": "Album",
-        "first-release-date": "2003-08-25",
-        "disambiguation": "",
-        "secondary-types": [],
-        "title": "Pure"
-      },
-      {
-        "title": "Acoustic Angels",
-        "first-release-date": "2004-07-05",
+        "id": "4ee26f92-6cba-3cca-9774-f1a04c7a8f1d",
         "secondary-types": [],
         "disambiguation": "",
-        "primary-type": "Album",
-        "secondary-type-ids": [],
-        "id": "8778c854-acad-35b8-8bbc-f831d20b4e0f",
         "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
       },
       {
-        "primary-type": "Album",
-        "id": "5bc4a9d0-bb27-3d0b-9c46-2bf68e9a35ff",
-        "secondary-type-ids": [],
         "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
-        "first-release-date": "2007-01-01",
+        "secondary-type-ids": [],
+        "id": "e02d65d2-3a7a-3bf9-8d05-ee2ec93fce94",
         "secondary-types": [],
         "disambiguation": "",
-        "title": "Destiny"
+        "primary-type": "Album",
+        "first-release-date": "2002-11-29",
+        "title": "When the Angels Swing"
       },
       {
+        "title": "Pure",
+        "first-release-date": "2003-08-25",
+        "primary-type": "Album",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "disambiguation": "",
+        "secondary-types": [],
+        "secondary-type-ids": [],
+        "id": "68d05f34-6387-3dee-b290-e3149fddda9e"
+      },
+      {
+        "secondary-types": [],
+        "disambiguation": "",
+        "id": "8778c854-acad-35b8-8bbc-f831d20b4e0f",
+        "secondary-type-ids": [],
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "title": "Acoustic Angels",
+        "first-release-date": "2004-07-05",
+        "primary-type": "Album"
+      },
+      {
+        "primary-type": "Album",
+        "title": "Destiny",
+        "first-release-date": "2007-01-01",
+        "secondary-type-ids": [],
+        "id": "5bc4a9d0-bb27-3d0b-9c46-2bf68e9a35ff",
+        "disambiguation": "",
+        "secondary-types": [],
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
+      },
+      {
+        "title": "Welcome to the Dance",
+        "first-release-date": "2009-09-11",
+        "primary-type": "Album",
+        "secondary-types": [],
+        "disambiguation": "",
         "id": "3b5eb540-dec0-4c63-94b5-e31917e23a1f",
         "secondary-type-ids": [],
-        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
-        "primary-type": "Album",
-        "first-release-date": "2009-09-11",
-        "disambiguation": "",
-        "secondary-types": [],
-        "title": "Welcome to the Dance"
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
       },
       {
-        "secondary-type-ids": [],
-        "id": "bc2ca97f-7bfa-4fbf-8f34-3b0d69976846",
-        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
-        "primary-type": "Album",
         "first-release-date": "2021-06-04",
-        "secondary-types": [],
-        "disambiguation": "",
-        "title": "20"
-      },
-      {
-        "title": "It's Christmas",
-        "secondary-types": [],
-        "disambiguation": "",
-        "first-release-date": "2025-11-21",
+        "title": "20",
         "primary-type": "Album",
         "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
-        "id": "d27c601d-17f4-42ed-8ab3-6d0558a0ae49",
-        "secondary-type-ids": []
+        "disambiguation": "",
+        "secondary-types": [],
+        "secondary-type-ids": [],
+        "id": "bc2ca97f-7bfa-4fbf-8f34-3b0d69976846"
       },
       {
+        "secondary-types": [],
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "id": "d27c601d-17f4-42ed-8ab3-6d0558a0ae49",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "title": "It's Christmas",
+        "first-release-date": "2025-11-21",
+        "primary-type": "Album"
+      },
+      {
+        "disambiguation": "",
         "secondary-types": [
           "Compilation"
         ],
-        "disambiguation": "",
-        "first-release-date": "2003-12-01",
-        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
         "id": "5e4998cb-52ee-30c6-ad9b-b5ec9234f392",
         "secondary-type-ids": [
           "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
         ],
-        "primary-type": "Album",
-        "title": "The Best of No Angels"
-      },
-      {
-        "secondary-types": [
-          "Compilation"
-        ],
-        "disambiguation": "",
-        "first-release-date": "2007",
         "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
-        "secondary-type-ids": [
-          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
-        ],
-        "id": "9b9e2f79-f6da-409d-9f0d-1ccd9ab1f380",
-        "primary-type": "Album",
-        "title": "Colour Collection"
-      },
-      {
-        "title": "Very Best of No Angels",
-        "disambiguation": "",
-        "secondary-types": [
-          "Compilation"
-        ],
-        "first-release-date": "2008-05-27",
-        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
-        "id": "d02dd96e-30f9-4eae-a00d-17897b368f69",
-        "secondary-type-ids": [
-          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
-        ],
+        "first-release-date": "2003-12-01",
+        "title": "The Best of No Angels",
         "primary-type": "Album"
       },
       {
-        "title": "GOLD curated by Galerie Arschgeweih",
-        "secondary-types": [],
+        "primary-type": "Album",
+        "first-release-date": "2007",
+        "title": "Colour Collection",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "id": "9b9e2f79-f6da-409d-9f0d-1ccd9ab1f380",
+        "secondary-type-ids": [
+          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+        ],
         "disambiguation": "",
-        "first-release-date": "2025-04-11",
-        "primary-type": "EP",
-        "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
-        "secondary-type-ids": [],
-        "id": "f6ce5572-3a05-453e-b05c-f68371771f99"
+        "secondary-types": [
+          "Compilation"
+        ]
+      },
+      {
+        "first-release-date": "2008-05-27",
+        "title": "Very Best of No Angels",
+        "primary-type": "Album",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "disambiguation": "",
+        "secondary-types": [
+          "Compilation"
+        ],
+        "id": "d02dd96e-30f9-4eae-a00d-17897b368f69",
+        "secondary-type-ids": [
+          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+        ]
       },
       {
         "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
-        "secondary-type-ids": [
-          "0c60f497-ff81-3818-befd-abfc84a4858b"
-        ],
-        "id": "ad13f227-fa4e-454f-aa5a-12b77dcd6df4",
-        "primary-type": "EP",
+        "secondary-types": [],
+        "disambiguation": "",
+        "id": "f6ce5572-3a05-453e-b05c-f68371771f99",
+        "secondary-type-ids": [],
+        "title": "GOLD curated by Galerie Arschgeweih",
+        "first-release-date": "2025-04-11",
+        "primary-type": "EP"
+      },
+      {
+        "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+        "disambiguation": "",
         "secondary-types": [
           "Remix"
         ],
-        "disambiguation": "",
+        "id": "ad13f227-fa4e-454f-aa5a-12b77dcd6df4",
+        "secondary-type-ids": [
+          "0c60f497-ff81-3818-befd-abfc84a4858b"
+        ],
         "first-release-date": "2025-07-25",
-        "title": "THE REMIXES curated by Galerie Arschgeweih"
+        "title": "THE REMIXES curated by Galerie Arschgeweih",
+        "primary-type": "EP"
       },
       {
+        "title": "Daylight in Your Eyes",
         "first-release-date": "2001-02-05",
-        "disambiguation": "",
-        "secondary-types": [],
-        "secondary-type-ids": [],
-        "id": "e4eb87ad-8e0c-32ba-a057-75d6ea3e83ba",
-        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
         "primary-type": "Single",
-        "title": "Daylight in Your Eyes"
+        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+        "secondary-types": [],
+        "disambiguation": "",
+        "id": "e4eb87ad-8e0c-32ba-a057-75d6ea3e83ba",
+        "secondary-type-ids": []
       },
       {
-        "first-release-date": "2001-04-30",
-        "disambiguation": "",
-        "secondary-types": [],
-        "secondary-type-ids": [],
-        "id": "e3523c7f-5ff6-3f16-8c96-53409f8c0d54",
         "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
-        "primary-type": "Single",
-        "title": "Rivers of Joy"
+        "secondary-types": [],
+        "disambiguation": "",
+        "id": "e3523c7f-5ff6-3f16-8c96-53409f8c0d54",
+        "secondary-type-ids": [],
+        "title": "Rivers of Joy",
+        "first-release-date": "2001-04-30",
+        "primary-type": "Single"
       },
       {
         "title": "There Must Be an Angel",
+        "first-release-date": "2001-08-13",
         "primary-type": "Single",
+        "secondary-types": [],
+        "disambiguation": "",
         "secondary-type-ids": [],
         "id": "e0829b68-990d-3f5a-b93d-83d26953b2f8",
+        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9"
+      },
+      {
+        "title": "Atlantis / When the Angels Sing",
+        "first-release-date": "2001-11-19",
+        "primary-type": "Single",
+        "secondary-types": [],
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "id": "da656888-d0f0-3a9d-9551-243e513c9c37",
+        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9"
+      },
+      {
         "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
-        "first-release-date": "2001-08-13",
+        "disambiguation": "",
+        "secondary-types": [],
+        "secondary-type-ids": [],
+        "id": "c1f6c0cc-0456-4ef4-ab33-88ae9541a61b",
+        "first-release-date": "2002-05-06",
+        "title": "Something About Us / Like Ice in the Sunshine",
+        "primary-type": "Single"
+      },
+      {
+        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+        "id": "7e70c640-ecee-444e-93ec-3955f802492f",
+        "secondary-type-ids": [],
+        "secondary-types": [],
+        "disambiguation": "",
+        "primary-type": "Single",
+        "title": "Still in Love With You",
+        "first-release-date": "2002-08-12"
+      },
+      {
+        "disambiguation": "",
+        "secondary-types": [],
+        "secondary-type-ids": [],
+        "id": "736f64c2-b4da-415d-9a4c-9803b3f9da8d",
+        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+        "first-release-date": "2002-11-04",
+        "title": "Let’s Go to Bed",
+        "primary-type": "Single"
+      },
+      {
+        "title": "All Cried Out",
+        "first-release-date": "2002-12-02",
+        "primary-type": "Single",
+        "secondary-types": [],
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "id": "beda9079-d4d3-4206-8320-0117a2676fc0",
+        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9"
+      },
+      {
+        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+        "secondary-types": [],
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "id": "fae86660-14a1-3dab-8a15-1f86ac3c446c",
+        "title": "No Angel (It’s All in Your Mind)",
+        "first-release-date": "2003-04-22",
+        "primary-type": "Single"
+      },
+      {
+        "primary-type": "Single",
+        "first-release-date": "2003-07-14",
+        "title": "Someday",
+        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+        "secondary-type-ids": [],
+        "id": "5841bd8e-4eac-3a9f-89d2-0ab0f8879924",
         "secondary-types": [],
         "disambiguation": ""
       },
       {
-        "first-release-date": "2001-11-19",
         "secondary-types": [],
         "disambiguation": "",
-        "primary-type": "Single",
         "secondary-type-ids": [],
-        "id": "da656888-d0f0-3a9d-9551-243e513c9c37",
-        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
-        "title": "Atlantis / When the Angels Sing"
-      },
-      {
-        "secondary-types": [],
-        "disambiguation": "",
-        "first-release-date": "2002-05-06",
-        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
-        "secondary-type-ids": [],
-        "id": "c1f6c0cc-0456-4ef4-ab33-88ae9541a61b",
-        "primary-type": "Single",
-        "title": "Something About Us / Like Ice in the Sunshine"
-      },
-      {
-        "disambiguation": "",
-        "secondary-types": [],
-        "first-release-date": "2002-08-12",
-        "primary-type": "Single",
-        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
-        "secondary-type-ids": [],
-        "id": "7e70c640-ecee-444e-93ec-3955f802492f",
-        "title": "Still in Love With You"
-      },
-      {
-        "title": "Let’s Go to Bed",
-        "disambiguation": "",
-        "secondary-types": [],
-        "first-release-date": "2002-11-04",
-        "primary-type": "Single",
-        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
-        "secondary-type-ids": [],
-        "id": "736f64c2-b4da-415d-9a4c-9803b3f9da8d"
-      },
-      {
-        "title": "All Cried Out",
-        "secondary-types": [],
-        "disambiguation": "",
-        "first-release-date": "2002-12-02",
-        "primary-type": "Single",
-        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
-        "id": "beda9079-d4d3-4206-8320-0117a2676fc0",
-        "secondary-type-ids": []
-      },
-      {
-        "secondary-types": [],
-        "disambiguation": "",
-        "first-release-date": "2003-04-22",
-        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
-        "secondary-type-ids": [],
-        "id": "fae86660-14a1-3dab-8a15-1f86ac3c446c",
-        "primary-type": "Single",
-        "title": "No Angel (It’s All in Your Mind)"
-      },
-      {
-        "title": "Someday",
-        "secondary-types": [],
-        "disambiguation": "",
-        "first-release-date": "2003-07-14",
-        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
-        "id": "5841bd8e-4eac-3a9f-89d2-0ab0f8879924",
-        "secondary-type-ids": [],
-        "primary-type": "Single"
-      },
-      {
-        "disambiguation": "",
-        "secondary-types": [],
-        "first-release-date": "2003-09-22",
-        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
         "id": "9593cf39-fc13-44e3-8a0e-1e978c539502",
-        "secondary-type-ids": [],
-        "primary-type": "Single",
-        "title": "Feelgood Lies"
+        "primary-type-id": "d6038452-8ee0-3f68-affc-2de9a1ede0b9",
+        "title": "Feelgood Lies",
+        "first-release-date": "2003-09-22",
+        "primary-type": "Single"
       }
     ],
+    "ipis": [],
+    "type-id": "e431f5f6-b5d2-343d-8b36-72607fffb74b",
     "end-area": null,
-    "type": "Group"
+    "type": "Group",
+    "area": {
+      "type": null,
+      "type-id": null,
+      "iso-3166-1-codes": [
+        "DE"
+      ],
+      "sort-name": "Germany",
+      "disambiguation": "",
+      "id": "85752fda-13c4-31a3-bee5-0e5cb1f51dad",
+      "name": "Germany"
+    },
+    "begin-area": {
+      "disambiguation": "",
+      "name": "Germany",
+      "id": "85752fda-13c4-31a3-bee5-0e5cb1f51dad",
+      "type-id": null,
+      "type": null,
+      "iso-3166-1-codes": [
+        "DE"
+      ],
+      "sort-name": "Germany"
+    },
+    "disambiguation": "",
+    "gender-id": null,
+    "isnis": [
+      "0000000110133235"
+    ],
+    "gender": null
   }
 }

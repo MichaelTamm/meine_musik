@@ -73,9 +73,10 @@ class FileManager extends HookWidget {
       body: ListTileTheme(
         dense: true,
         child: RefreshIndicator(
-          onRefresh: () {
+          onRefresh: () async {
+            // [UX] Show refresh indicator for 300 ms ...
+            await Future.delayed(Duration(milliseconds: 300));
             changeDir(currentDir);
-            return Future.delayed(Duration(milliseconds: 300));
           },
           child: ListView.builder(
             itemCount: 1 + dirs.length + files.length,

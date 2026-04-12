@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:meine_musik/env.dart';
 
+import '../../env.dart';
 import '../../model/Playlist.dart';
 import '../../model/Song.dart';
 import '../../riverpod/player_state.dart';
@@ -19,27 +21,14 @@ class KuenstlerTab extends ConsumerStatefulWidget {
 
   static final viewDataProvider = FutureProvider<List<KuenstlerSongs>>((ref) async {
     final allSongs = await ref.watch(alleLiederProvider.future);
-    // A song can be performed by multiple artists, therefore ...
-    final futures = [for (final song in allSongs) logic.splitArtistString(song.artist).then((artistNames) => (song, artistNames))];
-    final songsByArtistName = <String, List<Song>>{};
-    // TODO: start rendering as soon as we have a kuenstler, keep processing songs in the background ...
-    for (final future in futures) {
-      try {
-        final (song, artistNames) = await future;
-        for (final artistName in artistNames) {
-          (songsByArtistName[artistName] ??= []).add(song);
-        }
-      } catch (error, stack) {
-        debugPrintStack(label: '$error', stackTrace: stack);
+    final songsByArtist = <String, List<Song>>{};
+    for (final song in allSongs) {
+      // A song can be performed by multiple artists, therefore we need to split the `song.artist` songs ...
+      for (final artists in logic.splitArtistStringHeuristic(song.artist)) {
+        songsByArtist.putIfAbsent(artists, () => []).add(song);
       }
     }
-    final viewData = <KuenstlerSongs>[];
-    for (final mapEntry in songsByArtistName.entries) {
-      final kuenstler = mapEntry.key;
-      final songs = mapEntry.value.sortBy((it) => it.title);
-      viewData.add(KuenstlerSongs(kuenstler, songs));
-    }
-    viewData.sort((a, b) => a.kuenstler.compareTo(b.kuenstler));
+    final viewData = songsByArtist.entries.map((it) => KuenstlerSongs(it.key, it.value)).toList(growable: false);
     ref.keepAlive();
     return viewData;
   }, name: '$KuenstlerTab.viewDataProvider');
@@ -115,9 +104,10 @@ class _AlleKuenstlerOverview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () {
+      onRefresh: () async {
+        // [UX] Show refresh indicator for 300 ms ...
+        await Future.delayed(Duration(milliseconds: 300));
         riverpodContainer.invalidateAll();
-        return Future.delayed(Duration(milliseconds: 300));
       },
       child: ListView.builder(
         // With the default ListView physics, RefreshIndicator won't trigger
