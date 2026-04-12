@@ -29,6 +29,7 @@ class KuenstlerTab extends ConsumerStatefulWidget {
       }
     }
     final viewData = songsByArtist.entries.map((it) => KuenstlerSongs(it.key, it.value)).toList(growable: false);
+    viewData.sort((a, b) => a.kuenstler.compareTo(b.kuenstler));
     ref.keepAlive();
     return viewData;
   }, name: '$KuenstlerTab.viewDataProvider');
