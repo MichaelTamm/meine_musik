@@ -49,7 +49,7 @@ Dieses Gerät
 ''');
   });
 
-  test('splitArtistStringHeuristic', () async {
+  test('splitArtistStringHeuristic', () {
     expect(logic.splitArtistStringHeuristic(''), equals([]));
     expect(logic.splitArtistStringHeuristic('Simon & Garfunkel'), equals(['Simon & Garfunkel']));
     expect(logic.splitArtistStringHeuristic('Simon and Garfunkel'), equals(['Simon and Garfunkel']));
