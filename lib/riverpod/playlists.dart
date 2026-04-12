@@ -90,15 +90,20 @@ Future<ManuallyCreatedPlaylist> manuallyCreatedPlaylist(Ref ref, int playlistId)
     songs,
     setName: (String name) async {
       await (db.playlists.update()..where((t) => t.id.equals(playlistId))).write(PlaylistsCompanion(name: Value(name)));
+      ref.invalidate(playlistsDatabaseRecordsProvider);
     },
     addSong: (Song song) async {
       await db.playlistItems.insertOne(PlaylistItemsCompanion(playlistId: Value(playlistId), songId: Value(song.id)));
+      ref.invalidate(playlistItemsDatabaseRecordsProvider);
     },
     removeSong: (Song song) async {
       await db.playlistItems.deleteOne(PlaylistItemsCompanion(playlistId: Value(playlistId), songId: Value(song.id)));
+      ref.invalidate(playlistItemsDatabaseRecordsProvider);
     },
     delete: () async {
-      await db.deletePlaylist(playlistId);
+      await db.playlists.deleteWhere((t) => t.id.equals(playlistId));
+      ref.invalidate(playlistsDatabaseRecordsProvider);
+      ref.invalidate(playlistItemsDatabaseRecordsProvider);
     },
   );
   return playlist;

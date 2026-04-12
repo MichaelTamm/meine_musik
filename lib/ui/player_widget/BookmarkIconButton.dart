@@ -16,7 +16,7 @@ class BookmarkIconButton extends ConsumerWidget {
     if (currentBookmarkTarget == null) {
       return IconButton(icon: Container(), onPressed: null);
     }
-    final isBookmarked = currentBookmarkTarget.contains(currentSong.song);
+    final isBookmarked = currentBookmarkTarget.contains(currentSong);
     return IconButton(
       icon: Icon(
         currentBookmarkTarget is Favoriten
@@ -30,7 +30,7 @@ class BookmarkIconButton extends ConsumerWidget {
           debugPrint('[PlayerWidget] Tap on bookmark icon button');
         }
         if (isBookmarked) {
-          await currentBookmarkTarget.removeSong!.call(currentSong.song);
+          await currentBookmarkTarget.removeSong!.call(currentSong);
           if (context.mounted) {
             showSnackBar(
               context,
@@ -39,13 +39,13 @@ class BookmarkIconButton extends ConsumerWidget {
                 'Rückgängig machen',
                 () async {
                   debugPrint('[SnackBar] Tap on "Rückgängig machen"');
-                  await currentBookmarkTarget.addSong!.call(currentSong.song);
+                  await currentBookmarkTarget.addSong!.call(currentSong);
                 },
               ),
             );
           }
         } else {
-          await currentBookmarkTarget.addSong!.call(currentSong.song);
+          await currentBookmarkTarget.addSong!.call(currentSong);
           if (context.mounted) {
             showSnackBar(
               context,
@@ -54,14 +54,14 @@ class BookmarkIconButton extends ConsumerWidget {
                 'andere Playlist ...',
                 () async {
                   debugPrint('[SnackBar] Tap on "andere Playlist ..."');
-                  await currentBookmarkTarget.removeSong!(currentSong.song);
-                  final otherPlaylist = await openBottomSheet<Playlist?>(() => AddSongToOtherPlaylistBottomSheet(currentSong.song));
+                  await currentBookmarkTarget.removeSong!(currentSong);
+                  final otherPlaylist = await openBottomSheet<Playlist?>(() => AddSongToOtherPlaylistBottomSheet(currentSong));
                   if (otherPlaylist == null) {
                     debugPrint('[$AddSongToOtherPlaylistBottomSheet] was closed without selecting a playlist');
-                    await currentBookmarkTarget.addSong!.call(currentSong.song);
+                    await currentBookmarkTarget.addSong!.call(currentSong);
                   } else {
-                    if (!otherPlaylist.contains(currentSong.song)) {
-                      await otherPlaylist.addSong!(currentSong.song);
+                    if (!otherPlaylist.contains(currentSong)) {
+                      await otherPlaylist.addSong!(currentSong);
                     }
                     if (otherPlaylist != currentBookmarkTarget) {
                       ref.read(currentBookmarkTargetIdProvider.notifier).set(otherPlaylist);

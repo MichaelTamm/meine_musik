@@ -73,7 +73,7 @@ Future<Uint8List?> songThumbnail(Ref ref, Song song) async {
 
 @Riverpod(keepAlive: false)
 Future<Uint8List?> albumCoverThumbnail(Ref ref, Album album) async {
-  var albumCover = await audioService.getAlbumCover(album.firstSong.path);
+  var albumCover = await audioService.getAlbumCover(album.first.path);
   if (albumCover == null) {
     final release = await musicBrainz.searchRelease(album);
     if (release != null) {

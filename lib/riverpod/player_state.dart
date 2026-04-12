@@ -16,38 +16,35 @@ part 'player_state.g.dart';
 final _noSong = Song(id: 0, path: '', sizeInBytes: 0, title: "", artist: '', album: '', trackNumber: 0, durationInMilliseconds: 0);
 
 /// The playlist, which is currently being played.
-/// Initial value: `Playlist.empty`
+/// Initial value: an empty playlist
+/// Updated by: [AudioPlayerWrapper] methods
 @Riverpod(keepAlive: true)
 class CurrentPlaylist extends _$CurrentPlaylist {
   @override
-  Playlist build() => Playlist.empty;
+  Wiedergabeliste build() => Wiedergabeliste([]);
 
-  void set(Playlist playlist) {
-    state = playlist;
-    if (playlist.isEmpty) {
-      _resetPlayerState(ref, setCurrentPlaylist: false);
-    } else {
-      ref.read(currentSongProvider.notifier)._set(playlist.firstSong, playlistIndex: playlist.playOrder[0], playOrderIndex: 0);
-    }
+  void _reset() {
+    state = build();
+  }
+
+  void _set(Iterable<Song> songs) {
+    state = Wiedergabeliste(songs);
   }
 }
 
 /// The song currently being played.
-/// Initial value: [CurrentSong.none]
+/// Initial value: [_noSong]
+/// Updated by: [AudioPlayerWrapper] methods
 @Riverpod(keepAlive: true)
 class CurrentSong extends _$CurrentSong {
-  static final ({Song song, String label, Duration duration, int playlistIndex, int playOrderIndex}) none = (
-    song: _noSong,
-    label: '',
-    duration: Duration.zero,
-    playlistIndex: -1,
-    playOrderIndex: -1,
-  );
-
   @override
-  ({Song song, String label, Duration duration, int playlistIndex, int playOrderIndex}) build() => none;
+  Song build() => _noSong;
 
-  void _set(Song song, {required int playlistIndex, required int playOrderIndex}) {
+  void _reset() {
+    state = build();
+  }
+
+  void _set(Song song) {
     var label = song.title;
     if (label.isEmpty || label.startsWith('<') || label == 'unknown' || label == 'null') {
       label = basename(song.fileName);
@@ -57,18 +54,21 @@ class CurrentSong extends _$CurrentSong {
         label = '$artist: $label';
       }
     }
-    final newState = (
-      song: song,
-      label: label,
-      duration: Duration(milliseconds: song.durationInMilliseconds),
-      playlistIndex: playlistIndex,
-      playOrderIndex: playOrderIndex,
-    );
-    state = newState;
+    state = song;
+    ref.read(currentSongLabelProvider.notifier)._set(label);
   }
+}
 
-  void _reset() {
-    state = none;
+/// The label to be displayed for the current song.
+/// Initial value: ''
+/// Updated by: [CurrentSong._set]
+@Riverpod(keepAlive: true)
+class CurrentSongLabel extends _$CurrentSongLabel {
+  @override
+  String build() => '';
+
+  void _set(String value) {
+    state = value;
   }
 }
 
@@ -77,7 +77,11 @@ class CurrentSongPosition extends _$CurrentSongPosition {
   @override
   Duration build() => Duration.zero;
 
-  void set(Duration value) {
+  void _reset() {
+    state = build();
+  }
+
+  void _set(Duration value) {
     state = value;
   }
 }
@@ -86,6 +90,10 @@ class CurrentSongPosition extends _$CurrentSongPosition {
 class IsPlayingPausedOrCompleted extends _$IsPlayingPausedOrCompleted {
   @override
   PlayingPausedOrCompleted build() => PlayingPausedOrCompleted.completed;
+
+  void _reset() {
+    state = build();
+  }
 
   void set(PlayingPausedOrCompleted value) {
     state = value;
@@ -97,11 +105,15 @@ class CurrentRepeatMode extends _$CurrentRepeatMode {
   @override
   RepeatMode build() => RepeatMode.none;
 
+  void _reset() {
+    state = build();
+  }
+
   void set(RepeatMode repeatMode) {
     state = repeatMode;
   }
 
-  void _onSwitchedSongSamePlaylist() {
+  void _onSongSwitched() {
     if (state == RepeatMode.repeatSongOnce || state == RepeatMode.repeatSong) {
       set(RepeatMode.none);
     }
@@ -117,30 +129,60 @@ class AudioPlayerWrapper {
   /// If not `null` this is the position the `AudioPlayer` is (or should be) seeking to.
   Duration? _seekToPosition;
 
-  void playSong(Song song) {
-    _seekToPosition = null;
-    final currentPlaylist = _ref.read(currentPlaylistProvider);
-    final indexes = currentPlaylist.indexesOf(song);
-    if (indexes != null) {
-      _ref.read(currentSongProvider.notifier)._set(song, playlistIndex: indexes.playlistIndex, playOrderIndex: indexes.playOrderIndex);
-    } else {
-      _ref.read(currentPlaylistProvider.notifier).set(PlayASongPlaylist(song));
-      _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
-    }
-    _audioPlayer.play(song.source);
-  }
+  void playSong(Song song) => playPlaylist([song]);
 
-  void playPlaylist(Playlist playlist) {
+  void playPlaylist(Iterable<Song> playlist) {
     _seekToPosition = null;
-    _ref.read(currentPlaylistProvider.notifier).set(playlist);
+    _ref.read(currentPlaylistProvider.notifier)._set(Wiedergabeliste(playlist));
     if (playlist.isEmpty) {
-      _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(completed);
+      _resetPlayerState(_ref);
       _audioPlayer.stop();
     } else {
+      _ref.read(currentSongProvider.notifier)._set(playlist.first);
+      _ref.read(currentSongPositionProvider.notifier)._set(Duration.zero);
       _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
-      _audioPlayer.play(playlist.firstSong.source);
+      _audioPlayer.play(playlist.first.source);
     }
   }
+
+  void shuffleAndPlay(Playlist playlist) => playPlaylist([...playlist]..shuffle());
+
+  void enqueueSong(Song song) {
+    final currentPlaylist = _ref.read(currentPlaylistProvider);
+    if (currentPlaylist.isEmpty) {
+      playSong(song);
+    } else {
+      _ref.read(currentPlaylistProvider.notifier)._set(Wiedergabeliste([...currentPlaylist, song]));
+      if (_ref.read(isPlayingPausedOrCompletedProvider) == completed) {
+        _seekToPosition = null;
+        _ref.read(currentSongProvider.notifier)._set(song);
+        _ref.read(currentSongPositionProvider.notifier)._set(Duration.zero);
+        _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
+        _audioPlayer.play(song.source);
+      }
+    }
+  }
+
+  void enqueuePlaylist(Iterable<Song> playlist) {
+    if (playlist.isEmpty) {
+      return;
+    }
+    final currentPlaylist = _ref.read(currentPlaylistProvider);
+    if (currentPlaylist.isEmpty) {
+      playPlaylist(playlist);
+    } else {
+      _ref.read(currentPlaylistProvider.notifier)._set(Wiedergabeliste([...currentPlaylist, ...playlist]));
+      if (_ref.read(isPlayingPausedOrCompletedProvider) == completed) {
+        _seekToPosition = null;
+        _ref.read(currentSongProvider.notifier)._set(playlist.first);
+        _ref.read(currentSongPositionProvider.notifier)._set(Duration.zero);
+        _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
+        _audioPlayer.play(playlist.first.source);
+      }
+    }
+  }
+
+  void shuffleAndEnqueue(Playlist playlist) => enqueuePlaylist([...playlist]..shuffle());
 
   void playPreviousSong() {
     final currentPlaylist = _ref.read(currentPlaylistProvider);
@@ -148,46 +190,44 @@ class AudioPlayerWrapper {
       throw StateError('Cannot play previous song: current playlist has length: ${currentPlaylist.length}');
     }
     final currentSong = _ref.read(currentSongProvider);
-    final playOrderIndex = currentSong.playOrderIndex;
-    if (playOrderIndex == 0) {
+    final index = currentPlaylist.indexOf(currentSong);
+    if (index < 0) {
+      throw StateError('$currentSong not found in $currentPlaylist');
+    } else if (index == 0) {
       throw StateError('Cannot play previous song: current song is first song of current playlist');
     }
-    final prevPlayOrderIndex = playOrderIndex - 1;
-    final prevPlaylistIndex = currentPlaylist.playOrder[prevPlayOrderIndex];
-    final prevSong = currentPlaylist[prevPlaylistIndex];
+    final previousSong = currentPlaylist[index - 1];
     _seekToPosition = null;
-    _ref.read(currentSongProvider.notifier)._set(prevSong, playlistIndex: prevPlaylistIndex, playOrderIndex: prevPlayOrderIndex);
+    _ref.read(currentSongProvider.notifier)._set(previousSong);
+    _ref.read(currentSongPositionProvider.notifier)._set(Duration.zero);
     _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
-    _audioPlayer.play(prevSong.source);
-    _ref.read(currentRepeatModeProvider.notifier)._onSwitchedSongSamePlaylist();
+    _audioPlayer.play(previousSong.source);
+    _ref.read(currentRepeatModeProvider.notifier)._onSongSwitched();
   }
 
   void playNextSong() {
     final currentPlaylist = _ref.read(currentPlaylistProvider);
-    if (currentPlaylist.length <= 1) {
-      throw StateError('Cannot play next song: current playlist has length: ${currentPlaylist.length}');
-    }
     final currentSong = _ref.read(currentSongProvider);
-    final playOrderIndex = currentSong.playOrderIndex;
-    final n = currentPlaylist.length;
-    final nextPlayOrderIndex = playOrderIndex + 1;
-    if (nextPlayOrderIndex >= n) {
+    final index = currentPlaylist.indexOf(currentSong);
+    if (index < 0) {
+      throw StateError('$currentSong not found in $currentPlaylist');
+    } else if (index == currentPlaylist.length - 1) {
       throw StateError('Cannot play next song: current song is last song of current playlist');
     }
-    final nextPlaylistIndex = currentPlaylist.playOrder[nextPlayOrderIndex];
-    final nextSong = currentPlaylist[nextPlaylistIndex];
+    final nextSong = currentPlaylist[index + 1];
     _seekToPosition = null;
-    _ref.read(currentSongProvider.notifier)._set(nextSong, playlistIndex: nextPlaylistIndex, playOrderIndex: nextPlayOrderIndex);
+    _ref.read(currentSongProvider.notifier)._set(nextSong);
+    _ref.read(currentSongPositionProvider.notifier)._set(Duration.zero);
     _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
     _audioPlayer.play(nextSong.source);
-    _ref.read(currentRepeatModeProvider.notifier)._onSwitchedSongSamePlaylist();
+    _ref.read(currentRepeatModeProvider.notifier)._onSongSwitched();
   }
 
   void playCurrentSongAgain() {
     final currentSong = _ref.read(currentSongProvider);
     _seekToPosition = null;
     _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
-    _audioPlayer.play(currentSong.song.source);
+    _audioPlayer.play(currentSong.source);
   }
 
   void pause() {
@@ -254,7 +294,7 @@ class Player extends _$Player {
             return;
           }
         }
-        ref.read(currentSongPositionProvider.notifier).set(position);
+        ref.read(currentSongPositionProvider.notifier)._set(position);
       }),
     );
     final wrapper = AudioPlayerWrapper(audioPlayer, ref);
@@ -276,7 +316,7 @@ class Player extends _$Player {
             final currentSong = ref.read(currentSongProvider);
             switch (ref.read(currentRepeatModeProvider)) {
               case RepeatMode.none:
-                if (currentSong.song.id != currentPlaylist.lastSong.id) {
+                if (currentSong.id != currentPlaylist.last.id) {
                   debugPrint('Current song completed, play next song ...');
                   wrapper.playNextSong();
                 } else {
@@ -288,14 +328,16 @@ class Player extends _$Player {
                 }
               case RepeatMode.repeatSongOnce:
                 debugPrint('Current song completed, repeat it once ...');
-                audioPlayer.play(currentSong.song.source);
+                ref.read(currentSongPositionProvider.notifier)._set(Duration.zero);
+                audioPlayer.play(currentSong.source);
                 ref.read(currentRepeatModeProvider.notifier).set(RepeatMode.none);
               case RepeatMode.repeatSong:
                 debugPrint('Current song completed, repeat it ...');
-                audioPlayer.play(currentSong.song.source);
+                ref.read(currentSongPositionProvider.notifier)._set(Duration.zero);
+                audioPlayer.play(currentSong.source);
               case RepeatMode.repeatPlaylist:
-                if (currentSong.song.id == currentPlaylist.lastSong.id) {
-                  debugPrint('Last song completed, repeat playlist ...');
+                if (currentSong.id == currentPlaylist.last.id) {
+                  debugPrint('Last song completed, repeat current playlist ...');
                   wrapper.playPlaylist(currentPlaylist);
                 } else {
                   debugPrint('Current song completed, play next song ...');
@@ -326,17 +368,13 @@ class Player extends _$Player {
   }
 }
 
-void _resetPlayerState(Ref ref, {bool setCurrentPlaylist = true}) {
-  if (setCurrentPlaylist) {
-    // This will call _resetPlayerState with setCurrentPlaylist: false
-    ref.read(currentPlaylistProvider.notifier).set(Playlist.empty);
-  } else {
-    ref.read(currentSongProvider.notifier)._reset();
-    ref.read(currentSongPositionProvider.notifier).set(Duration.zero);
-    ref.read(isPlayingPausedOrCompletedProvider.notifier).set(completed);
-    ref.read(currentRepeatModeProvider.notifier).set(RepeatMode.none);
-    ref.invalidate(playerProvider);
-  }
+void _resetPlayerState(Ref ref) {
+  ref.read(currentPlaylistProvider.notifier)._reset();
+  ref.read(currentSongProvider.notifier)._reset();
+  ref.read(currentSongPositionProvider.notifier)._reset();
+  ref.read(isPlayingPausedOrCompletedProvider.notifier)._reset();
+  ref.read(currentRepeatModeProvider.notifier)._reset();
+  ref.invalidate(playerProvider);
 }
 
 extension on Song {

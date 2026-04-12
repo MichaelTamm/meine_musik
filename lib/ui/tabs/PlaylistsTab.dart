@@ -12,6 +12,7 @@ import '../../utils.dart';
 import '../LoadingIndicator.dart';
 import '../PlaylistActions.dart';
 import '../PlaylistView.dart';
+import '../dialogs/CreatePlaylistDialog.dart';
 
 class PlaylistsTab extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: '$PlaylistsTab.navigatorKey');
@@ -68,10 +69,13 @@ class _UpdateSelectedPlaylistObserver extends NavigatorObserver {
   @override
   void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     debugPrint('[$runtimeType] didChangeTop: ${previousTopRoute?.settings} => ${topRoute.settings}');
-    final selectedPlaylistNotifier = ProviderScope.containerOf(context).read(PlaylistsTab.selectedPlaylistProvider.notifier);
-    Future.microtask(() {
-      selectedPlaylistNotifier.state = topRoute.settings.arguments as Playlist?;
-    });
+    final args = topRoute.settings.arguments;
+    if (args is Playlist) {
+      final selectedPlaylistNotifier = ProviderScope.containerOf(context).read(PlaylistsTab.selectedPlaylistProvider.notifier);
+      Future.microtask(() {
+        selectedPlaylistNotifier.state = args;
+      });
+    }
   }
 }
 
@@ -81,29 +85,47 @@ class _AllePlaylistsOverview extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playlistsAsync = ref.watch(playlistsProvider);
-    return playlistsAsync.when(
-      skipLoadingOnRefresh: false,
-      loading: LoadingIndicator.new,
-      data: (playlists) => RefreshIndicator(
-        onRefresh: () async {
-          // [UX] Show refresh indicator for 300 ms ...
-          await Future.delayed(Duration(milliseconds: 300));
-          clearCaches();
-        },
-        child: ListView.builder(
-          // With the default ListView physics, RefreshIndicator won't trigger
-          // when the content is shorter than the viewport, therefore ...
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: playlists.length,
-          itemBuilder: (_, index) {
-            final playlist = playlists[index];
-            return _PlaylistListTile(playlist, onTap: () => openPlaylist(playlist));
-          },
-        ),
-      ),
+
+    if (playlistsAsync.isLoading) {
+      return LoadingIndicator();
+    }
+
+    if (!playlistsAsync.hasValue) {
       // TODO: proper error handling
       // TODO: if permission is not granted, show a meaningful text and a button to request permission
-      error: (error, stack) => Container(),
+      return Container();
+    }
+
+    final playlists = playlistsAsync.requireValue;
+
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async {
+            // [UX] Show refresh indicator for 300 ms ...
+            await Future.delayed(Duration(milliseconds: 300));
+            clearCaches();
+          },
+          child: ListView.builder(
+            // With the default ListView physics, RefreshIndicator won't trigger
+            // when the content is shorter than the viewport, therefore ...
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: playlists.length,
+            itemBuilder: (_, index) {
+              final playlist = playlists[index];
+              return _PlaylistListTile(playlist, onTap: () => openPlaylist(playlist));
+            },
+          ),
+        ),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () => showDialog(context: context, builder: ((_) => CreatePlaylistDialog())),
+          ),
+        ),
+      ],
     );
   }
 

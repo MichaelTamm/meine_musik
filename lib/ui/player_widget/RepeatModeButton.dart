@@ -36,6 +36,8 @@ class RepeatModeButton extends ConsumerWidget {
         RepeatMode.repeatPlaylist => Icon(Icons.repeat_on),
       },
       position: PopupMenuPosition.over,
+      menuPadding: EdgeInsets.zero,
+      tooltip: '',
       itemBuilder: (_) => const [
         PopupMenuItem<RepeatMode>(
           value: RepeatMode.none,
@@ -62,7 +64,7 @@ class RepeatModeButton extends ConsumerWidget {
           value: RepeatMode.repeatPlaylist,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [Icon(Icons.repeat_on), SizedBox(width: 8), Text('Playlist in Endlosschleife spielen')],
+            children: [Icon(Icons.repeat_on), SizedBox(width: 8), Text('Wiedergabeliste in\nEndlosschleife spielen')],
           ),
         ),
       ],

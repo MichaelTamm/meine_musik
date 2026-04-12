@@ -1,17 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:meine_musik/riverpod/playlists.dart';
+import 'package:meine_musik/model/Playlist.dart';
 
-import '../env.dart';
+class RenamePlaylistDialog extends HookWidget {
+  const RenamePlaylistDialog(this.playlist);
 
-class CreatePlaylistDialog extends HookWidget {
-  const CreatePlaylistDialog();
+  final ManuallyCreatedPlaylist playlist;
 
   @override
   Widget build(BuildContext context) {
     final navigatorState = Navigator.of(context);
-    final nameController = useTextEditingController();
+    final nameController = useTextEditingController(text: playlist.name);
     final nameFocusNode = useFocusNode();
     final name = useValueListenable(nameController).text.trim();
     final nameError = name.isEmpty ? 'Bitte hier den Namen eingeben.' : null;
@@ -23,14 +23,13 @@ class CreatePlaylistDialog extends HookWidget {
       if (nameError != null) {
         nameFocusNode.requestFocus();
       } else {
-        final newPlaylistId = await db.createPlaylist(name);
-        final newPlaylist = await riverpodContainer.read(manuallyCreatedPlaylistProvider(newPlaylistId).future);
-        navigatorState.pop(newPlaylist);
+        await playlist.setName(name);
+        navigatorState.pop();
       }
     }
 
     return SimpleDialog(
-      title: AutoSizeText('Neue Playlist', maxLines: 1, style: Theme.of(context).textTheme.titleMedium),
+      title: AutoSizeText('Playlist umbenennen', maxLines: 1, style: Theme.of(context).textTheme.titleMedium),
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
@@ -44,7 +43,7 @@ class CreatePlaylistDialog extends HookWidget {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
-          child: FilledButton(onPressed: submit, child: const Text('Playlist erstellen')),
+          child: FilledButton(onPressed: submit, child: const Text('Speichern')),
         ),
       ],
     );

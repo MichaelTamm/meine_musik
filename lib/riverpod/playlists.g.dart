@@ -179,7 +179,7 @@ final class ManuallyCreatedPlaylistProvider
   }
 }
 
-String _$manuallyCreatedPlaylistHash() => r'38b20c8853b65874b9ef9ebf71cd331c3c2fda65';
+String _$manuallyCreatedPlaylistHash() => r'73d815d5b2a6ea902413aa93647f0fc865df9e0e';
 
 final class ManuallyCreatedPlaylistFamily extends $Family with $FunctionalFamilyOverride<FutureOr<ManuallyCreatedPlaylist>, int> {
   const ManuallyCreatedPlaylistFamily._()

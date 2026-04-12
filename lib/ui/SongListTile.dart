@@ -16,7 +16,7 @@ class SongListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCurrentSong = ref.watch(currentSongProvider.select((it) => it.song.id == song.id));
+    final isCurrentSong = ref.watch(currentSongProvider.select((it) => it.id == song.id));
     final textTheme = TextTheme.of(context);
     return ListTile(
       selectedTileColor: selectedSongBackground,

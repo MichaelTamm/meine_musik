@@ -11,6 +11,7 @@ import '../../model/AudioFolder.dart';
 import '../../riverpod/media.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
+import '../AudioFileActions.dart';
 import '../LoadingIndicator.dart';
 
 class OrdnerTab extends ConsumerStatefulWidget {
@@ -123,7 +124,10 @@ class _UpdateCurrentPathObserver extends NavigatorObserver {
       if (settings.name == '/') {
         currentPathNotifier.state = const [];
       } else {
-        currentPathNotifier.state = settings.arguments as List<AudioFolder>;
+        final args = settings.arguments;
+        if (args is List<AudioFolder>) {
+          currentPathNotifier.state = args;
+        }
       }
     });
   }
@@ -401,20 +405,9 @@ class _AudioFileListTile extends HookConsumerWidget {
       ),
       title: Text(file.fileName),
       subtitle: Text('${file.artist} • ${file.title}'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.play_arrow),
-          IconButton(
-            icon: const Icon(Icons.more_vert_outlined),
-            onPressed: () {
-              debugPrint('**** TODO: show actions bottom sheet for audio file ${file.path}');
-            },
-          ),
-        ],
-      ),
+      trailing: AudioFileActions(file),
       onTap: () {
-        debugPrint('Tap on $_AudioFileListTile for ${file.fileName} -- play audio file ...');
+        debugPrint('Tap on $_AudioFileListTile for file ${file.fileName}');
         ref.read(playerProvider).playSong(file);
       },
     );

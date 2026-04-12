@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:meine_musik/env.dart';
 import 'package:meine_musik/riverpod/playlists.dart';
 import 'package:meine_musik/ui/AddSongToOtherPlaylistBottomSheet.dart';
-import 'package:meine_musik/ui/CreatePlaylistDialog.dart';
+import 'package:meine_musik/ui/dialogs/CreatePlaylistDialog.dart';
 import 'package:meine_musik/ui/player_widget/PlayerWidget.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:spot/spot.dart';

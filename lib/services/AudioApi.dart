@@ -7,7 +7,8 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
-import 'package:meine_musik/utils.dart';
+
+import '../utils.dart';
 
 PlatformException _createConnectionError(String channelName) {
   return PlatformException(code: 'channel-error', message: 'Unable to establish connection on channel: "$channelName".');
