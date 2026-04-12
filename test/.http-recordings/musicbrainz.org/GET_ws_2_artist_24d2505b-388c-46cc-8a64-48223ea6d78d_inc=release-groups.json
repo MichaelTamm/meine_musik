@@ -1,0 +1,375 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "x-ratelimit-limit": "1200",
+    "transfer-encoding": "chunked",
+    "date": "Sun, 12 Apr 2026 11:27:20 GMT",
+    "x-ratelimit-reset": "1775993240",
+    "access-control-allow-origin": "*",
+    "content-encoding": "gzip",
+    "vary": "Accept-Encoding",
+    "x-ratelimit-remaining": "292",
+    "content-type": "application/json; charset=utf-8",
+    "server": "Plack::Handler::Starlet",
+    "keep-alive": "timeout=15",
+    "etag": "W/\"bcef760a0dc52b86f7c7416439e80b7a\"",
+    "x-runtime": "0.129862",
+    "x-cache-status": "MISS"
+  },
+  "body": {
+    "end-area": null,
+    "life-span": {
+      "end": null,
+      "begin": "1990",
+      "ended": false
+    },
+    "area": {
+      "type": null,
+      "name": "United Kingdom",
+      "type-id": null,
+      "sort-name": "United Kingdom",
+      "iso-3166-1-codes": [
+        "GB"
+      ],
+      "disambiguation": "",
+      "id": "8a754a16-0027-3a29-b6d7-2b40ea0481ed"
+    },
+    "sort-name": "Take That",
+    "type-id": "e431f5f6-b5d2-343d-8b36-72607fffb74b",
+    "release-groups": [
+      {
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "title": "Take That & Party",
+        "id": "e6b8ac74-94bd-3a04-ab68-a8094740d460",
+        "secondary-type-ids": [],
+        "disambiguation": "",
+        "primary-type": "Album",
+        "secondary-types": [],
+        "first-release-date": "1992-08-24"
+      },
+      {
+        "secondary-types": [],
+        "first-release-date": "1993-10-11",
+        "primary-type": "Album",
+        "id": "ee15ae7d-7040-3c51-a6e2-d865eca299bc",
+        "title": "Everything Changes",
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
+      },
+      {
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "title": "Nobody Else",
+        "id": "6fda0d8e-3e76-3b99-a119-c3876189cca8",
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "primary-type": "Album",
+        "secondary-types": [],
+        "first-release-date": "1995-05-08"
+      },
+      {
+        "secondary-types": [],
+        "first-release-date": "2006-11-27",
+        "primary-type": "Album",
+        "id": "39d2f154-d773-3c51-9954-8ef86657766a",
+        "title": "Beautiful World",
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
+      },
+      {
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "title": "The Circus",
+        "id": "4b54da5b-faac-35dd-afc2-9d7aa7df2a4a",
+        "primary-type": "Album",
+        "first-release-date": "2008-11-28",
+        "secondary-types": []
+      },
+      {
+        "id": "dadaa503-5fa5-4650-b2eb-acb5d33c4ad6",
+        "title": "Progress",
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "secondary-types": [],
+        "first-release-date": "2010-11-15",
+        "primary-type": "Album"
+      },
+      {
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "title": "III",
+        "id": "51e9fd7e-cf17-483e-a83a-de5dc06e0e50",
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "primary-type": "Album",
+        "secondary-types": [],
+        "first-release-date": "2014-11-28"
+      },
+      {
+        "secondary-type-ids": [],
+        "disambiguation": "",
+        "id": "ed33d4fd-5b32-4cb9-aa5b-110652814d01",
+        "title": "Wonderland",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "first-release-date": "2017-03-24",
+        "secondary-types": [],
+        "primary-type": "Album"
+      },
+      {
+        "disambiguation": "",
+        "secondary-type-ids": [],
+        "id": "d2978310-3cb5-4d8e-8a00-c1bc1ce6ee09",
+        "title": "This Life",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "first-release-date": "2023-11-24",
+        "secondary-types": [],
+        "primary-type": "Album"
+      },
+      {
+        "id": "da73b89c-5d14-3f2e-afb8-d88871b49edc",
+        "title": "Greatest Hits",
+        "secondary-type-ids": [
+          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+        ],
+        "disambiguation": "",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "secondary-types": [
+          "Compilation"
+        ],
+        "first-release-date": "1996-03-01",
+        "primary-type": "Album"
+      },
+      {
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "title": "Forever...Greatest Hits",
+        "id": "1303b1d4-5a62-3cb0-b75f-c40732f83bc2",
+        "disambiguation": "",
+        "secondary-type-ids": [
+          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+        ],
+        "primary-type": "Album",
+        "secondary-types": [
+          "Compilation"
+        ],
+        "first-release-date": "2002-11-28"
+      },
+      {
+        "first-release-date": "2005-11-14",
+        "secondary-types": [
+          "Compilation"
+        ],
+        "primary-type": "Album",
+        "disambiguation": "",
+        "secondary-type-ids": [
+          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+        ],
+        "id": "d4769daa-fcfc-3d8b-89b0-346ee7288c2c",
+        "title": "Never Forget: The Ultimate Collection",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
+      },
+      {
+        "id": "705a9e3e-e84f-4bab-b1d6-ef4f9dd7a1f8",
+        "title": "Odyssey",
+        "secondary-type-ids": [
+          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+        ],
+        "disambiguation": "",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "secondary-types": [
+          "Compilation"
+        ],
+        "first-release-date": "2018-11-23",
+        "primary-type": "Album"
+      },
+      {
+        "first-release-date": "1995-12-04",
+        "secondary-types": [
+          "Live"
+        ],
+        "primary-type": "Album",
+        "secondary-type-ids": [
+          "6fd474e2-6b58-3102-9d17-d6f7eb7da0a0"
+        ],
+        "disambiguation": "",
+        "id": "d5f0c51a-dc44-43d8-bb23-6586bfe711ce",
+        "title": "Nobody Else \"The Movie\"",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
+      },
+      {
+        "first-release-date": "2006",
+        "secondary-types": [
+          "Live"
+        ],
+        "primary-type": "Album",
+        "disambiguation": "",
+        "secondary-type-ids": [
+          "6fd474e2-6b58-3102-9d17-d6f7eb7da0a0"
+        ],
+        "title": "The Ultimate Tour",
+        "id": "b24b3c6f-5e67-4817-a77d-e01f62f219c4",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
+      },
+      {
+        "secondary-types": [
+          "Live"
+        ],
+        "first-release-date": "2009-11-30",
+        "primary-type": "Album",
+        "id": "6f78f1f9-70c8-45c7-b943-6e45d3449434",
+        "title": "The Greatest Day: Take That Present the Circus Live",
+        "secondary-type-ids": [
+          "6fd474e2-6b58-3102-9d17-d6f7eb7da0a0"
+        ],
+        "disambiguation": "",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
+      },
+      {
+        "id": "3e6ec197-af3a-463d-b86d-0f3b2f9083b4",
+        "title": "Progress Live",
+        "secondary-type-ids": [
+          "6fd474e2-6b58-3102-9d17-d6f7eb7da0a0"
+        ],
+        "disambiguation": "",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "secondary-types": [
+          "Live"
+        ],
+        "first-release-date": "2011-11-21",
+        "primary-type": "Album"
+      },
+      {
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc",
+        "title": "Live 2015",
+        "id": "ea7925ac-b0da-4e11-b8ec-24e8c4b1db36",
+        "disambiguation": "",
+        "secondary-type-ids": [
+          "6fd474e2-6b58-3102-9d17-d6f7eb7da0a0"
+        ],
+        "primary-type": "Album",
+        "secondary-types": [
+          "Live"
+        ],
+        "first-release-date": "2015-12-11"
+      },
+      {
+        "secondary-types": [
+          "Live"
+        ],
+        "first-release-date": "2019-11-15",
+        "primary-type": "Album",
+        "id": "53e8d506-f625-4295-840b-651cc2bc69e5",
+        "title": "Odyssey: Greatest Hits Live",
+        "secondary-type-ids": [
+          "6fd474e2-6b58-3102-9d17-d6f7eb7da0a0"
+        ],
+        "disambiguation": "",
+        "primary-type-id": "f529b476-6e62-324f-b0aa-1f3e33d313fc"
+      },
+      {
+        "primary-type": "EP",
+        "secondary-types": [],
+        "first-release-date": "2011-06-13",
+        "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+        "id": "d592df96-24c8-4853-9b6a-4cf6f8a35998",
+        "title": "Progressed",
+        "disambiguation": "",
+        "secondary-type-ids": []
+      },
+      {
+        "primary-type": "EP",
+        "first-release-date": "2010-08-27",
+        "secondary-types": [
+          "Compilation"
+        ],
+        "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+        "secondary-type-ids": [
+          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+        ],
+        "disambiguation": "",
+        "id": "1a101dcf-9080-4d9f-bd9c-a81330cb968c",
+        "title": "Take That Video EP"
+      },
+      {
+        "primary-type": "EP",
+        "first-release-date": "2021-02-12",
+        "secondary-types": [
+          "Compilation"
+        ],
+        "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+        "secondary-type-ids": [
+          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+        ],
+        "disambiguation": "",
+        "id": "7217acff-ead7-4853-86cf-34b5ad75963c",
+        "title": "Love Songs"
+      },
+      {
+        "title": "Patience EP",
+        "id": "e24ad2f2-7d04-49ed-973c-de1e0c04f333",
+        "disambiguation": "",
+        "secondary-type-ids": [
+          "dd2a21e1-0c00-3729-a7a0-de60b84eb5d1"
+        ],
+        "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf",
+        "secondary-types": [
+          "Compilation"
+        ],
+        "first-release-date": "2024-02-09",
+        "primary-type": "EP"
+      },
+      {
+        "first-release-date": "2017-03-24",
+        "secondary-types": [
+          "Live"
+        ],
+        "primary-type": "EP",
+        "disambiguation": "",
+        "secondary-type-ids": [
+          "6fd474e2-6b58-3102-9d17-d6f7eb7da0a0"
+        ],
+        "id": "c4913d8f-6653-409c-884d-b84b9cc13e13",
+        "title": "Soho Sessions",
+        "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf"
+      },
+      {
+        "first-release-date": "2016-06-17",
+        "secondary-types": [
+          "Remix"
+        ],
+        "primary-type": "EP",
+        "secondary-type-ids": [
+          "0c60f497-ff81-3818-befd-abfc84a4858b"
+        ],
+        "disambiguation": "",
+        "id": "bea42771-1df6-4165-9053-726dcad8fb13",
+        "title": "Cry (Remixes)",
+        "primary-type-id": "6d0c5bf6-7a33-3420-a519-44fc63eedebf"
+      }
+    ],
+    "type": "Group",
+    "ipis": [],
+    "disambiguation": "",
+    "id": "24d2505b-388c-46cc-8a64-48223ea6d78d",
+    "gender-id": null,
+    "gender": null,
+    "begin-area": {
+      "sort-name": "Manchester",
+      "id": "852531bf-3410-401f-b432-9c3157a386b9",
+      "iso-3166-2-codes": [
+        "GB-MAN"
+      ],
+      "disambiguation": "",
+      "name": "Manchester",
+      "type": null,
+      "type-id": null
+    },
+    "isnis": [
+      "0000000123153403"
+    ],
+    "name": "Take That",
+    "country": "GB"
+  }
+}

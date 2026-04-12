@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import '../env.dart';
 import 'AudioFile.dart';
 import 'AudioFolder.dart';
-import 'logic.dart';
 
 @immutable
 class IsSongPredicate {
@@ -45,7 +45,7 @@ class IsSongPredicate {
         return item.$2;
       }
     }
-    return isSongHeuristic(file);
+    return logic.isSongHeuristic(file);
   }
 
   Future<void> writeToFile(File file) async {

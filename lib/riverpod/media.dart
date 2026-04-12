@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../drift/database.dart';
 import '../env.dart';
 import '../model/AudioFile.dart';
 import '../model/Playlist.dart';
@@ -31,9 +34,16 @@ Future<List<AudioFile>> localAudioFiles(Ref ref) async {
   }
   final audioFiles = await audioService.findAll();
   if (kDebugMode) {
-    debugPrint('Found ${audioFiles.length} audio files:');
+    final n = audioFiles.length;
+    debugPrint(
+      n == 0
+          ? 'Did not find an audio file.'
+          : n == 1
+          ? 'Found 1 audio file:'
+          : 'Found $n audio files:',
+    );
     for (final audioFile in audioFiles) {
-      debugPrint('    ${audioFile.path}');
+      debugPrint('    $audioFile');
     }
   }
   return audioFiles;
@@ -50,19 +60,65 @@ Future<Map<int, AudioFile>> localAudioFilesById(Ref ref) async {
 }
 
 @Riverpod(keepAlive: true)
+Future<MusicBrainzArtist?> artist(Ref ref, KuenstlerSongs kuenstlerSongs) {
+  return musicBrainz.searchArtist(kuenstlerSongs.kuenstler, kuenstlerSongs);
+}
+
+@Riverpod(keepAlive: false)
 Future<Uint8List?> songThumbnail(Ref ref, Song song) async {
   final albumCover = await audioService.getAlbumCover(song.path);
+  // TODO: try to find album cover on the internet
   return albumCover;
 }
 
-@Riverpod(keepAlive: true)
-Future<Uint8List?> albumCover(Ref ref, Album album) async {
-  final albumCover = await audioService.getAlbumCover(album.firstSong.path);
+@Riverpod(keepAlive: false)
+Future<Uint8List?> albumCoverThumbnail(Ref ref, Album album) async {
+  var albumCover = await audioService.getAlbumCover(album.firstSong.path);
+  if (albumCover == null) {
+    final release = await musicBrainz.searchRelease(album);
+    if (release != null) {
+      final mbid = release.mbid;
+      final thumbnailsDir = Directory('${applicationCacheDirectory.path}/album-thumbnails');
+      albumCover = await _loadOrFetchThumbnail(thumbnailsDir, mbid, fetch: () => coverArtArchive.getAlbumCoverThumbnail(mbid));
+    }
+  }
   return albumCover;
 }
 
+@Riverpod(keepAlive: false)
+Future<Uint8List?> artistThumbnail(Ref ref, KuenstlerSongs kuenstlerSongs) async {
+  Uint8List? thumbnail;
+  final artist = await ref.watch(artistProvider(kuenstlerSongs).future);
+  if (artist != null) {
+    final mbid = artist.mbid;
+    final thumbnailsDir = Directory('${applicationCacheDirectory.path}/artist-thumbnails');
+    thumbnail = await _loadOrFetchThumbnail(thumbnailsDir, mbid, fetch: () => theAudioDB.getArtistThumbnail(mbid));
+  }
+  return thumbnail;
+}
+
 @Riverpod(keepAlive: true)
-Future<Uint8List?> artistImage(Ref ref, String artistName) async {
-  // TODO: ...
-  return null;
+Future<IconData> artistIcon(Ref ref, KuenstlerSongs kuenstlerSongs) async {
+  final artist = await ref.watch(artistProvider(kuenstlerSongs).future);
+  if (artist != null) {
+    final type = artist.type;
+    return type == 'Person' || type == 'Character' ? Icons.person : Icons.group;
+  }
+  return Icons.question_mark;
+}
+
+Future<Uint8List?> _loadOrFetchThumbnail(Directory thumbnailsDir, String mbid, {required Future<Uint8List?> Function() fetch}) async {
+  final thumbnailDir = Directory('${thumbnailsDir.path}/${mbid.substring(0, 2)}');
+  final thumbnailFile = File('${thumbnailDir.path}/$mbid.thumbnail');
+  if (thumbnailFile.existsSync()) {
+    return thumbnailFile.readAsBytes();
+  }
+  final data = await fetch();
+  if (data != null) {
+    if (!thumbnailDir.existsSync()) {
+      thumbnailDir.createSync(recursive: true);
+    }
+    await thumbnailFile.writeAsBytes(data);
+  }
+  return data;
 }

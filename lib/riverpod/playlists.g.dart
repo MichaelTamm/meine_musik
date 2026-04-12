@@ -263,7 +263,7 @@ final class IsSongPredicateProvider extends $FunctionalProvider<AsyncValue<IsSon
   }
 }
 
-String _$isSongPredicateHash() => r'05ff583a4e6c5116b991e791889f83a4c045cd02';
+String _$isSongPredicateHash() => r'63e4d113d6b882133f2bfdd52f656e3ed850e09c';
 
 /// The id of the manually created playlist, to which a song is added, when the bookmark button is pressed.
 /// If id == null the bookmark target is the Favoriten playlist.

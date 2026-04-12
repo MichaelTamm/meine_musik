@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meine_musik/ui/Thumbnail.dart';
 
+import '../../env.dart';
 import '../../model/Playlist.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
@@ -81,13 +82,24 @@ class _AllePlaylistsOverview extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final playlistsAsync = ref.watch(playlistsProvider);
     return playlistsAsync.when(
+      skipLoadingOnRefresh: false,
       loading: LoadingIndicator.new,
-      data: (playlists) => ListView.builder(
-        itemCount: playlists.length,
-        itemBuilder: (_, index) {
-          final playlist = playlists[index];
-          return _PlaylistListTile(playlist, onTap: () => openPlaylist(playlist));
+      data: (playlists) => RefreshIndicator(
+        onRefresh: () async {
+          // [UX] Show refresh indicator for 300 ms ...
+          await Future.delayed(Duration(milliseconds: 300));
+          clearCaches();
         },
+        child: ListView.builder(
+          // With the default ListView physics, RefreshIndicator won't trigger
+          // when the content is shorter than the viewport, therefore ...
+          physics: const AlwaysScrollableScrollPhysics(),
+          itemCount: playlists.length,
+          itemBuilder: (_, index) {
+            final playlist = playlists[index];
+            return _PlaylistListTile(playlist, onTap: () => openPlaylist(playlist));
+          },
+        ),
       ),
       // TODO: proper error handling
       // TODO: if permission is not granted, show a meaningful text and a button to request permission

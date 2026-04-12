@@ -1,0 +1,315 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "last-modified": "Sun, 12 Apr 2026 12:40:02 GMT",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "1200",
+    "date": "Sun, 12 Apr 2026 12:42:14 GMT",
+    "x-ratelimit-reset": "1775997736",
+    "content-encoding": "gzip",
+    "vary": "Accept-Encoding",
+    "x-ratelimit-remaining": "1120",
+    "content-type": "application/json",
+    "x-xss-protection": "1; mode=block",
+    "keep-alive": "timeout=15",
+    "content-length": "1341",
+    "etag": "\"MWQwMzE0MDAwMDAwMDAwMFNvbHI=--gzip\"",
+    "x-frame-options": "SAMEORIGIN",
+    "x-content-type-options": "nosniff",
+    "content-security-policy": "default-src 'none'; base-uri 'none'; connect-src 'self'; form-action 'self'; font-src 'self'; frame-ancestors 'none'; img-src 'self' data:; media-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; worker-src 'self';",
+    "x-cache-status": "MISS"
+  },
+  "body": {
+    "created": "2026-04-12T12:42:14.571Z",
+    "count": 12,
+    "offset": 0,
+    "artists": [
+      {
+        "id": "d3b2bec4-b70e-460e-b433-a865ceac2de8",
+        "type": "Person",
+        "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+        "score": 100,
+        "gender-id": "93452b5a-a947-30c8-934f-6a4056b151c2",
+        "name": "Anastacia",
+        "sort-name": "Anastacia",
+        "gender": "female",
+        "country": "US",
+        "area": {
+          "id": "489ce91b-6658-3307-9877-795b68554c98",
+          "type": "Country",
+          "type-id": "06dd0ae4-8c74-30bb-b43d-95dcedf961de",
+          "name": "United States",
+          "sort-name": "United States",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "begin-area": {
+          "id": "29a709d8-0320-493e-8d0c-f2c386662b7f",
+          "type": "City",
+          "type-id": "6fd8f29a-3d0a-32fc-980d-ea697b69da78",
+          "name": "Chicago",
+          "sort-name": "Chicago",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "disambiguation": "USA pop singer from Chicago, IL, best known for “I’m Outta Love”",
+        "ipis": [
+          "00341912971",
+          "00341913086"
+        ],
+        "isnis": [
+          "0000000066550962"
+        ],
+        "life-span": {
+          "begin": "1968-09-17",
+          "ended": null
+        },
+        "aliases": [
+          {
+            "sort-name": "アナスタシア",
+            "name": "アナスタシア",
+            "locale": null,
+            "type": null,
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          },
+          {
+            "sort-name": "Newkirk, Anastacia Lyn",
+            "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+            "name": "Anastacia Lyn Newkirk",
+            "locale": null,
+            "type": "Legal name",
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          },
+          {
+            "sort-name": "Newkirk, Anastacia",
+            "name": "Anastacia Newkirk",
+            "locale": null,
+            "type": null,
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          }
+        ],
+        "tags": [
+          {
+            "count": 3,
+            "name": "pop"
+          },
+          {
+            "count": 1,
+            "name": "soul"
+          },
+          {
+            "count": 1,
+            "name": "female vocals"
+          },
+          {
+            "count": 3,
+            "name": "dance-pop"
+          },
+          {
+            "count": 1,
+            "name": "adult contemporary"
+          },
+          {
+            "count": 4,
+            "name": "pop rock"
+          },
+          {
+            "count": 0,
+            "name": "pop and chart"
+          },
+          {
+            "count": 2,
+            "name": "pop soul"
+          },
+          {
+            "count": 1,
+            "name": "r&b"
+          },
+          {
+            "count": 2,
+            "name": "contemporary r&b"
+          }
+        ]
+      },
+      {
+        "id": "aee2d8dc-5a00-4ffa-ae89-b120e57261b9",
+        "type": "Person",
+        "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+        "score": 88,
+        "gender-id": "93452b5a-a947-30c8-934f-6a4056b151c2",
+        "name": "Anastácia",
+        "sort-name": "Anastácia",
+        "gender": "female",
+        "country": "BR",
+        "area": {
+          "id": "f45b47f8-5796-386e-b172-6c31b009a5d8",
+          "type": "Country",
+          "type-id": "06dd0ae4-8c74-30bb-b43d-95dcedf961de",
+          "name": "Brazil",
+          "sort-name": "Brazil",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "begin-area": {
+          "id": "85e6632e-0dd9-45c8-ae85-8a7ec6310e4a",
+          "type": "City",
+          "type-id": "6fd8f29a-3d0a-32fc-980d-ea697b69da78",
+          "name": "Recife",
+          "sort-name": "Recife",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "disambiguation": "artist name of Lucinete Ferreira, Brazilian singer-songwriter",
+        "ipis": [
+          "00063010233"
+        ],
+        "isnis": [
+          "000000037385566X"
+        ],
+        "life-span": {
+          "begin": "1941-05-30",
+          "ended": null
+        },
+        "aliases": [
+          {
+            "sort-name": "Ferreira, Lucinete",
+            "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+            "name": "Lucinete Ferreira",
+            "locale": null,
+            "type": "Legal name",
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          }
+        ]
+      },
+      {
+        "id": "2f94a27d-129d-4078-9fc4-1fa3fd5c3942",
+        "type": "Person",
+        "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+        "score": 76,
+        "gender-id": "93452b5a-a947-30c8-934f-6a4056b151c2",
+        "name": "Anastacia",
+        "sort-name": "Anastacia",
+        "gender": "female",
+        "country": "RU",
+        "area": {
+          "id": "1f1fc3a4-9500-39b8-9f10-f0a465557eef",
+          "type": "Country",
+          "type-id": "06dd0ae4-8c74-30bb-b43d-95dcedf961de",
+          "name": "Russia",
+          "sort-name": "Russia",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "disambiguation": "Russian singer",
+        "life-span": {
+          "ended": null
+        }
+      },
+      {
+        "id": "80bc5605-35cf-4df7-8aaa-d4fd2710a88a",
+        "type": "Person",
+        "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+        "score": 74,
+        "gender-id": "93452b5a-a947-30c8-934f-6a4056b151c2",
+        "name": "Anastácia",
+        "sort-name": "Anastácia",
+        "gender": "female",
+        "area": {
+          "id": "4c754e1f-701d-41a3-87d6-6611b5f93a58",
+          "type": "Subdivision",
+          "type-id": "fd3d44c5-80a1-3842-9745-2c4972d35afa",
+          "name": "Espírito Santo",
+          "sort-name": "Espírito Santo",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "disambiguation": "Brazilian singer Anastácia Santana Monteiro",
+        "life-span": {
+          "begin": "1988-10-15",
+          "ended": null
+        },
+        "aliases": [
+          {
+            "sort-name": "Santana Monteiro, Anastácia",
+            "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+            "name": "Anastácia Santana Monteiro",
+            "locale": null,
+            "type": "Legal name",
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          }
+        ]
+      },
+      {
+        "id": "cbc12088-f9c0-42c3-bbcf-8a5cd0a88432",
+        "type": "Person",
+        "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+        "score": 70,
+        "gender-id": "93452b5a-a947-30c8-934f-6a4056b151c2",
+        "name": "Anastácia Azevedo",
+        "sort-name": "Azevedo, Anastácia",
+        "gender": "female",
+        "area": {
+          "id": "c9ac1239-e832-41bc-9930-e252a1fd1105",
+          "type": "City",
+          "type-id": "6fd8f29a-3d0a-32fc-980d-ea697b69da78",
+          "name": "Berlin",
+          "sort-name": "Berlin",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "begin-area": {
+          "id": "f45b47f8-5796-386e-b172-6c31b009a5d8",
+          "type": "Country",
+          "type-id": "06dd0ae4-8c74-30bb-b43d-95dcedf961de",
+          "name": "Brazil",
+          "sort-name": "Brazil",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "life-span": {
+          "ended": null
+        },
+        "aliases": [
+          {
+            "sort-name": "Azevedo, Anastácia",
+            "type-id": "d4dcd0c0-b341-3612-a332-c0ce797b25cf",
+            "name": "Anastácia Azevedo",
+            "locale": null,
+            "type": "Legal name",
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          },
+          {
+            "sort-name": "Anastácia",
+            "name": "Anastácia",
+            "locale": null,
+            "type": null,
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          }
+        ]
+      }
+    ]
+  }
+}

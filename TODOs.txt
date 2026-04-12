@@ -1,0 +1,7 @@
+* Query MusicBrainz APi to retrieve cover art
+  - https://pub.dev/packages/musicbrainz_api_client
+  - https://musicbrainz.org/doc/MusicBrainz_API
+  - https://musicbrainz.org/doc/MusicBrainz_Identifier
+  - https://musicbrainz.org/doc/Cover_Art_Archive/API
+* Query Wikimedia to decide if an artist is a group or a single person -- use according icon as fallback
+* Query Wikimedia to retrieve artist images

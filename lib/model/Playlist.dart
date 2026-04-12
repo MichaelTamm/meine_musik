@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../env.dart';
 import '../utils.dart';
 import 'AudioFile.dart';
 import 'Song.dart';
@@ -133,8 +134,12 @@ class Favoriten extends Playlist {
 }
 
 class Album extends Playlist {
-  // TODO: it.artist might contain multiple artists comma separated -- handle this properly!
-  Album(super.name, super.songs) : super(upperTitle: songs.map((it) => it.artist).removeDuplicates().join(', '));
+  factory Album.fromNameAndSongs(String name, List<Song> songs) {
+    final kuenstler = logic.determineAlbumKuenstlerHeuristic(songs);
+    return Album._(name, songs, upperTitle: kuenstler);
+  }
+
+  Album._(super.name, super.songs, {required super.upperTitle});
 
   String get kuenstler => upperTitle;
 

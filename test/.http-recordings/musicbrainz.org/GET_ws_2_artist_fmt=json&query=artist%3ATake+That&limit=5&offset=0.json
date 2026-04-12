@@ -1,0 +1,292 @@
+{
+  "statusCode": 200,
+  "headers": {
+    "connection": "keep-alive",
+    "last-modified": "Sun, 12 Apr 2026 11:26:23 GMT",
+    "access-control-allow-origin": "*",
+    "x-ratelimit-limit": "1200",
+    "date": "Sun, 12 Apr 2026 11:27:20 GMT",
+    "x-ratelimit-reset": "1775993240",
+    "content-encoding": "gzip",
+    "vary": "Accept-Encoding",
+    "x-ratelimit-remaining": "360",
+    "content-type": "application/json",
+    "x-xss-protection": "1; mode=block",
+    "keep-alive": "timeout=15",
+    "content-length": "1237",
+    "etag": "\"ODM4NTE0MDAwMDAwMDAwMFNvbHI=--gzip\"",
+    "x-frame-options": "SAMEORIGIN",
+    "x-content-type-options": "nosniff",
+    "content-security-policy": "default-src 'none'; base-uri 'none'; connect-src 'self'; form-action 'self'; font-src 'self'; frame-ancestors 'none'; img-src 'self' data:; media-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; worker-src 'self';",
+    "x-cache-status": "MISS"
+  },
+  "body": {
+    "created": "2026-04-12T11:27:20.576Z",
+    "count": 1659,
+    "offset": 0,
+    "artists": [
+      {
+        "id": "24d2505b-388c-46cc-8a64-48223ea6d78d",
+        "type": "Group",
+        "type-id": "e431f5f6-b5d2-343d-8b36-72607fffb74b",
+        "score": 100,
+        "name": "Take That",
+        "sort-name": "Take That",
+        "country": "GB",
+        "area": {
+          "id": "8a754a16-0027-3a29-b6d7-2b40ea0481ed",
+          "type": "Country",
+          "type-id": "06dd0ae4-8c74-30bb-b43d-95dcedf961de",
+          "name": "United Kingdom",
+          "sort-name": "United Kingdom",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "begin-area": {
+          "id": "852531bf-3410-401f-b432-9c3157a386b9",
+          "type": "City",
+          "type-id": "6fd8f29a-3d0a-32fc-980d-ea697b69da78",
+          "name": "Manchester",
+          "sort-name": "Manchester",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "isnis": [
+          "0000000123153403"
+        ],
+        "life-span": {
+          "begin": "1990",
+          "ended": null
+        },
+        "aliases": [
+          {
+            "sort-name": "Take That feat. Lulu",
+            "name": "Take That feat. Lulu",
+            "locale": null,
+            "type": null,
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          },
+          {
+            "sort-name": "テイク・ザット",
+            "type-id": "894afba6-2816-3c24-8072-eadb66bd04bc",
+            "name": "テイク・ザット",
+            "locale": "jv",
+            "type": "Artist name",
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          }
+        ],
+        "tags": [
+          {
+            "count": 4,
+            "name": "pop"
+          },
+          {
+            "count": -1,
+            "name": "pop-rock"
+          },
+          {
+            "count": 1,
+            "name": "british"
+          },
+          {
+            "count": 1,
+            "name": "uk"
+          },
+          {
+            "count": 1,
+            "name": "electropop"
+          },
+          {
+            "count": 1,
+            "name": "soft rock"
+          },
+          {
+            "count": 3,
+            "name": "dance-pop"
+          },
+          {
+            "count": 0,
+            "name": "adult contemporary"
+          },
+          {
+            "count": 0,
+            "name": "pop rock"
+          },
+          {
+            "count": 1,
+            "name": "europop"
+          },
+          {
+            "count": 1,
+            "name": "english"
+          },
+          {
+            "count": 2,
+            "name": "boy band"
+          },
+          {
+            "count": 0,
+            "name": "boy group"
+          },
+          {
+            "count": 0,
+            "name": "pop and chart"
+          },
+          {
+            "count": 2,
+            "name": "teen pop"
+          },
+          {
+            "count": 1,
+            "name": "nuno"
+          },
+          {
+            "count": 1,
+            "name": "aln-sh"
+          }
+        ]
+      },
+      {
+        "id": "e3660b01-dd9f-48f3-90f4-5158f2b8917f",
+        "type": "Group",
+        "type-id": "e431f5f6-b5d2-343d-8b36-72607fffb74b",
+        "score": 73,
+        "name": "that dog.",
+        "sort-name": "that dog.",
+        "country": "US",
+        "area": {
+          "id": "489ce91b-6658-3307-9877-795b68554c98",
+          "type": "Country",
+          "type-id": "06dd0ae4-8c74-30bb-b43d-95dcedf961de",
+          "name": "United States",
+          "sort-name": "United States",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "begin-area": {
+          "id": "1f40c6e1-47ba-4e35-996f-fe6ee5840e62",
+          "type": "City",
+          "type-id": "6fd8f29a-3d0a-32fc-980d-ea697b69da78",
+          "name": "Los Angeles",
+          "sort-name": "Los Angeles",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "life-span": {
+          "begin": "1991",
+          "ended": null
+        },
+        "aliases": [
+          {
+            "sort-name": "That Dog",
+            "name": "That Dog",
+            "locale": null,
+            "type": null,
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          },
+          {
+            "sort-name": "That Dog.",
+            "name": "That Dog.",
+            "locale": null,
+            "type": null,
+            "primary": null,
+            "begin-date": null,
+            "end-date": null
+          }
+        ],
+        "tags": [
+          {
+            "count": 1,
+            "name": "rock"
+          },
+          {
+            "count": 1,
+            "name": "alternative rock"
+          }
+        ]
+      },
+      {
+        "id": "81327fef-bbf0-41c6-b20a-774503c0ccda",
+        "type": "Person",
+        "type-id": "b6e035f4-3ce9-331c-97df-83397230b0df",
+        "score": 72,
+        "gender-id": "36d3d30a-839d-3eda-8cb3-29be4384e4a9",
+        "name": "that",
+        "sort-name": "that",
+        "gender": "male",
+        "country": "JP",
+        "area": {
+          "id": "2db42837-c832-3c27-b4a3-08198f75693c",
+          "type": "Country",
+          "type-id": "06dd0ae4-8c74-30bb-b43d-95dcedf961de",
+          "name": "Japan",
+          "sort-name": "Japan",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "disambiguation": "Japanese singer",
+        "life-span": {
+          "ended": null
+        }
+      },
+      {
+        "id": "1ab32d6f-74b4-476d-88f4-afa8aa80a02c",
+        "type": "Group",
+        "type-id": "e431f5f6-b5d2-343d-8b36-72607fffb74b",
+        "score": 71,
+        "name": "That",
+        "sort-name": "That",
+        "country": "MX",
+        "area": {
+          "id": "3e08b2cd-69f3-317c-b1e4-e71be581839e",
+          "type": "Country",
+          "type-id": "06dd0ae4-8c74-30bb-b43d-95dcedf961de",
+          "name": "Mexico",
+          "sort-name": "Mexico",
+          "life-span": {
+            "ended": null
+          }
+        },
+        "life-span": {
+          "begin": "2009",
+          "ended": null
+        },
+        "tags": [
+          {
+            "count": 1,
+            "name": "dark ambient"
+          },
+          {
+            "count": 1,
+            "name": "funeral doom metal"
+          },
+          {
+            "count": 1,
+            "name": "black metal"
+          }
+        ]
+      },
+      {
+        "id": "d73ba714-324a-4c6b-9399-4eee02457d9f",
+        "score": 71,
+        "name": "That",
+        "sort-name": "That",
+        "disambiguation": "releases on Shit Noise netlabel + Bosque Produções",
+        "life-span": {
+          "ended": null
+        }
+      }
+    ]
+  }
+}

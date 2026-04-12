@@ -2,11 +2,13 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dartx/dartx.dart';
+import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:meine_musik/ui/FileViewer.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../env.dart';
 import '../model/Date.dart';
 import 'DeletableListTile.dart';
 
@@ -71,34 +73,22 @@ class FileManager extends HookWidget {
       body: ListTileTheme(
         dense: true,
         child: RefreshIndicator(
-          onRefresh: () {
+          onRefresh: () async {
+            // [UX] Show refresh indicator for 300 ms ...
+            await Future.delayed(Duration(milliseconds: 300));
             changeDir(currentDir);
-            return Future.delayed(Duration(milliseconds: 300));
           },
           child: ListView.builder(
-            itemCount: (currentDir == null ? 0 : 1) + dirs.length + files.length,
+            itemCount: 1 + dirs.length + files.length,
             itemBuilder: (_, index) {
-              if (currentDir == null) {
-                final dir = dirs[index];
+              if (index == 0) {
                 if (currentDir == null) {
                   return ListTile(
-                    leading: Icon(Icons.folder_open_rounded),
-                    title: AutoSizeText(
-                      dir.path == dataDir?.path
-                          ? 'Application Documents Directory'
-                          : dir.path == supportDir?.path
-                          ? 'Application Support Directory'
-                          : dir.path == tempDir?.path
-                          ? 'Temporary Directory'
-                          : '???',
-                      maxLines: 1,
-                      minFontSize: 3,
-                    ),
-                    onTap: () => changeDir(dir),
+                    leading: Icon(Icons.table_chart_outlined),
+                    title: const Text('Database'),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => DriftDbViewer(db))),
                   );
                 }
-              }
-              if (index == 0) {
                 return ListTile(
                   leading: Icon(Icons.folder_open_rounded),
                   title: const Text('..'),
@@ -115,6 +105,24 @@ class FileManager extends HookWidget {
                 );
               }
               index -= 1;
+              if (currentDir == null) {
+                final dir = dirs[index];
+                return ListTile(
+                  leading: Icon(Icons.folder_open_rounded),
+                  title: AutoSizeText(
+                    dir.path == dataDir?.path
+                        ? 'Application Documents Directory'
+                        : dir.path == supportDir?.path
+                        ? 'Application Support Directory'
+                        : dir.path == tempDir?.path
+                        ? 'Temporary Directory'
+                        : '???',
+                    maxLines: 1,
+                    minFontSize: 3,
+                  ),
+                  onTap: () => changeDir(dir),
+                );
+              }
               if (index < dirs.length) {
                 final dir = dirs[index];
                 return DeletableListTile(

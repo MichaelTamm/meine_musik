@@ -5,9 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meine_musik/model/IsSongPredicate.dart';
 import 'package:meine_musik/utils.dart';
 
+import '../../env.dart';
 import '../../model/AudioFile.dart';
 import '../../model/AudioFolder.dart';
-import '../../model/logic.dart';
 import '../../riverpod/media.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
@@ -19,7 +19,7 @@ class OrdnerTab extends ConsumerStatefulWidget {
   /// All audio files on the device.
   static final thisDeviceProvider = FutureProvider<AudioFolder>((ref) async {
     final audioFiles = await ref.watch(localAudioFilesProvider.future);
-    final root = groupAudioFiles(audioFiles);
+    final root = logic.groupAudioFiles(audioFiles);
     ref.keepAlive();
     return root;
   }, name: '$OrdnerTab.thisDeviceProvider');
@@ -189,28 +189,35 @@ class _AudioFolderView extends ConsumerWidget {
     final folder_ = folder;
     final folderAsync = folder_ == null ? ref.watch(OrdnerTab.thisDeviceProvider) : AsyncData(folder_);
     return folderAsync.when(
+      skipLoadingOnRefresh: false,
       loading: LoadingIndicator.new,
-      data: (folder) => ListView.builder(
-        itemCount: folder.subfolders.length + folder.files.length,
-        itemBuilder: (context, index) {
-          final numFolders = folder.subfolders.length;
-          if (index < 0) {
-            return null;
-          } else if (index < numFolders) {
-            final subfolder = folder.subfolders[index];
-            return _AudioFolderListTile(subfolder, onTap: () => openFolder(subfolder, this.folder));
-          } else {
-            index -= numFolders;
-            final numFiles = folder.files.length;
-            if (index < numFiles) {
+      data: (folder) {
+        final numFolders = folder.subfolders.length;
+        final numFiles = folder.files.length;
+        return RefreshIndicator(
+          onRefresh: () async {
+            // [UX] Show refresh indicator for 300 ms ...
+            await Future.delayed(Duration(milliseconds: 300));
+            clearCaches();
+            OrdnerTab.navigatorKey.currentState!.popUntil((it) => it.settings.name == '/');
+          },
+          child: ListView.builder(
+            // With the default ListView physics, RefreshIndicator won't trigger
+            // when the content is shorter than the viewport, therefore ...
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: numFolders + numFiles,
+            itemBuilder: (context, index) {
+              if (index < numFolders) {
+                final subfolder = folder.subfolders[index];
+                return _AudioFolderListTile(subfolder, onTap: () => openFolder(subfolder, this.folder));
+              }
+              index -= numFolders;
               final file = folder.files[index];
               return _AudioFileListTile(file);
-            } else {
-              return null;
-            }
-          }
-        },
-      ),
+            },
+          ),
+        );
+      },
       // TODO: if permission is not granted, show a meaningful text and a button to request permission
       error: (error, stack) => Container(),
     );

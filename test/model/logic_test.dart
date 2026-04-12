@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meine_musik/env.dart';
 import 'package:meine_musik/model/AudioFile.dart';
 import 'package:meine_musik/model/AudioFolder.dart';
-import 'package:meine_musik/model/logic.dart';
 
 import '../testdata.dart';
 
 void main() {
-  test("groupAudioFiles", () {
+  test('groupAudioFiles', () {
     final audioFiles = [
       '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3',
       '/storage/emulated/0/myrecording.mp3',
@@ -22,7 +22,7 @@ void main() {
       '/storage/0000-0000/Musik/Alicia Keys - Songs In A Minor/04 - Alicia Keys - Fallin\'.mp3',
       '/storage/0000-0000/Musik/Alicia Keys - Songs In A Minor/05 - Alicia Keys - Troubles.mp3',
     ].map((path) => anAudioFile(path: path)).toList();
-    expect(groupAudioFiles(audioFiles).prettyPrint(), '''
+    expect(logic.groupAudioFiles(audioFiles).prettyPrint(), '''
 Dieses Gerät
 ├── Musik
 │   └── Alicia Keys - Songs In A Minor
@@ -47,6 +47,13 @@ Dieses Gerät
 │           └── Spreeradio 105.5 . 2021-05-07 - Interview mit Bernd Hahn
 └── myrecording.mp3
 ''');
+  });
+
+  test('splitArtistStringHeuristic', () {
+    expect(logic.splitArtistStringHeuristic(''), equals([]));
+    expect(logic.splitArtistStringHeuristic('Simon & Garfunkel'), equals(['Simon & Garfunkel']));
+    expect(logic.splitArtistStringHeuristic('Simon and Garfunkel'), equals(['Simon and Garfunkel']));
+    expect(logic.splitArtistStringHeuristic('Hans Zimmer & Lisa Gerrard'), equals(['Hans Zimmer', 'Lisa Gerrard']));
   });
 }
 

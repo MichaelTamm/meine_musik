@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../env.dart';
 import '../../model/Playlist.dart';
 import '../../model/Song.dart';
 import '../../riverpod/player_state.dart';
@@ -18,19 +21,15 @@ class KuenstlerTab extends ConsumerStatefulWidget {
 
   static final viewDataProvider = FutureProvider<List<KuenstlerSongs>>((ref) async {
     final allSongs = await ref.watch(alleLiederProvider.future);
-    final songsByArtistName = <String, List<Song>>{};
+    final songsByArtist = <String, List<Song>>{};
     for (final song in allSongs) {
-      // A song can be performed by multiple artists ...
-      for (final artist in song.artist.split(',').map((it) => it.trim())) {
-        (songsByArtistName[artist] ??= []).add(song);
+      // A song can be performed by multiple artists, therefore we need to split the `song.artist` songs ...
+      for (final artists in logic.splitArtistStringHeuristic(song.artist)) {
+        songsByArtist.putIfAbsent(artists, () => []).add(song);
       }
     }
-    final viewData = <KuenstlerSongs>[];
-    for (final mapEntry in songsByArtistName.entries) {
-      final kuenstler = mapEntry.key;
-      final songs = mapEntry.value.sortBy((it) => it.title);
-      viewData.add(KuenstlerSongs(kuenstler, songs));
-    }
+    final viewData = songsByArtist.entries.map((it) => KuenstlerSongs(it.key, it.value)).toList(growable: false);
+    viewData.sort((a, b) => a.kuenstler.compareTo(b.kuenstler));
     ref.keepAlive();
     return viewData;
   }, name: '$KuenstlerTab.viewDataProvider');
@@ -64,6 +63,7 @@ class _KuenstlerTabState extends ConsumerState<KuenstlerTab> with AutomaticKeepA
         }
       },
       child: viewDataAsync.when(
+        skipLoadingOnRefresh: false,
         loading: LoadingIndicator.new,
         data: (viewData) => Navigator(
           key: KuenstlerTab.navigatorKey,
@@ -105,12 +105,22 @@ class _AlleKuenstlerOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (context, index) {
-        final kuenstlerSongs = data[index];
-        return _KuenstlerListTile(kuenstlerSongs, onTap: () => openKuenstler(kuenstlerSongs));
+    return RefreshIndicator(
+      onRefresh: () async {
+        // [UX] Show refresh indicator for 300 ms ...
+        await Future.delayed(Duration(milliseconds: 300));
+        clearCaches();
       },
+      child: ListView.builder(
+        // With the default ListView physics, RefreshIndicator won't trigger
+        // when the content is shorter than the viewport, therefore ...
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          final kuenstlerSongs = data[index];
+          return _KuenstlerListTile(kuenstlerSongs, onTap: () => openKuenstler(kuenstlerSongs));
+        },
+      ),
     );
   }
 
@@ -144,7 +154,7 @@ class _KuenstlerListTile extends ConsumerWidget {
       selectedTileColor: selectedPlaylistBackground,
       selected: isCurrentPlaylist,
       contentPadding: EdgeInsets.only(left: 8),
-      leading: Thumbnail.forArtist(kuenstler),
+      leading: Thumbnail.forKuenstler(kuenstlerSongs),
       title: Text(kuenstler, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Text(
         switch (kuenstlerSongs.length) {

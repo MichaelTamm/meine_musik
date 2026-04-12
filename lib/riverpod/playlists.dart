@@ -5,10 +5,10 @@ import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meine_musik/utils.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../drift/database.dart' hide Playlist;
+import '../env.dart';
 import '../model/AudioFile.dart';
 import '../model/AudioFolder.dart';
 import '../model/IsSongPredicate.dart';
@@ -115,8 +115,7 @@ Future<List<ManuallyCreatedPlaylist>> manuallyCreatedPlaylists(Ref ref) async {
 @Riverpod(keepAlive: true)
 Future<IsSongPredicate> isSongPredicate(Ref ref) async {
   try {
-    final dir = await getApplicationDocumentsDirectory();
-    final configFile = File('${dir.path}/IsSongPredicate.config');
+    final configFile = File('${applicationDocumentsDirectory.path}/IsSongPredicate.config');
     final isSongPredicate = await IsSongPredicate.fromFile(configFile);
     return isSongPredicate;
   } catch (error, stack) {
@@ -127,41 +126,33 @@ Future<IsSongPredicate> isSongPredicate(Ref ref) async {
 }
 
 Future<void> whitelistFolder(AudioFolder folder, WidgetRef ref) async {
-  final dirFuture = getApplicationDocumentsDirectory();
   final oldIsSongPredicate = await ref.read(isSongPredicateProvider.future);
   final newIsSongPredicate = oldIsSongPredicate.whitelistFolder(folder);
-  final dir = await dirFuture;
-  final configFile = File('${dir.path}/IsSongPredicate.config');
+  final configFile = File('${applicationDocumentsDirectory.path}/IsSongPredicate.config');
   await newIsSongPredicate.writeToFile(configFile);
   ref.invalidate(isSongPredicateProvider);
 }
 
 Future<void> blacklistFolder(AudioFolder folder, WidgetRef ref) async {
-  final dirFuture = getApplicationDocumentsDirectory();
   final oldIsSongPredicate = await ref.read(isSongPredicateProvider.future);
   final newIsSongPredicate = oldIsSongPredicate.blacklistFolder(folder);
-  final dir = await dirFuture;
-  final configFile = File('${dir.path}/IsSongPredicate.config');
+  final configFile = File('${applicationDocumentsDirectory.path}/IsSongPredicate.config');
   await newIsSongPredicate.writeToFile(configFile);
   ref.invalidate(isSongPredicateProvider);
 }
 
 Future<void> whitelistFile(AudioFile file, WidgetRef ref) async {
-  final dirFuture = getApplicationDocumentsDirectory();
   final oldIsSongPredicate = await ref.read(isSongPredicateProvider.future);
   final newIsSongPredicate = oldIsSongPredicate.whitelistFile(file);
-  final dir = await dirFuture;
-  final configFile = File('${dir.path}/IsSongPredicate.config');
+  final configFile = File('${applicationDocumentsDirectory.path}/IsSongPredicate.config');
   await newIsSongPredicate.writeToFile(configFile);
   ref.invalidate(isSongPredicateProvider);
 }
 
 Future<void> blacklistFile(AudioFile file, WidgetRef ref) async {
-  final dirFuture = getApplicationDocumentsDirectory();
   final oldIsSongPredicate = await ref.read(isSongPredicateProvider.future);
   final newIsSongPredicate = oldIsSongPredicate.blacklistFile(file);
-  final dir = await dirFuture;
-  final configFile = File('${dir.path}/IsSongPredicate.config');
+  final configFile = File('${applicationDocumentsDirectory.path}/IsSongPredicate.config');
   await newIsSongPredicate.writeToFile(configFile);
   ref.invalidate(isSongPredicateProvider);
 }

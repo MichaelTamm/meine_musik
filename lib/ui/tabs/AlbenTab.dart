@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../env.dart';
 import '../../model/Playlist.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../../theme.dart';
 import '../../utils.dart';
-import '../Thumbnail.dart';
 import '../LoadingIndicator.dart';
 import '../PlaylistActions.dart';
 import '../PlaylistView.dart';
+import '../Thumbnail.dart';
 
 class AlbenTab extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: '$AlbenTab.navigatorKey');
@@ -21,14 +22,18 @@ class AlbenTab extends ConsumerStatefulWidget {
     final viewData = <Album>[];
     for (final mapEntry in songsByAlbumName.entries) {
       final name = mapEntry.key;
-      final songs = mapEntry.value.sortBy((it) => it.trackNumber, thenBy: (it) => it.path);
-      for (int i = 0; i < songs.length; ++i) {
-        final song = songs[i];
-        if (song.trackNumber == 0) {
-          song.trackNumber = i + 1;
+      // There might be multiple alben with the same name (e.g. "Greatest Hits") -- disambiguate by folder ...
+      final songsByDir = mapEntry.value.groupBy((it) => it.dir);
+      for (final songs in songsByDir.values) {
+        final songs_ = songs.sortBy((it) => it.trackNumber);
+        for (int i = 0; i < songs_.length; ++i) {
+          final song = songs_[i];
+          if (song.trackNumber == 0) {
+            song.trackNumber = i + 1;
+          }
         }
+        viewData.add(Album.fromNameAndSongs(name, songs_));
       }
-      viewData.add(Album(name, songs));
     }
     ref.keepAlive();
     return viewData;
@@ -63,6 +68,7 @@ class _AlbenTabState extends ConsumerState<AlbenTab> with AutomaticKeepAliveClie
         }
       },
       child: viewDataAsync.when(
+        skipLoadingOnRefresh: false,
         loading: LoadingIndicator.new,
         data: (viewData) => Navigator(
           key: AlbenTab.navigatorKey,
@@ -104,12 +110,22 @@ class _AlleAlbenOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (_, index) {
-        final album = data[index];
-        return _AlbumListTile(album, onTap: () => openAlbum(album));
+    return RefreshIndicator(
+      onRefresh: () async {
+        // [UX] Show refresh indicator for 300 ms ...
+        await Future.delayed(Duration(milliseconds: 300));
+        clearCaches();
       },
+      child: ListView.builder(
+        // With the default ListView physics, RefreshIndicator won't trigger
+        // when the content is shorter than the viewport, therefore ...
+        physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: data.length,
+        itemBuilder: (_, index) {
+          final album = data[index];
+          return _AlbumListTile(album, onTap: () => openAlbum(album));
+        },
+      ),
     );
   }
 
