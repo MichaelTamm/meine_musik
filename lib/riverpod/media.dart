@@ -60,8 +60,8 @@ Future<Map<int, AudioFile>> localAudioFilesById(Ref ref) async {
 }
 
 @Riverpod(keepAlive: true)
-Future<MusicBrainzArtist?> artist(Ref ref, String artistName) {
-  return musicBrainz.searchArtistByName(artistName);
+Future<MusicBrainzArtist?> artist(Ref ref, KuenstlerSongs kuenstlerSongs) {
+  return musicBrainz.searchArtist(kuenstlerSongs.kuenstler, kuenstlerSongs);
 }
 
 @Riverpod(keepAlive: false)
@@ -75,7 +75,7 @@ Future<Uint8List?> songThumbnail(Ref ref, Song song) async {
 Future<Uint8List?> albumCoverThumbnail(Ref ref, Album album) async {
   var albumCover = await audioService.getAlbumCover(album.firstSong.path);
   if (albumCover == null) {
-    final release = await musicBrainz.searchReleaseByAlbum(album);
+    final release = await musicBrainz.searchRelease(album);
     if (release != null) {
       final mbid = release.mbid;
       final thumbnailsDir = Directory('${applicationCacheDirectory.path}/album-thumbnails');
@@ -86,9 +86,9 @@ Future<Uint8List?> albumCoverThumbnail(Ref ref, Album album) async {
 }
 
 @Riverpod(keepAlive: false)
-Future<Uint8List?> artistThumbnail(Ref ref, String artistName) async {
+Future<Uint8List?> artistThumbnail(Ref ref, KuenstlerSongs kuenstlerSongs) async {
   Uint8List? thumbnail;
-  final artist = await ref.watch(artistProvider(artistName).future);
+  final artist = await ref.watch(artistProvider(kuenstlerSongs).future);
   if (artist != null) {
     final mbid = artist.mbid;
     final thumbnailsDir = Directory('${applicationCacheDirectory.path}/artist-thumbnails');
@@ -98,8 +98,8 @@ Future<Uint8List?> artistThumbnail(Ref ref, String artistName) async {
 }
 
 @Riverpod(keepAlive: true)
-Future<IconData> artistIcon(Ref ref, String artistName) async {
-  final artist = await ref.watch(artistProvider(artistName).future);
+Future<IconData> artistIcon(Ref ref, KuenstlerSongs kuenstlerSongs) async {
+  final artist = await ref.watch(artistProvider(kuenstlerSongs).future);
   if (artist != null) {
     final type = artist.type;
     return type == 'Person' || type == 'Character' ? Icons.person : Icons.group;

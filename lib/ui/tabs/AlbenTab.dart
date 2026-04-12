@@ -68,6 +68,7 @@ class _AlbenTabState extends ConsumerState<AlbenTab> with AutomaticKeepAliveClie
         }
       },
       child: viewDataAsync.when(
+        skipLoadingOnRefresh: false,
         loading: LoadingIndicator.new,
         data: (viewData) => Navigator(
           key: AlbenTab.navigatorKey,
@@ -113,7 +114,7 @@ class _AlleAlbenOverview extends StatelessWidget {
       onRefresh: () async {
         // [UX] Show refresh indicator for 300 ms ...
         await Future.delayed(Duration(milliseconds: 300));
-        riverpodContainer.invalidateAll();
+        clearCaches();
       },
       child: ListView.builder(
         // With the default ListView physics, RefreshIndicator won't trigger

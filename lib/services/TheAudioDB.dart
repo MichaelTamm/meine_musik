@@ -47,4 +47,8 @@ class TheAudioDB {
     }
     return null;
   }
+
+  void clearCache() {
+    _cache.clear();
+  }
 }

@@ -111,11 +111,12 @@ final class _RiverpodObserver extends ProviderObserver {
 
 final riverpodObserver = _RiverpodObserver();
 
-extension InvalidateAllExtendsion on ProviderContainer {
-  void invalidateAll() {
-    final activeProvidersSnapshot = [...riverpodObserver.activeProviders];
-    for (final provider in activeProvidersSnapshot) {
-      invalidate(provider);
-    }
+void clearCaches() {
+  coverArtArchive.clearCache();
+  musicBrainz.clearCache();
+  theAudioDB.clearCache();
+  final activeProvidersSnapshot = [...riverpodObserver.activeProviders];
+  for (final provider in activeProvidersSnapshot) {
+    riverpodContainer.invalidate(provider);
   }
 }

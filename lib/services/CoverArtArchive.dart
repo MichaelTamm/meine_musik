@@ -52,4 +52,8 @@ class CoverArtArchive {
     }
     return null;
   }
+
+  void clearCache() {
+    _cache.clear();
+  }
 }

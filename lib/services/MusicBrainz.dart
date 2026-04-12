@@ -8,24 +8,24 @@ import 'package:musicbrainz_api_client/musicbrainz_api_client.dart' show MusicBr
 
 import '../drift/database.dart';
 import '../model/Playlist.dart';
-import '../riverpod/media.dart';
+import '../model/Song.dart';
 import '../utils.dart';
 
 class MusicBrainz {
   MusicBrainz(http.Client httpClient) : _apiClient = MusicBrainzApiClient(httpClient: httpClient, isSilent: false);
 
   final MusicBrainzApiClient _apiClient;
-  final Map<String, Future<MusicBrainzArtist?>> _searchArtistByNameCache = {};
-  final Map<int, Future<MusicBrainzRelease?>> _searchReleaseByAlbumCache = {};
+  final Map<String, Future<MusicBrainzArtist?>> _searchArtistCache = {};
+  final Map<int, Future<MusicBrainzRelease?>> _searchReleaseCache = {};
 
-  Future<MusicBrainzArtist?> searchArtistByName(String name) async {
+  Future<MusicBrainzArtist?> searchArtist(String name, Iterable<Song> songs) async {
     var cached = true;
     try {
-      final future = _searchArtistByNameCache.putIfAbsent(name, () async {
+      final future = _searchArtistCache.putIfAbsent(name, () async {
         cached = false;
         var artist = await db.findArtistByName(name);
         if (artist == null) {
-          artist = await _searchArtistByName(name);
+          artist = await _searchArtist(name, songs);
           if (artist != null) {
             try {
               await db.musicBrainzArtists.insertOne(artist.toCompanion(true));
@@ -76,7 +76,7 @@ class MusicBrainz {
     }
   }
 
-  Future<MusicBrainzArtist?> _searchArtistByName(String name) async {
+  Future<MusicBrainzArtist?> _searchArtist(String name, Iterable<Song> songs) async {
     final data = await _apiClient.artists.search('artist:$name', limit: 5);
     final searchResult = data['artists'] as List<dynamic>;
     final normalizedName = name.normalize();
@@ -98,20 +98,31 @@ class MusicBrainz {
       final artist = MusicBrainzArtist(mbid: id, name: match['name'] as String? ?? name, type: matches[0]['type'] as String? ?? '');
       return artist;
     } else {
-      debugPrint('Found ${matches.length} matches for artist ${toDartString(name)} -- TODO: disambiguate');
-      // TODO: Disambiguate by querying and comparing known songs.
+      debugPrint('Found ${matches.length} matches for artist ${toDartString(name)} -- disambiguate ...');
+      final normalizedSongTitles = {for (final song in songs) song.title.normalize()};
+      for (final match in matches) {
+        final id = match['id'] as String;
+        final data = await _apiClient.works.browse("artist", id, limit: 1000);
+        final works = (data['works'] as List<dynamic>).cast<Map<String, dynamic>>();
+        final numFoundSongs = works.where((it) => normalizedSongTitles.contains((it['title'] as String).normalize())).length;
+        if (numFoundSongs >= normalizedSongTitles.length * 0.5) {
+          debugPrint('Found artist ${toDartString(name)} in MusicBrainz database: https://musicbrainz.org/artist/$id');
+          final artist = MusicBrainzArtist(mbid: id, name: match['name'] as String? ?? name, type: matches[0]['type'] as String? ?? '');
+          return artist;
+        }
+      }
     }
     return null;
   }
 
-  Future<MusicBrainzRelease?> searchReleaseByAlbum(Album album) async {
+  Future<MusicBrainzRelease?> searchRelease(Album album) async {
     var cached = true;
     try {
-      final future = _searchReleaseByAlbumCache.putIfAbsent(album.firstSong.id, () async {
+      final future = _searchReleaseCache.putIfAbsent(album.firstSong.id, () async {
         cached = false;
         var release = await db.findReleaseBySongId(album.firstSong.id);
         if (release == null) {
-          release = await _searchReleaseByAlbum(album);
+          release = await _searchRelease(album);
           if (release != null) {
             await db.musicBrainzReleases.insertOne(release.toCompanion(true));
           }
@@ -128,7 +139,7 @@ class MusicBrainz {
     }
   }
 
-  Future<MusicBrainzRelease?> _searchReleaseByAlbum(Album album) async {
+  Future<MusicBrainzRelease?> _searchRelease(Album album) async {
     final kuenstler = album.kuenstler;
 
     MusicBrainzRelease toMusicBrainzRelease(Map<String, dynamic> releaseData, String releaseGroupMbid) {
@@ -139,60 +150,64 @@ class MusicBrainz {
     }
 
     if (kuenstler.isNotEmpty && kuenstler != 'verschiedene Künstler') {
-      final artist = await riverpodContainer.read(artistProvider(kuenstler).future);
-      if (artist != null) {
-        final data = await _apiClient.artists.get(artist.mbid, inc: ['release-groups']);
-        final releaseGroups = (data['release-groups'] as List<dynamic>).cast<Map<String, dynamic>>();
-        final normalizedAlbumName = album.name.normalize().toLowerCase();
-        for (final releaseGroup in releaseGroups) {
-          final primaryType = releaseGroup['primary-type'] as String?;
-          if (primaryType != 'Album') {
-            continue;
-          }
-          final title = releaseGroup['title'] as String? ?? '';
-          if (title.normalize().toLowerCase() == normalizedAlbumName) {
-            final releaseGroupId = releaseGroup['id'] as String;
-            debugPrint(
-              'Found release-group ${toDartString(title)} for $album in MusicBrainz database: https://musicbrainz.org/release-group/$releaseGroupId',
-            );
-            final data = await _apiClient.releaseGroups.get(releaseGroupId, inc: ['releases']);
-            final releases = (data['releases'] as List<dynamic>).cast<Map<String, dynamic>>();
-            final officialReleases = releases.where((it) => it['status'] == 'Official');
-            // 1st round: search for release with no disambiguation and country != "XW" ...
-            final candidates1 = officialReleases.where((it) {
-              final disambiguation = it['disambiguation'] as String?;
-              final country = it['country'] as String?;
-              return (disambiguation == null || disambiguation.isEmpty) && country != 'XW';
-            }).toList();
-            if (candidates1.length == 1) {
-              return toMusicBrainzRelease(candidates1[0], releaseGroupId);
-            } else if (candidates1.length > 1) {
-              // Prefer release with known packaging ...
-              final candidates1_ = candidates1.where((it) => it['packaging-id'] != null);
-              if (candidates1_.isNotEmpty) {
-                return toMusicBrainzRelease(candidates1_.first, releaseGroupId);
-              } else {
+      final songs = album.where((it) => logic.splitArtistStringHeuristic(it.artist).contains(kuenstler));
+      MusicBrainzArtist? artist;
+      if (songs.isNotEmpty) {
+        artist = await musicBrainz.searchArtist(kuenstler, songs);
+        if (artist != null) {
+          final data = await _apiClient.artists.get(artist.mbid, inc: ['release-groups']);
+          final releaseGroups = (data['release-groups'] as List<dynamic>).cast<Map<String, dynamic>>();
+          final normalizedAlbumName = album.name.normalize().toLowerCase();
+          for (final releaseGroup in releaseGroups) {
+            final primaryType = releaseGroup['primary-type'] as String?;
+            if (primaryType != 'Album') {
+              continue;
+            }
+            final title = releaseGroup['title'] as String? ?? '';
+            if (title.normalize().toLowerCase() == normalizedAlbumName) {
+              final releaseGroupId = releaseGroup['id'] as String;
+              debugPrint(
+                'Found release-group ${toDartString(title)} for $album in MusicBrainz database: https://musicbrainz.org/release-group/$releaseGroupId',
+              );
+              final data = await _apiClient.releaseGroups.get(releaseGroupId, inc: ['releases']);
+              final releases = (data['releases'] as List<dynamic>).cast<Map<String, dynamic>>();
+              final officialReleases = releases.where((it) => it['status'] == 'Official');
+              // 1st round: search for release with no disambiguation and country != "XW" ...
+              final candidates1 = officialReleases.where((it) {
+                final disambiguation = it['disambiguation'] as String?;
+                final country = it['country'] as String?;
+                return (disambiguation == null || disambiguation.isEmpty) && country != 'XW';
+              }).toList();
+              if (candidates1.length == 1) {
                 return toMusicBrainzRelease(candidates1[0], releaseGroupId);
+              } else if (candidates1.length > 1) {
+                // Prefer release with known packaging ...
+                final candidates1_ = candidates1.where((it) => it['packaging-id'] != null);
+                if (candidates1_.isNotEmpty) {
+                  return toMusicBrainzRelease(candidates1_.first, releaseGroupId);
+                } else {
+                  return toMusicBrainzRelease(candidates1[0], releaseGroupId);
+                }
               }
-            }
-            // 2nd round: search for release with no disambiguation
-            final candidates2 = officialReleases.where((it) {
-              final disambiguation = it['disambiguation'] as String?;
-              return disambiguation == null || disambiguation.isEmpty;
-            }).toList();
-            if (candidates2.length == 1) {
-              return toMusicBrainzRelease(candidates2[0], releaseGroupId);
-            } else if (candidates2.length > 1) {
-              // Prefer release with known packaging ...
-              final candidates2_ = candidates1.where((it) => it['packaging-id'] != null);
-              if (candidates2_.isNotEmpty) {
-                return toMusicBrainzRelease(candidates2_.first, releaseGroupId);
-              } else {
+              // 2nd round: search for release with no disambiguation
+              final candidates2 = officialReleases.where((it) {
+                final disambiguation = it['disambiguation'] as String?;
+                return disambiguation == null || disambiguation.isEmpty;
+              }).toList();
+              if (candidates2.length == 1) {
                 return toMusicBrainzRelease(candidates2[0], releaseGroupId);
+              } else if (candidates2.length > 1) {
+                // Prefer release with known packaging ...
+                final candidates2_ = candidates1.where((it) => it['packaging-id'] != null);
+                if (candidates2_.isNotEmpty) {
+                  return toMusicBrainzRelease(candidates2_.first, releaseGroupId);
+                } else {
+                  return toMusicBrainzRelease(candidates2[0], releaseGroupId);
+                }
               }
+              // Fallback ...
+              return toMusicBrainzRelease(officialReleases.firstOrNull ?? releases.first, releaseGroupId);
             }
-            // Fallback ...
-            return toMusicBrainzRelease(officialReleases.firstOrNull ?? releases.first, releaseGroupId);
           }
         }
       }
@@ -253,5 +268,10 @@ class MusicBrainz {
       }
     }
     return null;
+  }
+
+  void clearCache() {
+    _searchArtistCache.clear();
+    _searchReleaseCache.clear();
   }
 }

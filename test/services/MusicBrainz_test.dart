@@ -7,6 +7,44 @@ import 'package:meine_musik/services/MusicBrainz.dart';
 import '../RecordPlaybackHttpClient.dart';
 
 void main() {
+  test('$MusicBrainz.searchArtist (Anastacia)', () async {
+    musicBrainz = MusicBrainz(RecordPlaybackHttpClient());
+    final kuenstlerSongs = KuenstlerSongs('Anastacia', [
+      AudioFile(
+        id: 18250,
+        path: '/storage/0000-0000/Musik/Anastacia - Pieces of a Dream/d1t01. Anastacia - I’m Outta Love.mp3',
+        sizeInBytes: 4656721,
+        title: 'I’m Outta Love',
+        artist: 'Anastacia',
+        album: 'Pieces of a Dream',
+        trackNumber: 0,
+        durationInMilliseconds: 245446,
+      ),
+      AudioFile(
+        id: 18251,
+        path: '/storage/0000-0000/Musik/Anastacia - Pieces of a Dream/d1t02. Anastacia - Not That Kind.mp3',
+        sizeInBytes: 3727492,
+        title: 'Not That Kind',
+        artist: 'Anastacia',
+        album: 'Pieces of a Dream',
+        trackNumber: 0,
+        durationInMilliseconds: 203519,
+      ),
+      AudioFile(
+        id: 18252,
+        path: '/storage/0000-0000/Musik/Anastacia - Pieces of a Dream/d1t03. Anastacia - Cowboys & Kisses.mp3',
+        sizeInBytes: 5099883,
+        title: 'Cowboys & Kisses',
+        artist: 'Anastacia',
+        album: 'Pieces of a Dream',
+        trackNumber: 0,
+        durationInMilliseconds: 278778,
+      ),
+    ]);
+    final artist = await musicBrainz.searchArtist(kuenstlerSongs.kuenstler, kuenstlerSongs);
+    expect(artist?.mbid, equals('d3b2bec4-b70e-460e-b433-a865ceac2de8'));
+  });
+
   test('$MusicBrainz.searchReleaseByAlbum (No Angels - Elle´ments)', () async {
     musicBrainz = MusicBrainz(RecordPlaybackHttpClient());
     final album = Album.fromNameAndSongs('Elle´ments', [
@@ -141,7 +179,7 @@ void main() {
         durationInMilliseconds: 195761,
       ),
     ]);
-    final release = await musicBrainz.searchReleaseByAlbum(album);
+    final release = await musicBrainz.searchRelease(album);
     expect(release?.mbid, equals('51ac4e7b-477e-4887-84fc-eee1f9fc1625'));
   });
 
@@ -329,7 +367,7 @@ void main() {
         durationInMilliseconds: 247431,
       ),
     ]);
-    final release = await musicBrainz.searchReleaseByAlbum(album);
+    final release = await musicBrainz.searchRelease(album);
     expect(release?.mbid, equals('a4f1aecf-7bda-4120-a552-9afd8502a9da'));
   });
 }

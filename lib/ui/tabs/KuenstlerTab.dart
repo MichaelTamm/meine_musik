@@ -63,6 +63,7 @@ class _KuenstlerTabState extends ConsumerState<KuenstlerTab> with AutomaticKeepA
         }
       },
       child: viewDataAsync.when(
+        skipLoadingOnRefresh: false,
         loading: LoadingIndicator.new,
         data: (viewData) => Navigator(
           key: KuenstlerTab.navigatorKey,
@@ -108,7 +109,7 @@ class _AlleKuenstlerOverview extends StatelessWidget {
       onRefresh: () async {
         // [UX] Show refresh indicator for 300 ms ...
         await Future.delayed(Duration(milliseconds: 300));
-        riverpodContainer.invalidateAll();
+        clearCaches();
       },
       child: ListView.builder(
         // With the default ListView physics, RefreshIndicator won't trigger
@@ -153,7 +154,7 @@ class _KuenstlerListTile extends ConsumerWidget {
       selectedTileColor: selectedPlaylistBackground,
       selected: isCurrentPlaylist,
       contentPadding: EdgeInsets.only(left: 8),
-      leading: Thumbnail.forArtist(kuenstler),
+      leading: Thumbnail.forKuenstler(kuenstlerSongs),
       title: Text(kuenstler, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: Text(
         switch (kuenstlerSongs.length) {

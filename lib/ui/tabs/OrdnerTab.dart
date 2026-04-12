@@ -189,6 +189,7 @@ class _AudioFolderView extends ConsumerWidget {
     final folder_ = folder;
     final folderAsync = folder_ == null ? ref.watch(OrdnerTab.thisDeviceProvider) : AsyncData(folder_);
     return folderAsync.when(
+      skipLoadingOnRefresh: false,
       loading: LoadingIndicator.new,
       data: (folder) {
         final numFolders = folder.subfolders.length;
@@ -197,7 +198,7 @@ class _AudioFolderView extends ConsumerWidget {
           onRefresh: () async {
             // [UX] Show refresh indicator for 300 ms ...
             await Future.delayed(Duration(milliseconds: 300));
-            riverpodContainer.invalidateAll();
+            clearCaches();
             OrdnerTab.navigatorKey.currentState!.popUntil((it) => it.settings.name == '/');
           },
           child: ListView.builder(

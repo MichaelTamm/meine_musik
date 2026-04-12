@@ -22,15 +22,15 @@ class Thumbnail extends ConsumerWidget {
       fallback = ((_) => const Icon(Icons.album, size: 48)),
       super(key: ValueKey(album));
 
-  Thumbnail.forArtist(String kuenstler)
-    : load = ((ref) => ref.watch(artistThumbnailProvider(kuenstler))),
+  Thumbnail.forKuenstler(KuenstlerSongs kuenstlerSongs)
+    : load = ((ref) => ref.watch(artistThumbnailProvider(kuenstlerSongs))),
       fallback = ((ref) => Icon(
         ref
-            .watch(artistIconProvider(kuenstler))
+            .watch(artistIconProvider(kuenstlerSongs))
             .when(loading: () => Icons.question_mark, data: (icon) => icon, error: (_, _) => Icons.question_mark),
         size: 32,
       )),
-      super(key: ValueKey(kuenstler));
+      super(key: ValueKey(kuenstlerSongs));
 
   Thumbnail.forSong(Song song)
     : load = ((ref) => ref.watch(songThumbnailProvider(song))),
