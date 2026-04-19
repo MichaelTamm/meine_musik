@@ -179,7 +179,7 @@ final class ManuallyCreatedPlaylistProvider
   }
 }
 
-String _$manuallyCreatedPlaylistHash() => r'73d815d5b2a6ea902413aa93647f0fc865df9e0e';
+String _$manuallyCreatedPlaylistHash() => r'2710f879d0e575ba7b419b9f069880912ebc4093';
 
 final class ManuallyCreatedPlaylistFamily extends $Family with $FunctionalFamilyOverride<FutureOr<ManuallyCreatedPlaylist>, int> {
   const ManuallyCreatedPlaylistFamily._()
@@ -303,7 +303,7 @@ final class CurrentBookmarkTargetIdProvider extends $NotifierProvider<CurrentBoo
   }
 }
 
-String _$currentBookmarkTargetIdHash() => r'1ebcbd51fe18256b947784fdd83b74d01338c61c';
+String _$currentBookmarkTargetIdHash() => r'9104fe905b31f872fcd6b75c56382833505780eb';
 
 /// The id of the manually created playlist, to which a song is added, when the bookmark button is pressed.
 /// If id == null the bookmark target is the Favoriten playlist.

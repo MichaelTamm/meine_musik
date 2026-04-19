@@ -18,99 +18,106 @@ class PlaylistActions extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playlist = this.playlist;
-    final playIconButton = IconButton(
-      icon: const Icon(Icons.play_arrow_rounded),
-      onPressed: playlist.isEmpty
-          ? null
-          : () {
-              debugPrint('Tap on play icon button for $playlist');
-              ref.read(playerProvider).playPlaylist(playlist);
-            },
+    final playIconButton = Semantics(
+      label: 'Playlist abspielen',
+      child: IconButton(
+        icon: const Icon(Icons.play_arrow_rounded),
+        tooltip: '',
+        onPressed: playlist.isEmpty
+            ? null
+            : () {
+                debugPrint('Tap on play icon button for $playlist');
+                ref.read(playerProvider).playPlaylist(playlist);
+              },
+      ),
     );
-    final popupMenuButton = PopupMenuButton<FutureOr<void> Function()>(
-      enabled: playlist.isNotEmpty || playlist is ManuallyCreatedPlaylist,
-      tooltip: '',
-      icon: const Icon(Icons.more_vert_rounded),
-      position: PopupMenuPosition.under,
-      menuPadding: EdgeInsets.zero,
-      itemBuilder: (_) => [
-        PopupMenuItem(
-          enabled: playlist.isNotEmpty,
-          padding: _popupMenuItemPadding,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.play_arrow_rounded),
-              Icon(Icons.shuffle_rounded),
-              SizedBox(width: 8),
-              Text('in zufälliger Reihenfolge\nabspielen'),
-            ],
-          ),
-          value: () {
-            debugPrint("Popup menu item 'in zufälliger Reihenfolge abspielen' selected for $playlist");
-            ref.read(playerProvider).shuffleAndPlay(playlist);
-          },
-        ),
-        PopupMenuItem(
-          enabled: playlist.isNotEmpty,
-          padding: _popupMenuItemPadding,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.add),
-              Icon(Icons.format_list_numbered_rounded),
-              SizedBox(width: 8),
-              Text('zur Wiedergabeliste hinzufügen'),
-            ],
-          ),
-          value: () {
-            debugPrint("Popup menu item 'zur Wiedergabeliste hinzufügen' selected for $playlist");
-            ref.read(playerProvider).enqueuePlaylist(playlist);
-          },
-        ),
-        PopupMenuItem(
-          enabled: playlist.isNotEmpty,
-          padding: _popupMenuItemPadding,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.add),
-              Icon(Icons.shuffle_rounded),
-              SizedBox(width: 8),
-              Text('in zufälliger Reihenfolge\nzur Wiedergabeliste hinzufügen'),
-            ],
-          ),
-          value: () {
-            debugPrint("Popup menu item 'in zufälliger Reihenfolge zur Wiedergabeliste hinzufügen' selected for $playlist");
-            ref.read(playerProvider).shuffleAndEnqueue(playlist);
-          },
-        ),
-        if (playlist is ManuallyCreatedPlaylist) ...[
+    final popupMenuButton = Semantics(
+      label: 'Popup-Menü mit weiteren Aktionen öffnen',
+      child: PopupMenuButton<void Function()>(
+        enabled: playlist.isNotEmpty || playlist is ManuallyCreatedPlaylist,
+        tooltip: '',
+        icon: const Icon(Icons.more_vert_rounded),
+        position: PopupMenuPosition.under,
+        menuPadding: EdgeInsets.zero,
+        itemBuilder: (_) => [
           PopupMenuItem(
+            enabled: playlist.isNotEmpty,
             padding: _popupMenuItemPadding,
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: [SizedBox(width: 24), Icon(Icons.edit), SizedBox(width: 8), Text('Playlist umbenennen')],
+              children: [
+                Icon(Icons.play_arrow_rounded),
+                Icon(Icons.shuffle_rounded),
+                SizedBox(width: 8),
+                Text('in zufälliger Reihenfolge\nabspielen'),
+              ],
             ),
             value: () {
-              debugPrint("Popup menu item 'Playlist umbenennen' selected for $playlist");
-              return showDialog(context: context, builder: (_) => RenamePlaylistDialog(playlist));
+              debugPrint("Popup menu item 'in zufälliger Reihenfolge abspielen' selected for $playlist");
+              ref.read(playerProvider).shuffleAndPlay(playlist);
             },
           ),
           PopupMenuItem(
+            enabled: playlist.isNotEmpty,
             padding: _popupMenuItemPadding,
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: [SizedBox(width: 24), Icon(Icons.delete_rounded), SizedBox(width: 8), Text('Playlist löschen')],
+              children: [
+                Icon(Icons.add),
+                Icon(Icons.format_list_numbered_rounded),
+                SizedBox(width: 8),
+                Text('zur Wiedergabeliste hinzufügen'),
+              ],
             ),
             value: () {
-              debugPrint("Popup menu item 'Playlist löschen' selected for $playlist");
-              return showDialog(context: context, builder: (_) => DeletePlaylistDialog(playlist));
+              debugPrint("Popup menu item 'zur Wiedergabeliste hinzufügen' selected for $playlist");
+              ref.read(playerProvider).enqueuePlaylist(playlist);
             },
           ),
+          PopupMenuItem(
+            enabled: playlist.isNotEmpty,
+            padding: _popupMenuItemPadding,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add),
+                Icon(Icons.shuffle_rounded),
+                SizedBox(width: 8),
+                Text('in zufälliger Reihenfolge\nzur Wiedergabeliste hinzufügen'),
+              ],
+            ),
+            value: () {
+              debugPrint("Popup menu item 'in zufälliger Reihenfolge zur Wiedergabeliste hinzufügen' selected for $playlist");
+              ref.read(playerProvider).shuffleAndEnqueue(playlist);
+            },
+          ),
+          if (playlist is ManuallyCreatedPlaylist) ...[
+            PopupMenuItem(
+              padding: _popupMenuItemPadding,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [SizedBox(width: 24), Icon(Icons.edit), SizedBox(width: 8), Text('Playlist umbenennen')],
+              ),
+              value: () {
+                debugPrint("Popup menu item 'Playlist umbenennen' selected for $playlist");
+                unawaited(showDialog(context: context, builder: (_) => RenamePlaylistDialog(playlist)));
+              },
+            ),
+            PopupMenuItem(
+              padding: _popupMenuItemPadding,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [SizedBox(width: 24), Icon(Icons.delete_rounded), SizedBox(width: 8), Text('Playlist löschen')],
+              ),
+              value: () {
+                debugPrint("Popup menu item 'Playlist löschen' selected for $playlist");
+                unawaited(showDialog(context: context, builder: (_) => DeletePlaylistDialog(playlist)));
+              },
+            ),
+          ],
         ],
-      ],
-      onSelected: (value) => value(),
+        onSelected: (value) => value(),
+      ),
     );
 
     return SizedBox(
@@ -120,7 +127,7 @@ class PlaylistActions extends ConsumerWidget {
         children: [
           // [UX]: There is a small overlap between both buttons (by intent).
           //       We render  the `playIconButton` after the `popupMenuButton`
-          //       so that the `popupMenuButton` wins when the overlapping area is touched ...
+          //       so that the `playIconButton` wins when the overlapping area is touched ...
           Positioned(right: 4, top: 0, child: popupMenuButton),
           Positioned(left: 0, top: 0, child: playIconButton),
         ],

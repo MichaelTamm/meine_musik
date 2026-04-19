@@ -42,6 +42,7 @@ class CurrentSong extends _$CurrentSong {
 
   void _reset() {
     state = build();
+    ref.read(currentSongLabelProvider.notifier)._set('');
   }
 
   void _set(Song song) {

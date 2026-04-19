@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 final colorScheme = ColorScheme.fromSeed(seedColor: Colors.deepPurple);
 
-final selectedPlaylistBackground = Color.lerp(Colors.purpleAccent, Colors.white, 0.875)!;
+final fullySelectedPlaylistBackground = Color.lerp(Colors.purpleAccent, Colors.white, 0.875)!;
+final partiallySelectedPlaylistBackground = Color.lerp(fullySelectedPlaylistBackground, Colors.white, 0.333)!;
 final selectedSongBackground = Color.lerp(Colors.purpleAccent, Colors.white, 0.75)!;
 
 final themeData = ThemeData(

@@ -14,7 +14,9 @@ class DeletePlaylistDialog extends HookWidget {
 
     Future<void> delete() async {
       await playlist.delete();
-      navigatorState.pop();
+      if (context.mounted) {
+        navigatorState.pop();
+      }
     }
 
     return SimpleDialog(

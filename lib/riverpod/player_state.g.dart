@@ -102,7 +102,7 @@ final class CurrentSongProvider extends $NotifierProvider<CurrentSong, Song> {
   }
 }
 
-String _$currentSongHash() => r'4cd3dbe4de3e5aebbf8dba538f3b5d327a561da2';
+String _$currentSongHash() => r'049e68bb662aa85d20561e97bfd4ce40dddd385e';
 
 /// The song currently being played.
 /// Initial value: [_noSong]

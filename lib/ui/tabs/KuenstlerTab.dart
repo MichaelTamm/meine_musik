@@ -149,10 +149,11 @@ class _KuenstlerListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it == kuenstlerSongs));
+    final isFullySelected = ref.watch(currentPlaylistProvider.select((it) => it.includesAllOf(kuenstlerSongs)));
+    final isPartiallySelected = ref.watch(currentPlaylistProvider.select((it) => it.includesOneOf(kuenstlerSongs)));
     return ListTile(
-      selectedTileColor: selectedPlaylistBackground,
-      selected: isCurrentPlaylist,
+      selected: isFullySelected || isPartiallySelected,
+      selectedTileColor: isFullySelected ? fullySelectedPlaylistBackground : partiallySelectedPlaylistBackground,
       contentPadding: EdgeInsets.only(left: 8),
       leading: Thumbnail.forKuenstler(kuenstlerSongs),
       title: Text(kuenstler, maxLines: 1, overflow: TextOverflow.ellipsis),

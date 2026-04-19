@@ -151,11 +151,17 @@ class _AlbumListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it == album));
+    final isFullySelected = ref.watch(currentPlaylistProvider.select((it) => it.includesAllOf(album)));
+    final isPartiallySelected = ref.watch(currentPlaylistProvider.select((it) => it.includesOneOf(album)));
+
+    if (isPartiallySelected) {
+      debugPrint('**** $album is partially selected');
+    }
+
     final textTheme = TextTheme.of(context);
     return ListTile(
-      selectedTileColor: selectedPlaylistBackground,
-      selected: isCurrentPlaylist,
+      selected: isFullySelected || isPartiallySelected,
+      selectedTileColor: isFullySelected ? fullySelectedPlaylistBackground : partiallySelectedPlaylistBackground,
       contentPadding: EdgeInsets.only(left: 8),
       leading: Thumbnail.forAlbum(album),
       title: Column(

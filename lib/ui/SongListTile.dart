@@ -23,18 +23,19 @@ class SongListTile extends ConsumerWidget {
       selected: isCurrentSong,
       contentPadding: EdgeInsets.only(left: 8, right: 8),
       leading: Thumbnail.forSong(song),
-      title: playlist is Album
-          ? Text('${song.trackNumber}. ${song.title}', style: textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis)
-          : playlist is KuenstlerSongs
-          ? Text(song.title, style: textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis)
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(song.artist, style: textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
-                Text(song.title, style: textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
-              ],
-            ),
+      title: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(song.artist, style: textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+          Text(
+            playlist is Album ? '${song.trackNumber}. ${song.title}' : song.title,
+            style: textTheme.bodyLarge,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
       subtitle: Text(formatSongDuration(Duration(milliseconds: song.durationInMilliseconds))),
       // TODO: display animated playing icon when this is the current song and it is currently being played
       trailing: const Icon(Icons.play_arrow),

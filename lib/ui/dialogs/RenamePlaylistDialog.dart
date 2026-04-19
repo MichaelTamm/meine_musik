@@ -22,9 +22,13 @@ class RenamePlaylistDialog extends HookWidget {
       submittedOnceState.value = true;
       if (nameError != null) {
         nameFocusNode.requestFocus();
+      } else if (name == playlist.name) {
+        navigatorState.pop();
       } else {
         await playlist.setName(name);
-        navigatorState.pop();
+        if (context.mounted) {
+          navigatorState.pop();
+        }
       }
     }
 

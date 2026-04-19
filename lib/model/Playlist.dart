@@ -9,6 +9,8 @@ import '../utils.dart';
 import 'AudioFile.dart';
 import 'Song.dart';
 
+export 'AudioFile.dart' show AudioFileExtension;
+
 abstract class Playlist with IterableMixin<Song> {
   Playlist(this.name, Iterable<Song> songs, {this.upperTitle = '', this.addSong, this.removeSong})
     : _songs = UnmodifiableListView(songs.toList(growable: false)),
@@ -21,6 +23,8 @@ abstract class Playlist with IterableMixin<Song> {
 
   final FutureOr<void> Function(Song song)? addSong;
   final FutureOr<void> Function(Song song)? removeSong;
+
+  Set<int>? _songIds;
 
   @override
   Iterator<Song> get iterator => _songs.iterator;
@@ -47,6 +51,16 @@ abstract class Playlist with IterableMixin<Song> {
   Song operator [](int index) => _songs[index];
 
   int indexOf(Song song) => _songs.indexOf(song);
+
+  bool includesAllOf(Playlist other) {
+    final songIds = _songIds ?? (_songIds = {for (final song in _songs) song.id});
+    return other.every((song) => songIds.contains(song.id));
+  }
+
+  bool includesOneOf(Playlist other) {
+    final songIds = _songIds ?? (_songIds = {for (final song in _songs) song.id});
+    return other.any((song) => songIds.contains(song.id));
+  }
 
   @override
   toString() =>

@@ -11,7 +11,6 @@ import '../../model/AudioFolder.dart';
 import '../../riverpod/media.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
-import '../AudioFileActions.dart';
 import '../LoadingIndicator.dart';
 
 class OrdnerTab extends ConsumerStatefulWidget {
@@ -313,7 +312,7 @@ class _AudioFolderListTile extends HookConsumerWidget {
       return _getFolderState(folder, isSongPredicate);
     }, [folder, isSongPredicate]);
     return ListTile(
-      contentPadding: const EdgeInsets.only(left: 0, right: 8),
+      contentPadding: const EdgeInsets.only(left: 2, right: 10),
       leading: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -370,7 +369,7 @@ class _AudioFileListTile extends HookConsumerWidget {
       return isSongPredicate(file) ? _FileState.song : _FileState.notSong;
     }, [file, isSongPredicate]);
     return ListTile(
-      contentPadding: const EdgeInsets.only(left: 0, right: 0),
+      contentPadding: const EdgeInsets.only(left: 2, right: 10),
       leading: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -405,7 +404,7 @@ class _AudioFileListTile extends HookConsumerWidget {
       ),
       title: Text(file.fileName),
       subtitle: Text('${file.artist} • ${file.title}'),
-      trailing: AudioFileActions(file),
+      trailing: const Icon(Icons.play_arrow_rounded),
       onTap: () {
         debugPrint('Tap on $_AudioFileListTile for file ${file.fileName}');
         ref.read(playerProvider).playSong(file);

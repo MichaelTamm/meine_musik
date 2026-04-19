@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meine_musik/ui/Thumbnail.dart';
@@ -69,22 +70,30 @@ class _UpdateSelectedPlaylistObserver extends NavigatorObserver {
   @override
   void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     debugPrint('[$runtimeType] didChangeTop: ${previousTopRoute?.settings} => ${topRoute.settings}');
-    final args = topRoute.settings.arguments;
-    if (args is Playlist) {
-      final selectedPlaylistNotifier = ProviderScope.containerOf(context).read(PlaylistsTab.selectedPlaylistProvider.notifier);
+    if (topRoute.settings.name == '/') {
       Future.microtask(() {
-        selectedPlaylistNotifier.state = args;
+        riverpodContainer.read(PlaylistsTab.selectedPlaylistProvider.notifier).state = null;
       });
+    } else {
+      final args = topRoute.settings.arguments;
+      if (args is Playlist) {
+        final selectedPlaylistNotifier = ProviderScope.containerOf(context).read(PlaylistsTab.selectedPlaylistProvider.notifier);
+        Future.microtask(() {
+          selectedPlaylistNotifier.state = args;
+        });
+      }
     }
   }
 }
 
-class _AllePlaylistsOverview extends ConsumerWidget {
+class _AllePlaylistsOverview extends HookConsumerWidget {
   const _AllePlaylistsOverview();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playlistsAsync = ref.watch(playlistsProvider);
+    final isFABVisibleState = useState<bool>(true);
+    final isFABVisible = isFABVisibleState.value;
 
     if (playlistsAsync.isLoading) {
       return LoadingIndicator();
@@ -120,9 +129,19 @@ class _AllePlaylistsOverview extends ConsumerWidget {
         Positioned(
           right: 16,
           bottom: 16,
-          child: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () => showDialog(context: context, builder: ((_) => CreatePlaylistDialog())),
+          child: Visibility(
+            visible: isFABVisible,
+            child: FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () async {
+                try {
+                  isFABVisibleState.value = false;
+                  await showDialog(context: context, builder: ((_) => CreatePlaylistDialog()));
+                } finally {
+                  isFABVisibleState.value = true;
+                }
+              },
+            ),
           ),
         ),
       ],
@@ -152,10 +171,11 @@ class _PlaylistListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it == playlist));
+    final isFullySelected = ref.watch(currentPlaylistProvider.select((it) => playlist.isNotEmpty && it.includesAllOf(playlist)));
+    final isPartiallySelected = ref.watch(currentPlaylistProvider.select((it) => it.includesOneOf(playlist)));
     return ListTile(
-      selectedTileColor: selectedPlaylistBackground,
-      selected: isCurrentPlaylist,
+      selected: isFullySelected || isPartiallySelected,
+      selectedTileColor: isFullySelected ? fullySelectedPlaylistBackground : partiallySelectedPlaylistBackground,
       contentPadding: EdgeInsets.only(left: 8),
       leading: Thumbnail.forPlaylist(playlist),
       title: Text(playlist.name, maxLines: 1, overflow: TextOverflow.ellipsis),
