@@ -33,10 +33,21 @@ class RenamePlaylistDialog extends HookWidget {
     }
 
     return SimpleDialog(
-      title: AutoSizeText('Playlist umbenennen', maxLines: 1, style: Theme.of(context).textTheme.titleMedium),
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(child: AutoSizeText('Playlist umbenennen', maxLines: 1, style: Theme.of(context).textTheme.titleMedium)),
+          Semantics(
+            label: 'Dialog schließen',
+            child: IconButton(onPressed: () => navigatorState.pop(), tooltip: '', icon: const Icon(Icons.close)),
+          ),
+        ],
+      ),
+      titlePadding: const EdgeInsets.fromLTRB(24, 8, 8, 0),
+      contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
           child: TextField(
             controller: nameController,
             focusNode: nameFocusNode,

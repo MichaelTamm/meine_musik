@@ -36,11 +36,7 @@ class CreatePlaylistDialog extends HookWidget {
           Expanded(child: AutoSizeText('Neue Playlist', maxLines: 1, style: Theme.of(context).textTheme.titleMedium)),
           Semantics(
             label: 'Dialog schließen',
-            child: IconButton(
-              onPressed: () => navigatorState.pop(),
-              tooltip: '',
-              icon: const Icon(Icons.close),
-            ),
+            child: IconButton(onPressed: () => navigatorState.pop(), tooltip: '', icon: const Icon(Icons.close)),
           ),
         ],
       ),
