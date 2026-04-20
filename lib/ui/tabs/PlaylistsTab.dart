@@ -171,8 +171,9 @@ class _PlaylistListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isFullySelected = ref.watch(currentPlaylistProvider.select((it) => playlist.isNotEmpty && it.includesAllOf(playlist)));
-    final isPartiallySelected = ref.watch(currentPlaylistProvider.select((it) => it.includesOneOf(playlist)));
+    final (isFullySelected, isPartiallySelected) = ref.watch(
+      currentPlaylistProvider.select((it) => (playlist.isNotEmpty && it.containsAllOf(playlist), it.containsOneOf(playlist))),
+    );
     return ListTile(
       selected: isFullySelected || isPartiallySelected,
       selectedTileColor: isFullySelected ? fullySelectedPlaylistBackground : partiallySelectedPlaylistBackground,

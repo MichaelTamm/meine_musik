@@ -48,19 +48,15 @@ abstract class Playlist with IterableMixin<Song> {
   @override
   int get length => _songs.length;
 
+  Set<int> get songIds => _songIds ?? (_songIds = UnmodifiableSetView({for (final song in _songs) song.id}));
+
   Song operator [](int index) => _songs[index];
 
   int indexOf(Song song) => _songs.indexOf(song);
+  
+  bool containsAllOf(Playlist other) => other.every((song) => songIds.contains(song.id));
 
-  bool includesAllOf(Playlist other) {
-    final songIds = _songIds ?? (_songIds = {for (final song in _songs) song.id});
-    return other.every((song) => songIds.contains(song.id));
-  }
-
-  bool includesOneOf(Playlist other) {
-    final songIds = _songIds ?? (_songIds = {for (final song in _songs) song.id});
-    return other.any((song) => songIds.contains(song.id));
-  }
+  bool containsOneOf(Playlist other) => other.any((song) => songIds.contains(song.id));
 
   @override
   toString() =>

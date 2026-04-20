@@ -108,6 +108,9 @@ public class AudioServiceImpl implements AudioApi.AudioService {
   }
 
   static String _fixEncodingProblems(String s) {
-    return s.replaceAll("â€™", "’");
+    if (s == null) {
+      return null;
+    }
+    return s.replaceAll("â€™", "'");
   }
 }

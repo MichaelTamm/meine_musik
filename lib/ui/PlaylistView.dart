@@ -22,7 +22,7 @@ class PlaylistView extends ConsumerWidget {
       _ => AsyncValue<Playlist?>.data(null),
     };
     final playlist = playlistAsync.value ?? _playlist;
-    final isFullySelected = ref.watch(currentPlaylistProvider.select((it) => playlist.isNotEmpty && it.includesAllOf(playlist)));
+    final isFullySelected = ref.watch(currentPlaylistProvider.select((it) => playlist.isNotEmpty && it.containsAllOf(playlist)));
     return Material(
       color: isFullySelected ? fullySelectedPlaylistBackground : Colors.transparent,
       child: Column(
