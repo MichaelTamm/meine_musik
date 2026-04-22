@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide RepeatMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../model/RepeatMode.dart';
@@ -8,16 +8,16 @@ import '../MeineMusikIcons.dart';
 class RepeatModeButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playlistLength = ref.watch(currentPlaylistProvider.select((it) => it.length));
+    final currentPlaylistLength = ref.watch(currentPlaylistProvider.select((it) => it.length));
     final repeatMode = ref.watch(currentRepeatModeProvider);
 
-    if (playlistLength == 1) {
+    if (currentPlaylistLength == 1) {
       return IconButton(
         icon: Icon(switch (repeatMode) {
           RepeatMode.none => MeineMusikIcons.repeatOff,
           RepeatMode.repeatSongOnce => Icons.repeat_one,
           RepeatMode.repeatSong => Icons.repeat,
-          RepeatMode.repeatPlaylist => Icons.repeat_on,
+          RepeatMode.repeatPlaylist => Icons.repeat,
         }),
         onPressed: () => ref.read(currentRepeatModeProvider.notifier).set(switch (repeatMode) {
           RepeatMode.none => RepeatMode.repeatSongOnce,
@@ -35,7 +35,9 @@ class RepeatModeButton extends ConsumerWidget {
         RepeatMode.repeatSong => Icon(Icons.repeat),
         RepeatMode.repeatPlaylist => Icon(Icons.repeat_on),
       },
+      tooltip: 'Wiederholungsmodus ändern ...',
       position: PopupMenuPosition.over,
+      menuPadding: EdgeInsets.zero,
       itemBuilder: (_) => const [
         PopupMenuItem<RepeatMode>(
           value: RepeatMode.none,
@@ -62,7 +64,7 @@ class RepeatModeButton extends ConsumerWidget {
           value: RepeatMode.repeatPlaylist,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [Icon(Icons.repeat_on), SizedBox(width: 8), Text('Playlist in Endlosschleife spielen')],
+            children: [Icon(Icons.repeat_on), SizedBox(width: 8), Text('Wiedergabeliste in\nEndlosschleife spielen')],
           ),
         ),
       ],

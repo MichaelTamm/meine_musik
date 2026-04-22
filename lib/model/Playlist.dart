@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import '../env.dart';
@@ -9,12 +9,11 @@ import '../utils.dart';
 import 'AudioFile.dart';
 import 'Song.dart';
 
-abstract class Playlist with IterableMixin<Song> {
-  static final empty = _EmptyPlaylist();
+export 'AudioFile.dart' show AudioFileExtension;
 
-  Playlist(this.name, Iterable<Song> songs, {this.upperTitle = '', this.setName, this.addSong, this.removeSong, this.delete})
+abstract class Playlist with IterableMixin<Song> {
+  Playlist(this.name, Iterable<Song> songs, {this.upperTitle = '', this.addSong, this.removeSong})
     : _songs = UnmodifiableListView(songs.toList(growable: false)),
-      playOrder = List.generate(songs.length, (index) => index),
       duration = Duration(milliseconds: songs.fold(0, (total, file) => total + file.durationInMilliseconds));
 
   final String upperTitle;
@@ -22,36 +21,19 @@ abstract class Playlist with IterableMixin<Song> {
   final List<Song> _songs;
   final Duration duration;
 
-  final FutureOr<void> Function(String name)? setName;
   final FutureOr<void> Function(Song song)? addSong;
   final FutureOr<void> Function(Song song)? removeSong;
-  final FutureOr<void> Function()? delete;
 
-  bool shuffled = false;
-  List<int> playOrder;
-
-  void shuffle([Random? random]) {
-    shuffled = true;
-    playOrder = List.of(playOrder, growable: false)..shuffle(random);
-  }
+  Set<int>? _songIds;
 
   @override
   Iterator<Song> get iterator => _songs.iterator;
-
-  ({int playlistIndex, int playOrderIndex})? indexesOf(AudioFile song) {
-    final playlistIndex = _songs.indexOf(song);
-    if (playlistIndex < 0) {
-      return null;
-    } else {
-      return (playlistIndex: playlistIndex, playOrderIndex: playOrder.indexOf(playlistIndex));
-    }
-  }
 
   Song get firstSong {
     if (isEmpty) {
       throw StateError('$this is empty');
     } else {
-      return this[playOrder[0]];
+      return this[0];
     }
   }
 
@@ -59,16 +41,22 @@ abstract class Playlist with IterableMixin<Song> {
     if (isEmpty) {
       throw StateError('$this is empty');
     } else {
-      return this[playOrder[length - 1]];
+      return this[length - 1];
     }
   }
 
   @override
   int get length => _songs.length;
 
-  bool get editable => setName != null || (addSong != null && removeSong != null) || delete != null;
+  Set<int> get songIds => _songIds ?? (_songIds = UnmodifiableSetView({for (final song in _songs) song.id}));
 
   Song operator [](int index) => _songs[index];
+
+  int indexOf(Song song) => _songs.indexOf(song);
+
+  bool containsAllOf(Playlist other) => other.every((song) => songIds.contains(song.id));
+
+  bool containsOneOf(Playlist other) => other.any((song) => songIds.contains(song.id));
 
   @override
   toString() =>
@@ -88,23 +76,6 @@ abstract class Playlist with IterableMixin<Song> {
 @immutable
 class AudioFileList extends UnmodifiableListView<AudioFile> {
   AudioFileList(super._source);
-}
-
-class _EmptyPlaylist extends Playlist {
-  static final _instance = _EmptyPlaylist._();
-
-  factory _EmptyPlaylist() => _instance;
-
-  _EmptyPlaylist._() : super('', []);
-
-  @override
-  toString() => 'Playlist.empty';
-
-  @override
-  bool operator ==(Object other) => other is _EmptyPlaylist;
-
-  @override
-  int get hashCode => 0;
 }
 
 class AlleLieder extends Playlist {
@@ -163,9 +134,11 @@ class KuenstlerSongs extends Playlist {
 }
 
 class ManuallyCreatedPlaylist extends Playlist {
-  ManuallyCreatedPlaylist(this.id, super.name, super.songs, {super.setName, super.addSong, super.removeSong, super.delete});
+  ManuallyCreatedPlaylist(this.id, super.name, super.songs, {super.addSong, super.removeSong, required this.setName, required this.delete});
 
   final int id;
+  final FutureOr<void> Function(String name) setName;
+  final FutureOr<void> Function() delete;
 
   @override
   bool operator ==(Object other) => other is ManuallyCreatedPlaylist && id == other.id;
@@ -174,17 +147,12 @@ class ManuallyCreatedPlaylist extends Playlist {
   int get hashCode => id;
 }
 
-class PlayASongPlaylist extends Playlist {
-  PlayASongPlaylist(Song song) : super('', [song]);
+class Wiedergabeliste extends Playlist {
+  Wiedergabeliste(Iterable<Song> songs) : super('', songs);
 
   @override
-  toString() {
-    return '$PlayASongPlaylist($first)';
-  }
+  bool operator ==(Object other) => other is Wiedergabeliste && const IterableEquality().equals(this, other);
 
   @override
-  bool operator ==(Object other) => other is PlayASongPlaylist && first == other.first;
-
-  @override
-  int get hashCode => first.hashCode;
+  int get hashCode => const IterableEquality().hash(this);
 }

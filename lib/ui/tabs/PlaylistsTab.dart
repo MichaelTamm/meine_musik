@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meine_musik/ui/Thumbnail.dart';
@@ -12,6 +13,7 @@ import '../../utils.dart';
 import '../LoadingIndicator.dart';
 import '../PlaylistActions.dart';
 import '../PlaylistView.dart';
+import '../dialogs/CreatePlaylistDialog.dart';
 
 class PlaylistsTab extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey(debugLabel: '$PlaylistsTab.navigatorKey');
@@ -68,42 +70,78 @@ class _UpdateSelectedPlaylistObserver extends NavigatorObserver {
   @override
   void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     debugPrint('[$runtimeType] didChangeTop: ${previousTopRoute?.settings} => ${topRoute.settings}');
-    final selectedPlaylistNotifier = ProviderScope.containerOf(context).read(PlaylistsTab.selectedPlaylistProvider.notifier);
     Future.microtask(() {
-      selectedPlaylistNotifier.state = topRoute.settings.arguments as Playlist?;
+      if (topRoute.settings.name == '/') {
+        riverpodContainer.read(PlaylistsTab.selectedPlaylistProvider.notifier).state = null;
+      } else {
+        final args = topRoute.settings.arguments;
+        if (args is Playlist) {
+          riverpodContainer.read(PlaylistsTab.selectedPlaylistProvider.notifier).state = args;
+        }
+      }
     });
   }
 }
 
-class _AllePlaylistsOverview extends ConsumerWidget {
+class _AllePlaylistsOverview extends HookConsumerWidget {
   const _AllePlaylistsOverview();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final playlistsAsync = ref.watch(playlistsProvider);
-    return playlistsAsync.when(
-      skipLoadingOnRefresh: false,
-      loading: LoadingIndicator.new,
-      data: (playlists) => RefreshIndicator(
-        onRefresh: () async {
-          // [UX] Show refresh indicator for 300 ms ...
-          await Future.delayed(Duration(milliseconds: 300));
-          clearCaches();
-        },
-        child: ListView.builder(
-          // With the default ListView physics, RefreshIndicator won't trigger
-          // when the content is shorter than the viewport, therefore ...
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: playlists.length,
-          itemBuilder: (_, index) {
-            final playlist = playlists[index];
-            return _PlaylistListTile(playlist, onTap: () => openPlaylist(playlist));
-          },
-        ),
-      ),
+    final isFABVisibleState = useState<bool>(true);
+    final isFABVisible = isFABVisibleState.value;
+
+    if (playlistsAsync.isLoading) {
+      return LoadingIndicator();
+    }
+
+    if (!playlistsAsync.hasValue) {
       // TODO: proper error handling
       // TODO: if permission is not granted, show a meaningful text and a button to request permission
-      error: (error, stack) => Container(),
+      return Container();
+    }
+
+    final playlists = playlistsAsync.requireValue;
+
+    return Stack(
+      children: [
+        RefreshIndicator(
+          onRefresh: () async {
+            // [UX] Show refresh indicator for 300 ms ...
+            await Future.delayed(Duration(milliseconds: 300));
+            clearCaches();
+          },
+          child: ListView.builder(
+            // With the default ListView physics, RefreshIndicator won't trigger
+            // when the content is shorter than the viewport, therefore ...
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: playlists.length,
+            itemBuilder: (_, index) {
+              final playlist = playlists[index];
+              return _PlaylistListTile(playlist, onTap: () => openPlaylist(playlist));
+            },
+          ),
+        ),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: Visibility(
+            visible: isFABVisible,
+            child: FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () async {
+                try {
+                  isFABVisibleState.value = false;
+                  await showDialog(context: context, builder: ((_) => CreatePlaylistDialog()));
+                } finally {
+                  isFABVisibleState.value = true;
+                }
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -130,10 +168,12 @@ class _PlaylistListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it == playlist));
+    final (isFullySelected, isPartiallySelected) = ref.watch(
+      currentPlaylistProvider.select((it) => (playlist.isNotEmpty && it.containsAllOf(playlist), it.containsOneOf(playlist))),
+    );
     return ListTile(
-      selectedTileColor: selectedPlaylistBackground,
-      selected: isCurrentPlaylist,
+      selected: isFullySelected || isPartiallySelected,
+      selectedTileColor: isFullySelected ? fullySelectedPlaylistBackground : partiallySelectedPlaylistBackground,
       contentPadding: EdgeInsets.only(left: 8),
       leading: Thumbnail.forPlaylist(playlist),
       title: Text(playlist.name, maxLines: 1, overflow: TextOverflow.ellipsis),

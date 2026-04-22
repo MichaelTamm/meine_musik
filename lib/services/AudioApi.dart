@@ -7,7 +7,8 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
-import 'package:meine_musik/utils.dart';
+
+import '../utils.dart';
 
 PlatformException _createConnectionError(String channelName) {
   return PlatformException(code: 'channel-error', message: 'Unable to establish connection on channel: "$channelName".');
@@ -69,9 +70,9 @@ class AudioFile {
       id: result[0]! as int,
       path: result[1]! as String,
       sizeInBytes: result[2]! as int,
-      title: _fixEncodingProblems(result[3]! as String),
-      artist: _fixEncodingProblems(result[4]! as String),
-      album: _fixEncodingProblems(result[5]! as String),
+      title: result[3]! as String,
+      artist: result[4]! as String,
+      album: result[5]! as String,
       trackNumber: result[6]! as int,
       durationInMilliseconds: result[7]! as int,
     );
@@ -93,11 +94,6 @@ class AudioFile {
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hashAll(_toList());
 
-  String get dir {
-    final i = path.lastIndexOf('/');
-    return i <= 0 ? '' : path.substring(0, i);
-  }
-
   @override
   String toString() =>
       'AudioFile(id: $id, path: ${toDartString(path)}, sizeInBytes: $sizeInBytes, title: ${toDartString(title)}, artist: ${toDartString(artist)}, album: ${toDartString(album)}, trackNumber: $trackNumber, durationInMilliseconds: $durationInMilliseconds)';
@@ -105,7 +101,6 @@ class AudioFile {
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
-
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
     if (value is int) {
@@ -188,8 +183,4 @@ class AudioService {
       return (pigeonVar_replyList[0] as Uint8List?);
     }
   }
-}
-
-String _fixEncodingProblems(String title) {
-  return title.replaceAll('â€™', "’");
 }

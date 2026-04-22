@@ -117,13 +117,14 @@ class _UpdateCurrentPathObserver extends NavigatorObserver {
   @override
   void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     debugPrint('[$runtimeType] didChangeTop: ${previousTopRoute?.settings} => ${topRoute.settings}');
-    final currentPathNotifier = ProviderScope.containerOf(context).read(OrdnerTab.currentPathProvider.notifier);
     Future.microtask(() {
-      final settings = topRoute.settings;
-      if (settings.name == '/') {
-        currentPathNotifier.state = const [];
+      if (topRoute.settings.name == '/') {
+        riverpodContainer.read(OrdnerTab.currentPathProvider.notifier).state = const [];
       } else {
-        currentPathNotifier.state = settings.arguments as List<AudioFolder>;
+        final args = topRoute.settings.arguments;
+        if (args is List<AudioFolder>) {
+          riverpodContainer.read(OrdnerTab.currentPathProvider.notifier).state = args;
+        }
       }
     });
   }
@@ -309,7 +310,7 @@ class _AudioFolderListTile extends HookConsumerWidget {
       return _getFolderState(folder, isSongPredicate);
     }, [folder, isSongPredicate]);
     return ListTile(
-      contentPadding: const EdgeInsets.only(left: 0, right: 8),
+      contentPadding: const EdgeInsets.only(left: 2, right: 10),
       leading: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -366,7 +367,7 @@ class _AudioFileListTile extends HookConsumerWidget {
       return isSongPredicate(file) ? _FileState.song : _FileState.notSong;
     }, [file, isSongPredicate]);
     return ListTile(
-      contentPadding: const EdgeInsets.only(left: 0, right: 0),
+      contentPadding: const EdgeInsets.only(left: 2, right: 10),
       leading: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -401,20 +402,9 @@ class _AudioFileListTile extends HookConsumerWidget {
       ),
       title: Text(file.fileName),
       subtitle: Text('${file.artist} • ${file.title}'),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.play_arrow),
-          IconButton(
-            icon: const Icon(Icons.more_vert_outlined),
-            onPressed: () {
-              debugPrint('**** TODO: show actions bottom sheet for audio file ${file.path}');
-            },
-          ),
-        ],
-      ),
+      trailing: const Icon(Icons.play_arrow_rounded),
       onTap: () {
-        debugPrint('Tap on $_AudioFileListTile for ${file.fileName} -- play audio file ...');
+        debugPrint('Tap on $_AudioFileListTile for file ${file.fileName}');
         ref.read(playerProvider).playSong(file);
       },
     );

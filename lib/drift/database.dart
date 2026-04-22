@@ -17,7 +17,7 @@ class Playlists extends Table {
 }
 
 class PlaylistItems extends Table {
-  late final playlistId = integer().references(Playlists, #id, onDelete: KeyAction.restrict)();
+  late final playlistId = integer().references(Playlists, #id, onDelete: KeyAction.cascade)();
   late final songId = integer()();
 
   @override

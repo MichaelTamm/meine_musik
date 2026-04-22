@@ -343,7 +343,7 @@ class $PlaylistItemsTable extends PlaylistItems
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES playlists (id) ON DELETE RESTRICT',
+      'REFERENCES playlists (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _songIdMeta = const VerificationMeta('songId');
@@ -1326,6 +1326,16 @@ abstract class _$Database extends GeneratedDatabase {
     musicBrainzArtists,
     musicBrainzReleases,
   ];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'playlists',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('playlist_items', kind: UpdateKind.delete)],
+    ),
+  ]);
   @override
   DriftDatabaseOptions get options =>
       const DriftDatabaseOptions(storeDateTimeAsText: true);

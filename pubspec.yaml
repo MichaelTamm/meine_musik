@@ -19,8 +19,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: 3.9.2
-  flutter: 3.35.5
+  flutter: 3.41.7
+  sdk: 3.11.5
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -29,8 +29,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  audioplayers: 6.5.1
-  audio_session: 0.2.2
+  audio_session: 0.2.3
+  audioplayers: 6.6.0
   auto_size_text: 3.0.0
   collection: 1.19.1
   dartx: 1.2.0

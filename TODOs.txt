@@ -1,3 +1,5 @@
+* Integrate Google Drive, Dropbox, and OneDrive to retrieve music files from the cloud
+  - use https://pub.dev/packages/audio_metadata_reader to get meta data from audio files
 * Query MusicBrainz APi to retrieve cover art
   - https://pub.dev/packages/musicbrainz_api_client
   - https://musicbrainz.org/doc/MusicBrainz_API

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meine_musik/env.dart';
+import 'package:meine_musik/ui/dialogs/CreatePlaylistDialog.dart';
+import 'package:meine_musik/ui/dialogs/DeletePlaylistDialog.dart';
+import 'package:meine_musik/ui/dialogs/RenamePlaylistDialog.dart';
 import 'package:meine_musik/ui/tabs/AlbenTab.dart';
 import 'package:meine_musik/ui/tabs/PlaylistsTab.dart';
 import 'package:mocktail/mocktail.dart';
@@ -70,5 +73,57 @@ void main() {
     await tester.pumpAndSettle();
     spotText('Alle Lieder').existsOnce();
     spotText('Favoriten').existsAtLeastOnce();
+  });
+
+  testWidgets('Add a playlist via FAB', (tester) async {
+    await tester.startApp();
+    spotText('Meine neue Playlist').doesNotExist();
+
+    await act.tap(spot<FloatingActionButton>());
+    await tester.pumpAndSettle();
+
+    spot<CreatePlaylistDialog>().existsOnce();
+    await act.enterText(spot<CreatePlaylistDialog>().spot<TextField>(), 'Meine neue Playlist');
+    await act.tap(spot<FilledButton>().spotText('Playlist erstellen'));
+    await tester.pumpAndSettle();
+
+    spot<CreatePlaylistDialog>().doesNotExist();
+    spot<ListTile>().spotText('Meine neue Playlist').existsOnce();
+    expect(await (db.select(db.playlists)..where((t) => t.name.equals('Meine neue Playlist'))).get(), hasLength(1));
+  });
+
+  testWidgets('Rename a playlist', (tester) async {
+    final playlistId = await db.createPlaylist('Alter Name');
+    await tester.startApp();
+    await act.tap(spot<ListTile>().withChild(spotText('Alter Name')).spotIcon(Icons.more_vert_rounded));
+    await tester.pumpAndSettle();
+    await act.tap(spotText('Playlist umbenennen'));
+    await tester.pumpAndSettle();
+    spot<RenamePlaylistDialog>().spot<TextField>().existsOnce().hasWidgetProp(
+      prop: widgetProp<TextField, String>('controller.text', (textField) => textField.controller!.text),
+      match: (text) => text.equals('Alter Name'),
+    );
+    await act.enterText(spot<RenamePlaylistDialog>().spot<TextField>(), 'Neuer Name');
+    await tester.pumpAndSettle();
+    await act.tap(spot<RenamePlaylistDialog>().spot<FilledButton>().spotText('Speichern'));
+    await tester.pumpAndSettle();
+    spotText('Alter Name').doesNotExist();
+    spotText('Neuer Name').existsOnce();
+    expect((await (db.select(db.playlists)..where((t) => t.id.equals(playlistId))).getSingle()).name, equals('Neuer Name'));
+  });
+
+  testWidgets('Delete a playlist', (tester) async {
+    final playlistId = await db.createPlaylist('Playlist zum Löschen');
+    await tester.startApp();
+    await act.tap(spot<ListTile>().withChild(spotText('Playlist zum Löschen')).spotIcon(Icons.more_vert_rounded));
+    await tester.pumpAndSettle();
+    await act.tap(spotText('Playlist löschen'));
+    await tester.pumpAndSettle();
+    spot<DeletePlaylistDialog>().existsOnce();
+    spotText('Soll die Playlist "Playlist zum Löschen" wirklich gelöscht werden?').existsOnce();
+    await act.tap(spot<FilledButton>().spotText('Playlist löschen'));
+    await tester.pumpAndSettle();
+    spotText('Playlist zum Löschen').doesNotExist();
+    expect(await (db.select(db.playlists)..where((t) => t.id.equals(playlistId))).get(), isEmpty);
   });
 }

@@ -24,22 +24,16 @@ void main() {
     spot<ListTile>().last().spotText('1 Lied').existsOnce();
   });
 
-  testWidgets('Tapping on an artist show all songs of that artist', (tester) async {
-    when(() => audioService.findAll()).thenAnswer(
-      (_) async => [
-        anAudioFile(artist: 'Test Artist 1'),
-        anAudioFile(artist: 'Test Artist 1'),
-        anAudioFile(artist: 'Test Artist 1'),
-        anAudioFile(artist: 'Test Artist 2'),
-      ],
-    );
+  testWidgets('Tapping on an artist shows all songs of that artist', (tester) async {
+    final song1 = anAudioFile(artist: 'Test Artist 1');
+    final song2 = anAudioFile(artist: 'Test Artist 1');
+    when(() => audioService.findAll()).thenAnswer((_) async => [song1, song2, anAudioFile(artist: 'Test Artist 2')]);
     await tester.startApp();
-    await act.tap(spot<TabBar>().spotText('Künstler'));
-    await tester.pumpAndSettle();
-    await act.tap(spotText('Test Artist 1'));
-    await tester.pumpAndSettle();
-    // TODO: spot<ListTile>().existsExactlyNTimes(3);
-    spotText('Test Artist 1').existsOnce();
+    await act.tapAndSettle(spot<TabBar>().spotText('Künstler'));
+    await act.tapAndSettle(spotText('Test Artist 1'));
+    spot<ListTile>().existsExactlyNTimes(2);
+    spotText(song1.title).existsOnce();
+    spotText(song2.title).existsOnce();
     spotText('Test Artist 2').doesNotExist();
   });
 
@@ -48,21 +42,21 @@ void main() {
       () => audioService.findAll(),
     ).thenAnswer((_) async => [anAudioFile(artist: 'Test Artist 1'), anAudioFile(artist: 'Test Artist 2')]);
     await tester.startApp();
-    await act.tap(spot<TabBar>().spotText('Künstler'));
-    await tester.pumpAndSettle();
+    // Switch to 'Künstler' tab ...
+    await act.tapAndSettle(spot<TabBar>().spotText('Künstler'));
     spotText('Test Artist 1').existsOnce();
     spotText('Test Artist 2').existsOnce();
-    await act.tap(spotText('Test Artist 1'));
-    await tester.pumpAndSettle();
-    spotText('Test Artist 1').existsOnce();
+    // Open 'Test Artist 1' ...
+    await act.tapAndSettle(spotText('Test Artist 1'));
+    spotText('Test Artist 1').existsAtLeastOnce();
     spotText('Test Artist 2').doesNotExist();
-    await act.tap(spot<TabBar>().spotText('Alben'));
-    await tester.pumpAndSettle();
+    // Switch to 'Alben' tab ...
+    await act.tapAndSettle(spot<TabBar>().spotText('Alben'));
     spot<AlbenTab>().existsOnce();
     spot<KuenstlerTab>().doesNotExist();
-    await act.tap(spot<TabBar>().spotText('Künstler'));
-    await tester.pumpAndSettle();
-    spotText('Test Artist 1').existsOnce();
+    // Switch back to 'Künstler' tab ...
+    await act.tapAndSettle(spot<TabBar>().spotText('Künstler'));
+    spotText('Test Artist 1').existsAtLeastOnce();
     spotText('Test Artist 2').doesNotExist();
   });
 
@@ -71,16 +65,16 @@ void main() {
       () => audioService.findAll(),
     ).thenAnswer((_) async => [anAudioFile(artist: 'Test Artist 1'), anAudioFile(artist: 'Test Artist 2')]);
     await tester.startApp();
-    await act.tap(spot<TabBar>().spotText('Künstler'));
-    await tester.pumpAndSettle();
+    // Switch to 'Künstler' tab ...
+    await act.tapAndSettle(spot<TabBar>().spotText('Künstler'));
     spotText('Test Artist 1').existsOnce();
     spotText('Test Artist 2').existsOnce();
-    await act.tap(spotText('Test Artist 2'));
-    await tester.pumpAndSettle();
+    // Open 'Test Artist 2' ...
+    await act.tapAndSettle(spotText('Test Artist 2'));
     spotText('Test Artist 1').doesNotExist();
-    spotText('Test Artist 2').existsOnce();
-    await act.tap(spot<IconButton>().spotIcon(Icons.chevron_left_rounded));
-    await tester.pumpAndSettle();
+    spotText('Test Artist 2').existsAtLeastOnce();
+    // Go back to overview by tapping on the (<) icon button ...
+    await act.tapAndSettle(spot<IconButton>().spotIcon(Icons.chevron_left_rounded));
     spotText('Test Artist 1').existsOnce();
     spotText('Test Artist 2').existsOnce();
   });
@@ -90,14 +84,15 @@ void main() {
       () => audioService.findAll(),
     ).thenAnswer((_) async => [anAudioFile(artist: 'Test Artist 1'), anAudioFile(artist: 'Test Artist 2')]);
     await tester.startApp();
-    await act.tap(spot<TabBar>().spotText('Künstler'));
-    await tester.pumpAndSettle();
+    // Switch to 'Künstler' tab ...
+    await act.tapAndSettle(spot<TabBar>().spotText('Künstler'));
     spotText('Test Artist 1').existsOnce();
     spotText('Test Artist 2').existsOnce();
-    await act.tap(spotText('Test Artist 2'));
-    await tester.pumpAndSettle();
+    // Open 'Test Artist 2' ...
+    await act.tapAndSettle(spotText('Test Artist 2'));
     spotText('Test Artist 1').doesNotExist();
-    spotText('Test Artist 2').existsOnce();
+    spotText('Test Artist 2').existsAtLeastOnce();
+    // Go back to overview by pressing the back button ...
     await tester.pressBackButton();
     await tester.pumpAndSettle();
     spotText('Test Artist 1').existsOnce();

@@ -213,7 +213,7 @@ final class AlbumCoverThumbnailProvider extends $FunctionalProvider<AsyncValue<U
   }
 }
 
-String _$albumCoverThumbnailHash() => r'8608bf5e5cbc0953f0aeada816868a0b91c1e8ca';
+String _$albumCoverThumbnailHash() => r'f386d8a7c04dd2492fb6d81e60d5ee8048fbd0f6';
 
 final class AlbumCoverThumbnailFamily extends $Family with $FunctionalFamilyOverride<FutureOr<Uint8List?>, Album> {
   const AlbumCoverThumbnailFamily._()

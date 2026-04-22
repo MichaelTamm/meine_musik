@@ -64,9 +64,9 @@ public class AudioServiceImpl implements AudioApi.AudioService {
               audioFile.setId(cursor.getLong(0));
               audioFile.setPath(cursor.getString(1));
               audioFile.setSizeInBytes(cursor.getLong(2));
-              audioFile.setTitle(cursor.getString(3));
-              audioFile.setArtist(cursor.getString(4));
-              audioFile.setAlbum(cursor.getString(5));
+              audioFile.setTitle(_fixEncodingProblems(cursor.getString(3)));
+              audioFile.setArtist(_fixEncodingProblems(cursor.getString(4)));
+              audioFile.setAlbum(_fixEncodingProblems(cursor.getString(5)));
               audioFile.setDurationInMilliseconds(cursor.getLong(6));
               audioFile.setTrackNumber(apiLevel < 30 ? 0 : _parseTrackNumber(cursor.getString(7)));
               audioFiles.add(audioFile);
@@ -105,5 +105,12 @@ public class AudioServiceImpl implements AudioApi.AudioService {
     } catch (NumberFormatException ignored) {
       return 0L;
     }
+  }
+
+  static String _fixEncodingProblems(String s) {
+    if (s == null) {
+      return null;
+    }
+    return s.replaceAll("â€™", "'");
   }
 }

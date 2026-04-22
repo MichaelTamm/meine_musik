@@ -5,7 +5,7 @@ import 'package:meine_musik/navigation.dart';
 import '../model/Playlist.dart';
 import '../model/Song.dart';
 import '../riverpod/playlists.dart';
-import 'CreatePlaylistDialog.dart';
+import 'dialogs/CreatePlaylistDialog.dart';
 
 class AddSongToOtherPlaylistBottomSheet extends ConsumerWidget {
   const AddSongToOtherPlaylistBottomSheet(this.song);

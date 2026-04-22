@@ -15,6 +15,7 @@ class PlayerWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final currentPlaylist = ref.watch(currentPlaylistProvider);
     final currentSong = ref.watch(currentSongProvider);
+    final currentSongLabel = ref.watch(currentSongLabelProvider);
     return Container(
       height: 16 /* padding */ + 20 /* song name */ + 44 /* slider */ + 64 /* buttons */ + 16 /* padding */,
       color: Theme.of(context).colorScheme.inversePrimary,
@@ -25,8 +26,8 @@ class PlayerWidget extends ConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Row(
               children: [
-                Expanded(child: Text(currentSong.label, maxLines: 1, overflow: TextOverflow.ellipsis)),
-                Text(' (${currentSong.playOrderIndex + 1}/${currentPlaylist.length})', maxLines: 1),
+                Expanded(child: Text(currentSongLabel, maxLines: 1, overflow: TextOverflow.ellipsis)),
+                Text(' (${currentPlaylist.indexOf(currentSong) + 1}/${currentPlaylist.length})', maxLines: 1),
               ],
             ),
           ),
@@ -42,12 +43,12 @@ class PlayerWidget extends ConsumerWidget {
                   final currentSongPosition = ref.read(currentSongPositionProvider);
                   final debugMessagePrefix =
                       'Tap on skip to previous icon button, current song position: ${currentSongPosition.inSeconds}s';
-                  if (currentSong.playOrderIndex == 0) {
+                  if (currentSong == currentPlaylist.firstSong) {
                     debugPrint(
                       '$debugMessagePrefix, current song is first song of current playlist -- seeking to start of current song ...',
                     );
                     ref.read(playerProvider).seekToPosition(Duration.zero);
-                  } else if (currentSongPosition < Duration(milliseconds: min(5000, (currentSong.duration.inMilliseconds / 5).round()))) {
+                  } else if (currentSongPosition < Duration(milliseconds: min(5000, (currentSong.durationInMilliseconds / 5).round()))) {
                     debugPrint('$debugMessagePrefix -- play previous song ...');
                     ref.read(playerProvider).playPreviousSong();
                   } else {
@@ -92,7 +93,7 @@ class PlayerWidget extends ConsumerWidget {
                 ),
               IconButton(
                 icon: Icon(Icons.skip_next_rounded),
-                onPressed: currentSong.song.id == currentPlaylist.lastSong.id
+                onPressed: currentSong.id == currentPlaylist.lastSong.id
                     ? null
                     : () {
                         debugPrint('Tap on skip to next icon button -- play next song ...');
@@ -113,7 +114,7 @@ class _PlayerSlider extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentSongDuration = ref.watch(currentSongProvider.select((it) => it.duration.inMilliseconds.toDouble()));
+    final currentSongDuration = ref.watch(currentSongProvider.select((it) => it.durationInMilliseconds.toDouble()));
     final currentSongPosition = ref.watch(currentSongPositionProvider);
     if (currentSongDuration == 0) {
       return Slider(value: 0, onChanged: null, min: 0, max: 1, padding: EdgeInsets.symmetric(horizontal: 0));

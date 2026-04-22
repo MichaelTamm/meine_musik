@@ -91,9 +91,15 @@ class _UpdateSelectedKuenstlerObserver extends NavigatorObserver {
   @override
   void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     debugPrint('[$runtimeType] didChangeTop: ${previousTopRoute?.settings} => ${topRoute.settings}');
-    final selectedKuenstlerNotifier = ProviderScope.containerOf(context).read(KuenstlerTab.selectedKuenstlerProvider.notifier);
     Future.microtask(() {
-      selectedKuenstlerNotifier.state = topRoute.settings.arguments as KuenstlerSongs?;
+      if (topRoute.settings.name == '/') {
+        riverpodContainer.read(KuenstlerTab.selectedKuenstlerProvider.notifier).state = null;
+      } else {
+        final args = topRoute.settings.arguments;
+        if (args is KuenstlerSongs) {
+          riverpodContainer.read(KuenstlerTab.selectedKuenstlerProvider.notifier).state = args;
+        }
+      }
     });
   }
 }
@@ -149,10 +155,12 @@ class _KuenstlerListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCurrentPlaylist = ref.watch(currentPlaylistProvider.select((it) => it == kuenstlerSongs));
+    final (isFullySelected, isPartiallySelected) = ref.watch(
+      currentPlaylistProvider.select((it) => (it.containsAllOf(kuenstlerSongs), it.containsOneOf(kuenstlerSongs))),
+    );
     return ListTile(
-      selectedTileColor: selectedPlaylistBackground,
-      selected: isCurrentPlaylist,
+      selected: isFullySelected || isPartiallySelected,
+      selectedTileColor: isFullySelected ? fullySelectedPlaylistBackground : partiallySelectedPlaylistBackground,
       contentPadding: EdgeInsets.only(left: 8),
       leading: Thumbnail.forKuenstler(kuenstlerSongs),
       title: Text(kuenstler, maxLines: 1, overflow: TextOverflow.ellipsis),
