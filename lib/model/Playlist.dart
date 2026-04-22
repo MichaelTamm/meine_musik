@@ -53,7 +53,7 @@ abstract class Playlist with IterableMixin<Song> {
   Song operator [](int index) => _songs[index];
 
   int indexOf(Song song) => _songs.indexOf(song);
-  
+
   bool containsAllOf(Playlist other) => other.every((song) => songIds.contains(song.id));
 
   bool containsOneOf(Playlist other) => other.any((song) => songIds.contains(song.id));
