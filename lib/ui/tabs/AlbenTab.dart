@@ -96,9 +96,15 @@ class _UpdateSelectedAlbumObserver extends NavigatorObserver {
   @override
   void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     debugPrint('[$runtimeType] didChangeTop: ${previousTopRoute?.settings} => ${topRoute.settings}');
-    final selectedAlbumNotifier = ProviderScope.containerOf(context).read(AlbenTab.selectedAlbumProvider.notifier);
     Future.microtask(() {
-      selectedAlbumNotifier.state = topRoute.settings.arguments as Album?;
+      if (topRoute.settings.name == '/') {
+        riverpodContainer.read(AlbenTab.selectedAlbumProvider.notifier).state = null;
+      } else {
+        final args = topRoute.settings.arguments;
+        if (args is Album) {
+          riverpodContainer.read(AlbenTab.selectedAlbumProvider.notifier).state = args;
+        }
+      }
     });
   }
 }

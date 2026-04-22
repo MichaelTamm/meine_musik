@@ -11,11 +11,16 @@ import 'package:mocktail/mocktail.dart';
 
 import 'mocks.dart';
 import 'testdata.dart';
+import 'widget_test_utils.dart';
+
+late MeineMusikTestBinding binding;
 
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
+  binding = MeineMusikTestBinding();
   initTestdata();
 
   setUp(() {
+    debugPrintBuffer.clear();
     // See https://drift.simonbinder.eu/testing/ ...
     db = Database(DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true));
     riverpodContainer = ProviderContainer.test();

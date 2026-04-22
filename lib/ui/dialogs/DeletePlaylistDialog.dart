@@ -24,10 +24,7 @@ class DeletePlaylistDialog extends HookWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(child: AutoSizeText('Playlist löschen?', maxLines: 1, style: Theme.of(context).textTheme.titleMedium)),
-          Semantics(
-            label: 'Dialog schließen',
-            child: IconButton(onPressed: () => navigatorState.pop(), tooltip: '', icon: const Icon(Icons.close)),
-          ),
+          IconButton(onPressed: () => navigatorState.pop(), tooltip: 'Dialog schließen', icon: const Icon(Icons.close)),
         ],
       ),
       titlePadding: const EdgeInsets.fromLTRB(24, 8, 8, 0),

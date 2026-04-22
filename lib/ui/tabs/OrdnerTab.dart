@@ -117,15 +117,13 @@ class _UpdateCurrentPathObserver extends NavigatorObserver {
   @override
   void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     debugPrint('[$runtimeType] didChangeTop: ${previousTopRoute?.settings} => ${topRoute.settings}');
-    final currentPathNotifier = ProviderScope.containerOf(context).read(OrdnerTab.currentPathProvider.notifier);
     Future.microtask(() {
-      final settings = topRoute.settings;
-      if (settings.name == '/') {
-        currentPathNotifier.state = const [];
+      if (topRoute.settings.name == '/') {
+        riverpodContainer.read(OrdnerTab.currentPathProvider.notifier).state = const [];
       } else {
-        final args = settings.arguments;
+        final args = topRoute.settings.arguments;
         if (args is List<AudioFolder>) {
-          currentPathNotifier.state = args;
+          riverpodContainer.read(OrdnerTab.currentPathProvider.notifier).state = args;
         }
       }
     });

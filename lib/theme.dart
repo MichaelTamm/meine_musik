@@ -6,6 +6,8 @@ final fullySelectedPlaylistBackground = Color.lerp(Colors.purpleAccent, Colors.w
 final partiallySelectedPlaylistBackground = Color.lerp(fullySelectedPlaylistBackground, Colors.white, 0.333)!;
 final selectedSongBackground = Color.lerp(Colors.purpleAccent, Colors.white, 0.75)!;
 
+const popupMenuItemPadding = EdgeInsets.only(left: 4, right: 12);
+
 final themeData = ThemeData(
   useMaterial3: true,
   appBarTheme: AppBarTheme(toolbarHeight: 0),

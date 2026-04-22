@@ -70,19 +70,16 @@ class _UpdateSelectedPlaylistObserver extends NavigatorObserver {
   @override
   void didChangeTop(Route<dynamic> topRoute, Route<dynamic>? previousTopRoute) {
     debugPrint('[$runtimeType] didChangeTop: ${previousTopRoute?.settings} => ${topRoute.settings}');
-    if (topRoute.settings.name == '/') {
-      Future.microtask(() {
+    Future.microtask(() {
+      if (topRoute.settings.name == '/') {
         riverpodContainer.read(PlaylistsTab.selectedPlaylistProvider.notifier).state = null;
-      });
-    } else {
-      final args = topRoute.settings.arguments;
-      if (args is Playlist) {
-        final selectedPlaylistNotifier = ProviderScope.containerOf(context).read(PlaylistsTab.selectedPlaylistProvider.notifier);
-        Future.microtask(() {
-          selectedPlaylistNotifier.state = args;
-        });
+      } else {
+        final args = topRoute.settings.arguments;
+        if (args is Playlist) {
+          riverpodContainer.read(PlaylistsTab.selectedPlaylistProvider.notifier).state = args;
+        }
       }
-    }
+    });
   }
 }
 
