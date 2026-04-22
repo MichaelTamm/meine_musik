@@ -30,7 +30,7 @@ class FileManager extends HookWidget {
         final supportDir = supportDirNotifier.value;
         final tempDir = tempDirNotifier.value;
         currentDirNotifier.value = null;
-        dirsNotifier.value = [if (dataDir != null) dataDir, if (supportDir != null) supportDir, if (tempDir != null) tempDir];
+        dirsNotifier.value = [?dataDir, ?supportDir, ?tempDir];
         filesNotifier.value = [];
       } else {
         try {
