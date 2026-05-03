@@ -1,0 +1,33 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+default_platform(:android)
+
+platform :android do
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    # Fail fast if any required env variable is missing ...
+    required_env = %w[MEINE_MUSIK_KEYSTORE_PATH MEINE_MUSIK_KEYSTORE_PASSWORD MEINE_MUSIK_UPLOAD_KEY_ALIAS MEINE_MUSIK_UPLOAD_KEY_PASSWORD MEINE_MUSIK_FASTLANE_ACCOUNT_JSON_PATH]
+    missing_env = required_env.select { |k| ENV[k].to_s.strip.empty? }
+    UI.user_error!("Missing required env variables: #{missing_env.join(', ')}") unless missing_env.empty?
+    Dir.chdir("../..") do
+      sh "make build"
+    end
+    build_number = number_of_commits()
+    upload_to_play_store(
+        aab: "../build/app/outputs/bundle/release/app-release.aab",
+        version_code: $build_number,
+        track: "internal",
+        release_status: "draft",
+    )
+  end
+end
