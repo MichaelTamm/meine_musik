@@ -1,2 +1,2 @@
-json_key_file("/home/michael/meine-musik-app-fastlane.json")
+json_key_file(ENV.fetch("MEINE_MUSIK_FASTLANE_ACCOUNT_JSON_PATH"))
 package_name("de.michaeltamm.meine_musik")
