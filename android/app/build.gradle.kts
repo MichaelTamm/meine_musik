@@ -1,3 +1,7 @@
+fun readEnvVar(envVarName: String): String {
+    return System.getenv(envVarName) ?: "Environment variable " + envVarName + " not set."
+}
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -20,7 +24,6 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "de.michaeltamm.meine_musik"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
@@ -30,11 +33,18 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file(readEnvVar("MEINE_MUSIK_KEYSTORE_PATH"))
+            storePassword = readEnvVar("MEINE_MUSIK_KEYSTORE_PASSWORD")
+            keyAlias = readEnvVar("MEINE_MUSIK_UPLOAD_KEY_ALIAS")
+            keyPassword = readEnvVar("MEINE_MUSIK_UPLOAD_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }

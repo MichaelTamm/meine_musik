@@ -1,0 +1,2 @@
+json_key_file("/home/michael/meine-musik-app-fastlane.json")
+package_name("de.michaeltamm.meine_musik")

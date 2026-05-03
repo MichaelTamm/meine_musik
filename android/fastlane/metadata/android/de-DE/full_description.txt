@@ -1,0 +1,10 @@
+Meine Musik ist ein einfacher MP3-Player für alle auf deinem Gerät gespeicherten Lieder.
+
+Highlights:
+• keine Werbung
+• Material UI
+• Favoriten und eigene Playlists
+• Lieder gruppiert nach Alben und Künstlern
+• Bilder von Alben und Künstlern werden bei Bedarf heruntergeladen
+• geordnete oder zufällige Wiedergabe
+• verschiedene Wiederholungsmodi
