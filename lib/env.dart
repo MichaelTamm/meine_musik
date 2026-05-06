@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,6 +22,9 @@ final kIsTest = Platform.environment.containsKey('FLUTTER_TEST');
 final bool kIsAppleDevice = Platform.isIOS || Platform.isMacOS;
 
 const kMethodChannel = MethodChannel('de.michaeltamm.meine_musik');
+
+/// Set to `true` to enable logging of SQL statements.
+const kDebugDrift = false;
 
 /// Set to `true` to enable logging of riverpod activity.
 const kDebugRiverpod = false;

@@ -1,5 +1,5 @@
 import 'package:audio_session/audio_session.dart';
-import 'package:drift_flutter/drift_flutter.dart';
+import 'package:drift_sqflite/drift_sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,7 +23,6 @@ Future<void> main() async {
     final session = await AudioSession.instance;
     final sessionConfigureFuture = session.configure(AudioSessionConfiguration.music());
     audioService = AudioService();
-    db = Database(driftDatabase(name: 'database'));
     logic = Logic();
     final loggingHttpClient = LoggingHttpClient();
     musicBrainz = MusicBrainz(loggingHttpClient);
@@ -31,6 +30,7 @@ Future<void> main() async {
     coverArtArchive = CoverArtArchive(loggingHttpClient);
     applicationDocumentsDirectory = await getApplicationDocumentsDirectoryFuture;
     applicationCacheDirectory = await getApplicationCacheDirectoryFuture;
+    db = Database(SqfliteQueryExecutor(path: '${applicationDocumentsDirectory.path}/database.sqlite', logStatements: kDebugDrift));
     await sessionConfigureFuture;
     // ignore: missing_provider_scope
     runApp(const MeineMusikApp());
