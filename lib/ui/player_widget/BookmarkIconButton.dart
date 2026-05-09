@@ -25,9 +25,9 @@ class BookmarkIconButton extends ConsumerWidget {
       ),
       onPressed: () async {
         if (currentBookmarkTarget is Favoriten) {
-          debugPrint('[PlayerWidget] Tap on favorite icon button');
+          debugPrint('[PlayerWidget] tap on favorite icon button');
         } else {
-          debugPrint('[PlayerWidget] Tap on bookmark icon button');
+          debugPrint('[PlayerWidget] tap on bookmark icon button');
         }
         if (isBookmarked) {
           await currentBookmarkTarget.removeSong!.call(currentSong);
@@ -38,7 +38,7 @@ class BookmarkIconButton extends ConsumerWidget {
               action: (
                 'Rückgängig machen',
                 () async {
-                  debugPrint('[SnackBar] Tap on "Rückgängig machen"');
+                  debugPrint('[SnackBar] tap on "Rückgängig machen"');
                   await currentBookmarkTarget.addSong!.call(currentSong);
                 },
               ),
@@ -53,7 +53,7 @@ class BookmarkIconButton extends ConsumerWidget {
               action: (
                 'andere Playlist ...',
                 () async {
-                  debugPrint('[SnackBar] Tap on "andere Playlist ..."');
+                  debugPrint('[SnackBar] tap on "andere Playlist ..."');
                   await currentBookmarkTarget.removeSong!(currentSong);
                   final otherPlaylist = await openBottomSheet<Playlist?>(() => AddSongToOtherPlaylistBottomSheet(currentSong));
                   if (otherPlaylist == null) {

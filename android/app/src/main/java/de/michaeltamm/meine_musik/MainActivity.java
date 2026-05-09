@@ -3,13 +3,13 @@ package de.michaeltamm.meine_musik;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+import com.ryanheise.audioservice.AudioServiceActivity;
 
-import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
 
-public class MainActivity extends FlutterActivity {
+public class MainActivity extends AudioServiceActivity {
   private static final String METHOD_CHANNEL_NAME = "de.michaeltamm.meine_musik";
 
   @Override
@@ -26,6 +26,6 @@ public class MainActivity extends FlutterActivity {
           }
         }
       );
-    AudioApi.AudioService.setUp(binaryMessenger, new AudioServiceImpl(getContentResolver()));
+    MeineMusikPigeonApi.MeineMusikNativeMethods.setUp(binaryMessenger, new MeineMusikNativeMethodImpl(getContentResolver()));
   }
 }

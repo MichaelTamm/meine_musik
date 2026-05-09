@@ -45,6 +45,7 @@ class _MeineMusikScaffoldWrapper extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     useOnMount(() {
       riverpodContainer = ProviderScope.containerOf(context);
+      audioHandler.init(); // ... must be called *after* riverpodContainer was initialized
       SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
           // Set the status bar color to match the AppBar background color
@@ -82,7 +83,7 @@ class _MeineMusikScaffold extends HookConsumerWidget {
     useEffect(() {
       void listener() {
         if (currentTabRef.value != tabController.index) {
-          debugPrint("[$runtimeType] Switching to tab '${_tabNames[tabController.index]}'");
+          debugPrint("[$runtimeType] switching to tab '${_tabNames[tabController.index]}'");
           currentTabRef.value = tabController.index;
         }
       }

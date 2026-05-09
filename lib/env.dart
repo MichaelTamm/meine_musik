@@ -8,9 +8,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 
 import 'drift/database.dart';
-import 'model/Logic.dart';
-import 'services/AudioApi.dart';
+import 'model/MeineMusikLogic.dart';
+import 'services/MeineMusikPigeonApi.dart';
 import 'services/CoverArtArchive.dart';
+import 'services/MeineMusikAudioHandler.dart';
 import 'services/MusicBrainz.dart';
 import 'services/TheAudioDB.dart';
 
@@ -31,13 +32,14 @@ const kDebugRiverpod = false;
 
 late Directory applicationDocumentsDirectory;
 late Directory applicationCacheDirectory;
-late AudioService audioService;
-late CoverArtArchive coverArtArchive;
 late Database db;
-late Logic logic;
-late MusicBrainz musicBrainz;
 late ProviderContainer riverpodContainer;
+late CoverArtArchive coverArtArchive;
+late MusicBrainz musicBrainz;
 late TheAudioDB theAudioDB;
+late MeineMusikAudioHandler audioHandler;
+late MeineMusikNativeMethods nativeMethods;
+late MeineMusikLogic logic;
 
 final class _RiverpodObserver extends ProviderObserver {
   static const _blacklist = {'currentSongPositionProvider'};

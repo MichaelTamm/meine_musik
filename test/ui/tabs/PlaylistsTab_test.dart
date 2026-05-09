@@ -15,7 +15,7 @@ import '../../widget_test_utils.dart';
 void main() {
   testWidgets('A playlist can be opened', (tester) async {
     final song = anAudioFile(path: '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3');
-    when(() => audioService.findAll()).thenAnswer((_) async => [song]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [song]);
     await tester.startApp();
     spot<ListTile>().spotText('Favoriten').existsAtLeastOnce();
     spotText(song.title).doesNotExist();
@@ -27,7 +27,7 @@ void main() {
   });
 
   testWidgets('An opened playlist is restored when user switches tabs', (tester) async {
-    when(() => audioService.findAll()).thenAnswer((_) async => []);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => []);
     await tester.startApp();
     spotText('Alle Lieder').existsOnce();
     spotText('Favoriten').existsAtLeastOnce();
@@ -46,7 +46,7 @@ void main() {
   });
 
   testWidgets('An opened playlist can be closed by tapping on the (<) icon button', (tester) async {
-    when(() => audioService.findAll()).thenAnswer((_) async => []);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => []);
     await tester.startApp();
     spotText('Alle Lieder').existsOnce();
     spotText('Favoriten').existsAtLeastOnce();
@@ -61,7 +61,7 @@ void main() {
   });
 
   testWidgets('An opened playlist can be closed by pressing the back button', (tester) async {
-    when(() => audioService.findAll()).thenAnswer((_) async => []);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => []);
     await tester.startApp();
     spotText('Alle Lieder').existsOnce();
     spotText('Favoriten').existsAtLeastOnce();

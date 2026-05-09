@@ -32,7 +32,7 @@ Future<List<AudioFile>> localAudioFiles(Ref ref) async {
       }
     }
   }
-  final audioFiles = await audioService.findAll();
+  final audioFiles = await nativeMethods.findAll();
   if (kDebugMode) {
     final n = audioFiles.length;
     debugPrint(
@@ -66,14 +66,14 @@ Future<MusicBrainzArtist?> artist(Ref ref, KuenstlerSongs kuenstlerSongs) {
 
 @Riverpod(keepAlive: false)
 Future<Uint8List?> songThumbnail(Ref ref, Song song) async {
-  final albumCover = await audioService.getAlbumCover(song.path);
+  final albumCover = await nativeMethods.getAlbumCover(song.path);
   // TODO: try to find album cover on the internet
   return albumCover;
 }
 
 @Riverpod(keepAlive: false)
 Future<Uint8List?> albumCoverThumbnail(Ref ref, Album album) async {
-  var albumCover = await audioService.getAlbumCover(album.first.path);
+  var albumCover = await nativeMethods.getAlbumCover(album.first.path);
   if (albumCover == null) {
     final release = await musicBrainz.searchRelease(album);
     if (release != null) {

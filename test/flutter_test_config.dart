@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meine_musik/drift/database.dart';
 import 'package:meine_musik/env.dart';
-import 'package:meine_musik/model/Logic.dart';
+import 'package:meine_musik/model/MeineMusikLogic.dart';
 import 'package:mocktail/mocktail.dart';
 
 import 'mocks.dart';
@@ -24,9 +24,9 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
     // See https://drift.simonbinder.eu/testing/ ...
     db = Database(DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true));
     riverpodContainer = ProviderContainer.test();
-    logic = Logic();
-    audioService = MockAudioService();
-    when(() => audioService.findAll()).thenAnswer(
+    logic = MeineMusikLogic();
+    nativeMethods = MockMeineMusikNativeMethods();
+    when(() => nativeMethods.findAll()).thenAnswer(
       (_) async => [
         anAudioFile(
           id: 1,
@@ -37,7 +37,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
         ),
       ],
     );
-    when(() => audioService.getAlbumCover(any())).thenAnswer((_) async => null);
+    when(() => nativeMethods.getAlbumCover(any())).thenAnswer((_) async => null);
     musicBrainz = DummyMusicBrainz();
   });
 

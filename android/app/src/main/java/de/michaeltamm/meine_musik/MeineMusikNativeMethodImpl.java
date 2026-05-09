@@ -12,9 +12,9 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioServiceImpl implements AudioApi.AudioService {
+public class MeineMusikNativeMethodImpl implements MeineMusikPigeonApi.MeineMusikNativeMethods {
 
-  public AudioServiceImpl(ContentResolver contentResolver) {
+  public MeineMusikNativeMethodImpl(ContentResolver contentResolver) {
     this.contentResolver = contentResolver;
   }
 
@@ -42,8 +42,8 @@ public class AudioServiceImpl implements AudioApi.AudioService {
   };
 
   @Override
-  public void findAll(@NonNull AudioApi.Result<List<AudioApi.AudioFile>> result) {
-    final List<AudioApi.AudioFile> audioFiles = new ArrayList<>();
+  public void findAll(@NonNull MeineMusikPigeonApi.Result<List<MeineMusikPigeonApi.AudioFile>> result) {
+    final List<MeineMusikPigeonApi.AudioFile> audioFiles = new ArrayList<>();
     try {
       final int apiLevel = Build.VERSION.SDK_INT;
       final String[] projection = apiLevel < 30 ? _projectionWithoutCdTrackNumber : _projectionWithCdTrackNumber;
@@ -60,7 +60,7 @@ public class AudioServiceImpl implements AudioApi.AudioService {
           }
           try {
             while (cursor.moveToNext()) {
-              final AudioApi.AudioFile audioFile = new AudioApi.AudioFile();
+              final MeineMusikPigeonApi.AudioFile audioFile = new MeineMusikPigeonApi.AudioFile();
               audioFile.setId(cursor.getLong(0));
               audioFile.setPath(cursor.getString(1));
               audioFile.setSizeInBytes(cursor.getLong(2));
@@ -84,7 +84,7 @@ public class AudioServiceImpl implements AudioApi.AudioService {
   }
 
   @Override
-  public void getAlbumCover(@NonNull String path, @NonNull AudioApi.NullableResult<byte[]> result) {
+  public void getAlbumCover(@NonNull String path, @NonNull MeineMusikPigeonApi.NullableResult<byte[]> result) {
     final MediaMetadataRetriever mmr = new MediaMetadataRetriever();
     try {
       mmr.setDataSource(path);

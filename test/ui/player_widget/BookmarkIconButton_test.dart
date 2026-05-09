@@ -14,7 +14,7 @@ import '../../widget_test_utils.dart';
 void main() {
   testWidgets("add current song to Favoriten, remove it again, undo", (tester) async {
     final audioFile = anAudioFile(path: '/storage/emulated/0/some audio file.mp3');
-    when(() => audioService.findAll()).thenAnswer((_) async => [audioFile]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [audioFile]);
     await tester.startApp();
     await act.tap(spot<AppBar>().spotText("Ordner"));
     await tester.pumpAndSettle();
@@ -45,7 +45,7 @@ void main() {
     final audioFile1 = anAudioFile(path: '/storage/emulated/0/audio file 1.mp3');
     final audioFile2 = anAudioFile(path: '/storage/emulated/0/audio file 2.mp3');
     final testPlaylistId = await db.createPlaylist('Test-Playlist');
-    when(() => audioService.findAll()).thenAnswer((_) async => [audioFile1, audioFile2]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [audioFile1, audioFile2]);
     await tester.startApp();
     await act.tap(spot<AppBar>().spotText("Ordner"));
     await tester.pumpAndSettle();
@@ -72,7 +72,7 @@ void main() {
 
   testWidgets("add current song to a new playlist", (tester) async {
     final audioFile = anAudioFile(path: '/storage/emulated/0/some audio file.mp3');
-    when(() => audioService.findAll()).thenAnswer((_) async => [audioFile]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [audioFile]);
     await tester.startApp();
     await act.tap(spot<AppBar>().spotText("Ordner"));
     await tester.pumpAndSettle();

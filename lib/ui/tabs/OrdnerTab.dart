@@ -327,7 +327,7 @@ class _AudioFolderListTile extends HookConsumerWidget {
               },
               onChanged: (_) {
                 if (folderState == _FolderState.allSongs) {
-                  debugPrint('[$runtimeType] Tap on checkbox for folder ${folder.name} -- blacklisting folder ...');
+                  debugPrint('[$runtimeType] tap on checkbox for folder ${folder.name} -- blacklisting folder ...');
                   blacklistFolder(folder, ref);
                 } else {
                   debugPrint('Tap on checkbox for folder ${folder.name} -- whitelisting folder ...');

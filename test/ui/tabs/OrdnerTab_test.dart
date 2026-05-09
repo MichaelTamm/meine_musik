@@ -12,7 +12,7 @@ import '../../widget_test_utils.dart';
 
 void main() {
   testWidgets('Folder navigation', (tester) async {
-    when(() => audioService.findAll()).thenAnswer(
+    when(() => nativeMethods.findAll()).thenAnswer(
       (_) async => [
         anAudioFile(path: '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3'),
         anAudioFile(path: '/storage/0000-0000/Musik/Alicia Keys - Songs In A Minor/01 - Alicia Keys - Piano & I.mp3'),
@@ -65,7 +65,7 @@ void main() {
   });
 
   testWidgets('Tapping on an audio file will play it', (tester) async {
-    when(() => audioService.findAll()).thenAnswer((_) async => [anAudioFile(path: '/storage/emulated/0/some audio file.mp3')]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [anAudioFile(path: '/storage/emulated/0/some audio file.mp3')]);
     await tester.startApp();
     await act.tap(spot<TabBar>().spotText('Ordner'));
     await tester.pumpAndSettle();
@@ -75,7 +75,7 @@ void main() {
   });
 
   testWidgets('Current folder is restored when user switches tabs', (tester) async {
-    when(() => audioService.findAll()).thenAnswer(
+    when(() => nativeMethods.findAll()).thenAnswer(
       (_) async => [
         anAudioFile(path: '/storage/emulated/0/Samsung/Music/Over the Horizon.mp3'),
         anAudioFile(path: '/storage/0000-0000/Musik/Alicia Keys - Songs In A Minor/01 - Alicia Keys - Piano & I.mp3'),

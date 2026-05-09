@@ -7,7 +7,7 @@ import 'Song.dart';
 final _featuringRegExp = RegExp(r'(\s(ft\.|feat\.|featuring)\s)|,|(, and)');
 final _andRegExp = RegExp(r'\s(and|et|e|und|y|&|\+)\s');
 
-class Logic {
+class MeineMusikLogic {
   /// Heuristic to determine whether an audio file is a song or not.
   bool isSongHeuristic(AudioFile audioFile) {
     if (audioFile.path.contains('/WhatsApp/')) {
