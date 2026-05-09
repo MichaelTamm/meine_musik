@@ -23,7 +23,7 @@ class PlaylistActions extends ConsumerWidget {
       onPressed: playlist.isEmpty
           ? null
           : () {
-              debugPrint('Tap on play icon button for $playlist');
+              debugPrint('tap on play icon button for $playlist');
               ref.read(playerProvider).playPlaylist(playlist);
             },
     );

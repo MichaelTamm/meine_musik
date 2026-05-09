@@ -41,7 +41,7 @@ class SongListTile extends ConsumerWidget {
       // TODO: display animated playing icon when this is the current song and it is currently being played
       trailing: _SongActions(song),
       onTap: () {
-        debugPrint('Tap on song ${song.fileName} -- playing file ...');
+        debugPrint('tap on song ${song.fileName} -- playing file ...');
         ref.read(playerProvider).playSong(song);
       },
     );

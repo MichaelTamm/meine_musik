@@ -24,6 +24,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
     // See https://drift.simonbinder.eu/testing/ ...
     db = Database(DatabaseConnection(NativeDatabase.memory(), closeStreamsSynchronously: true));
     riverpodContainer = ProviderContainer.test();
+    audioHandler = MockMeineMusikAudioHandler();
     logic = MeineMusikLogic();
     nativeMethods = MockMeineMusikNativeMethods();
     when(() => nativeMethods.findAll()).thenAnswer(

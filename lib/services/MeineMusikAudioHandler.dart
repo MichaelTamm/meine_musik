@@ -26,7 +26,7 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
       mediaItem.add(
         MediaItem(
           id: currentSong.id.toString(),
-          title: currentSong.title,
+          title: title,
           album: currentSong.album,
           artist: currentSong.artist,
           duration: Duration(milliseconds: currentSong.durationInMilliseconds),
@@ -57,7 +57,6 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
       switch (playerState) {
         case playing:
           debugPrint('[$MeineMusikAudioHandler.play()] already playing -- do nothing');
-          break;
         case paused:
           debugPrint('[$MeineMusikAudioHandler.play()] resume playing ...');
           _player.resume();
@@ -124,15 +123,15 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
       final atStartOfSong = currentSongPosition < Duration(milliseconds: min(5000, (currentSong.durationInMilliseconds / 5).round()));
       if (currentSong == currentPlaylist.firstSong) {
         debugPrint(
-          '[$AudioHandler.skipToPrevious()] current song is first song of current playlist -- seeking to start of current song ...',
+          '[$MeineMusikAudioHandler.skipToPrevious()] current song is first song of current playlist -- seeking to start of current song ...',
         );
         _player.seekToPosition(Duration.zero);
       } else if (playerState != playing || atStartOfSong) {
-        debugPrint('[$AudioHandler.skipToPrevious()] playing previous song ...');
+        debugPrint('[$MeineMusikAudioHandler.skipToPrevious()] playing previous song ...');
         _player.playPreviousSong();
       } else {
         debugPrint(
-          '[$AudioHandler.skipToPrevious()] current song position is: $currentSongPosition -- seeking to start of current song ...',
+          '[$MeineMusikAudioHandler.skipToPrevious()] current song position is: $currentSongPosition -- seeking to start of current song ...',
         );
         _player.seekToPosition(Duration.zero);
       }

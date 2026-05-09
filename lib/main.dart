@@ -22,9 +22,6 @@ Future<void> main() async {
     timeDilation = kSlowDownAnimations ? 10 : 1;
     final getApplicationDocumentsDirectoryFuture = getApplicationDocumentsDirectory();
     final getApplicationCacheDirectoryFuture = getApplicationCacheDirectory();
-    final session = await AudioSession.instance;
-    final sessionConfigureFuture = session.configure(AudioSessionConfiguration.music());
-    nativeMethods = MeineMusikNativeMethods();
     audioHandler = await audio_service.AudioService.init(
       builder: () => MeineMusikAudioHandler(),
       config: const audio_service.AudioServiceConfig(
@@ -33,6 +30,9 @@ Future<void> main() async {
         androidNotificationOngoing: true,
       ),
     );
+    final session = await AudioSession.instance;
+    final sessionConfigureFuture = session.configure(AudioSessionConfiguration.music());
+    nativeMethods = MeineMusikNativeMethods();
     logic = MeineMusikLogic();
     final loggingHttpClient = LoggingHttpClient();
     musicBrainz = MusicBrainz(loggingHttpClient);

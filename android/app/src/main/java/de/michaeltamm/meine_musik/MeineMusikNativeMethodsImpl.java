@@ -12,9 +12,9 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MeineMusikNativeMethodImpl implements MeineMusikPigeonApi.MeineMusikNativeMethods {
+public class MeineMusikNativeMethodsImpl implements MeineMusikPigeonApi.MeineMusikNativeMethods {
 
-  public MeineMusikNativeMethodImpl(ContentResolver contentResolver) {
+  public MeineMusikNativeMethodsImpl(ContentResolver contentResolver) {
     this.contentResolver = contentResolver;
   }
 

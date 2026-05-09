@@ -174,7 +174,7 @@ class _KuenstlerListTile extends ConsumerWidget {
       ),
       trailing: PlaylistActions(kuenstlerSongs),
       onTap: () {
-        debugPrint('Tap on $_KuenstlerListTile for $kuenstler');
+        debugPrint('tap on $_KuenstlerListTile for $kuenstler');
         onTap();
       },
     );

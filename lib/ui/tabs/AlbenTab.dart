@@ -184,7 +184,7 @@ class _AlbumListTile extends ConsumerWidget {
       ),
       trailing: PlaylistActions(album),
       onTap: () {
-        debugPrint('Tap on $_AlbumListTile for ${album.name}');
+        debugPrint('tap on $_AlbumListTile for ${album.name}');
         onTap();
       },
     );

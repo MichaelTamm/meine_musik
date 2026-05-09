@@ -26,6 +26,6 @@ public class MainActivity extends AudioServiceActivity {
           }
         }
       );
-    MeineMusikPigeonApi.MeineMusikNativeMethods.setUp(binaryMessenger, new MeineMusikNativeMethodImpl(getContentResolver()));
+    MeineMusikPigeonApi.MeineMusikNativeMethods.setUp(binaryMessenger, new MeineMusikNativeMethodsImpl(getContentResolver()));
   }
 }
