@@ -1,6 +1,6 @@
-import '../services/AudioApi.dart';
+import '../services/MeineMusikPigeonApi.dart';
 
-export '../../services/AudioApi.dart' show AudioFile;
+export '../services/MeineMusikPigeonApi.dart' show AudioFile;
 
 extension AudioFileExtension on AudioFile {
   String get dir {

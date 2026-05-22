@@ -125,11 +125,11 @@ class _PigeonCodec extends StandardMessageCodec {
   }
 }
 
-class AudioService {
-  /// Constructor for [AudioService].  The [binaryMessenger] named argument is
+class MeineMusikNativeMethods {
+  /// Constructor for [MeineMusikNativeMethods].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  AudioService({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
+  MeineMusikNativeMethods({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
     : pigeonVar_binaryMessenger = binaryMessenger,
       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
@@ -139,7 +139,7 @@ class AudioService {
   final String pigeonVar_messageChannelSuffix;
 
   Future<List<AudioFile>> findAll() async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.meine_musik.AudioService.findAll$pigeonVar_messageChannelSuffix';
+    final String pigeonVar_channelName = 'dev.flutter.pigeon.meine_musik.MeineMusikNativeMethods.findAll$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -163,7 +163,8 @@ class AudioService {
   }
 
   Future<Uint8List?> getAlbumCover(String path) async {
-    final String pigeonVar_channelName = 'dev.flutter.pigeon.meine_musik.AudioService.getAlbumCover$pigeonVar_messageChannelSuffix';
+    final String pigeonVar_channelName =
+        'dev.flutter.pigeon.meine_musik.MeineMusikNativeMethods.getAlbumCover$pigeonVar_messageChannelSuffix';
     final BasicMessageChannel<Object?> pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,

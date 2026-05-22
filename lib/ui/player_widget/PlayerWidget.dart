@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:meine_musik/env.dart';
 
 import '../../model/PlayingPausedOrCompleted.dart';
 import '../../riverpod/player_state.dart';
@@ -40,21 +39,8 @@ class PlayerWidget extends ConsumerWidget {
               IconButton(
                 icon: Icon(Icons.skip_previous_rounded),
                 onPressed: () {
-                  final currentSongPosition = ref.read(currentSongPositionProvider);
-                  final debugMessagePrefix =
-                      'Tap on skip to previous icon button, current song position: ${currentSongPosition.inSeconds}s';
-                  if (currentSong == currentPlaylist.firstSong) {
-                    debugPrint(
-                      '$debugMessagePrefix, current song is first song of current playlist -- seeking to start of current song ...',
-                    );
-                    ref.read(playerProvider).seekToPosition(Duration.zero);
-                  } else if (currentSongPosition < Duration(milliseconds: min(5000, (currentSong.durationInMilliseconds / 5).round()))) {
-                    debugPrint('$debugMessagePrefix -- play previous song ...');
-                    ref.read(playerProvider).playPreviousSong();
-                  } else {
-                    debugPrint('$debugMessagePrefix -- seeking to start of current song ...');
-                    ref.read(playerProvider).seekToPosition(Duration.zero);
-                  }
+                  debugPrint('[$PlayerWidget] tap on skip to previous icon button');
+                  audioHandler.skipToPrevious();
                 },
               ),
               if (ref.watch(isPlayingPausedOrCompletedProvider) == playing)
@@ -64,8 +50,8 @@ class PlayerWidget extends ConsumerWidget {
                     iconSize: 48,
                     icon: Icon(Icons.pause),
                     onPressed: () {
-                      debugPrint('Tap on pause icon button -- pause playing ...');
-                      ref.read(playerProvider).pause();
+                      debugPrint('[$PlayerWidget] tap on pause icon button');
+                      audioHandler.pause();
                     },
                   ),
                 )
@@ -76,18 +62,8 @@ class PlayerWidget extends ConsumerWidget {
                     iconSize: 48,
                     icon: Icon(Icons.play_arrow_rounded),
                     onPressed: () {
-                      final playerState = ref.read(isPlayingPausedOrCompletedProvider);
-                      switch (playerState) {
-                        case playing:
-                          debugPrint('Tap on play icon button -- do nothing');
-                          break;
-                        case paused:
-                          debugPrint('Tap on play icon button -- resume playing ...');
-                          ref.read(playerProvider).resume();
-                        case completed:
-                          debugPrint('Tap on play icon button -- play last song again ...');
-                          ref.read(playerProvider).playCurrentSongAgain();
-                      }
+                      debugPrint('[$PlayerWidget] tap on play icon button');
+                      audioHandler.play();
                     },
                   ),
                 ),
@@ -96,8 +72,8 @@ class PlayerWidget extends ConsumerWidget {
                 onPressed: currentSong.id == currentPlaylist.lastSong.id
                     ? null
                     : () {
-                        debugPrint('Tap on skip to next icon button -- play next song ...');
-                        ref.read(playerProvider).playNextSong();
+                        debugPrint('[$PlayerWidget] tap on skip to next icon button');
+                        audioHandler.skipToNext();
                       },
               ),
               BookmarkIconButton(),
@@ -122,7 +98,10 @@ class _PlayerSlider extends ConsumerWidget {
     return Slider(
       value: currentSongPosition.inMilliseconds.toDouble().clamp(0, currentSongDuration),
       label: _formatCurrentSongPosition(currentSongPosition),
-      onChanged: (double newValue) => ref.read(playerProvider).seekToPosition(Duration(milliseconds: newValue.round())),
+      onChanged: (double newValue) {
+        debugPrint('[$_PlayerSlider] slider moved to: $newValue');
+        audioHandler.seek(Duration(milliseconds: newValue.round()));
+      },
       min: 0,
       max: currentSongDuration,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

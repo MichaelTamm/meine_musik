@@ -27,7 +27,7 @@ class AddSongToOtherPlaylistBottomSheet extends ConsumerWidget {
             leading: Icon(Icons.add_rounded),
             title: Text('Neue Playlist ...'),
             onTap: () async {
-              debugPrint('[$AddSongToOtherPlaylistBottomSheet] Tap on "Neue Playlist ..."');
+              debugPrint('[$AddSongToOtherPlaylistBottomSheet] tap on "Neue Playlist ..."');
               final newPlaylist = await showDialog<Playlist?>(context: context, builder: ((_) => CreatePlaylistDialog()));
               if (newPlaylist != null) {
                 closeBottomSheet(result: newPlaylist);
@@ -39,7 +39,7 @@ class AddSongToOtherPlaylistBottomSheet extends ConsumerWidget {
             leading: Icon(favoriten.contains(song) ? Icons.favorite_rounded : Icons.favorite_border_rounded),
             title: Text(favoriten.name),
             onTap: () {
-              debugPrint('[$AddSongToOtherPlaylistBottomSheet] Tap on "${favoriten.name}"');
+              debugPrint('[$AddSongToOtherPlaylistBottomSheet] tap on "${favoriten.name}"');
               closeBottomSheet(result: favoriten);
             },
           );
@@ -49,7 +49,7 @@ class AddSongToOtherPlaylistBottomSheet extends ConsumerWidget {
             leading: Icon(playlist.contains(song) ? Icons.bookmark_rounded : Icons.bookmark_border_rounded),
             title: Text(playlist.name, maxLines: 1, overflow: TextOverflow.ellipsis),
             onTap: () {
-              debugPrint('[$AddSongToOtherPlaylistBottomSheet] Tap on "${playlist.name}"');
+              debugPrint('[$AddSongToOtherPlaylistBottomSheet] tap on "${playlist.name}"');
               closeBottomSheet(result: playlist);
             },
           );

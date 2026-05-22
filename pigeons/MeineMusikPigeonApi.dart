@@ -12,7 +12,7 @@ class AudioFile {
 }
 
 @HostApi()
-abstract class AudioService {
+abstract class MeineMusikNativeMethods {
   @async
   List<AudioFile> findAll();
 

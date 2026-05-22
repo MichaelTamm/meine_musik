@@ -69,6 +69,7 @@ class RepeatModeButton extends ConsumerWidget {
         ),
       ],
       onSelected: (value) {
+        debugPrint('[$RepeatModeButton] $value selected');
         ref.read(currentRepeatModeProvider.notifier).set(value);
       },
     );

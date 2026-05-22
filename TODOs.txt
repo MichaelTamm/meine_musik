@@ -1,3 +1,4 @@
+* Add Sentry
 * Integrate Google Drive, Dropbox, and OneDrive to retrieve music files from the cloud
   - use https://pub.dev/packages/audio_metadata_reader to get meta data from audio files
 * Query MusicBrainz APi to retrieve cover art

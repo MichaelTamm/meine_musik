@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meine_musik/env.dart';
 import 'package:meine_musik/model/Playlist.dart';
-import 'package:meine_musik/services/AudioApi.dart';
+import 'package:meine_musik/services/MeineMusikPigeonApi.dart';
 import 'package:meine_musik/services/MusicBrainz.dart';
 
 import '../RecordPlaybackHttpClient.dart';

@@ -27,7 +27,7 @@ import java.util.Objects;
 
 /** Generated class from Pigeon. */
 @SuppressWarnings({"unused", "unchecked", "CodeBlock2Expr", "RedundantSuppression", "serial"})
-public class AudioApi {
+public class MeineMusikPigeonApi {
 
   /** Error class for passing custom error details to Flutter via a thrown PlatformException. */
   public static class FlutterError extends RuntimeException {
@@ -357,26 +357,26 @@ public class AudioApi {
     void error(@NonNull Throwable error);
   }
   /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
-  public interface AudioService {
+  public interface MeineMusikNativeMethods {
 
     void findAll(@NonNull Result<List<AudioFile>> result);
 
     void getAlbumCover(@NonNull String path, @NonNull NullableResult<byte[]> result);
 
-    /** The codec used by AudioService. */
+    /** The codec used by MeineMusikNativeMethods. */
     static @NonNull MessageCodec<Object> getCodec() {
       return PigeonCodec.INSTANCE;
     }
-    /**Sets up an instance of `AudioService` to handle messages through the `binaryMessenger`. */
-    static void setUp(@NonNull BinaryMessenger binaryMessenger, @Nullable AudioService api) {
+    /**Sets up an instance of `MeineMusikNativeMethods` to handle messages through the `binaryMessenger`. */
+    static void setUp(@NonNull BinaryMessenger binaryMessenger, @Nullable MeineMusikNativeMethods api) {
       setUp(binaryMessenger, "", api);
     }
-    static void setUp(@NonNull BinaryMessenger binaryMessenger, @NonNull String messageChannelSuffix, @Nullable AudioService api) {
+    static void setUp(@NonNull BinaryMessenger binaryMessenger, @NonNull String messageChannelSuffix, @Nullable MeineMusikNativeMethods api) {
       messageChannelSuffix = messageChannelSuffix.isEmpty() ? "" : "." + messageChannelSuffix;
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.meine_musik.AudioService.findAll" + messageChannelSuffix, getCodec());
+                binaryMessenger, "dev.flutter.pigeon.meine_musik.MeineMusikNativeMethods.findAll" + messageChannelSuffix, getCodec());
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {
@@ -403,7 +403,7 @@ public class AudioApi {
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.meine_musik.AudioService.getAlbumCover" + messageChannelSuffix, getCodec());
+                binaryMessenger, "dev.flutter.pigeon.meine_musik.MeineMusikNativeMethods.getAlbumCover" + messageChannelSuffix, getCodec());
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {

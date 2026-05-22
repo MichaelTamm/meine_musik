@@ -12,7 +12,7 @@ import '../../widget_test_utils.dart';
 void main() {
   testWidgets('songs are grouped by album', (tester) async {
     when(
-      () => audioService.findAll(),
+      () => nativeMethods.findAll(),
     ).thenAnswer((_) async => [anAudioFile(album: 'Test Album 1'), anAudioFile(album: 'Test Album 1'), anAudioFile(album: 'Test Album 2')]);
     await tester.startApp();
     await act.tap(spot<TabBar>().spotIcon(Icons.album_rounded));
@@ -26,7 +26,7 @@ void main() {
 
   testWidgets('An album can be opened', (tester) async {
     final song1 = anAudioFile(album: 'Test Album 1');
-    when(() => audioService.findAll()).thenAnswer((_) async => [song1, anAudioFile(album: 'Test Album 2')]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [song1, anAudioFile(album: 'Test Album 2')]);
     await tester.startApp();
     await act.tap(spot<TabBar>().spotIcon(Icons.album_rounded));
     await tester.pumpAndSettle();
@@ -38,7 +38,7 @@ void main() {
   });
 
   testWidgets('An opened album is restored when user switches tabs', (tester) async {
-    when(() => audioService.findAll()).thenAnswer((_) async => [anAudioFile(album: 'Test Album 1'), anAudioFile(album: 'Test Album 2')]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [anAudioFile(album: 'Test Album 1'), anAudioFile(album: 'Test Album 2')]);
     await tester.startApp();
     await act.tap(spot<TabBar>().spotText('Alben'));
     await tester.pumpAndSettle();
@@ -59,7 +59,7 @@ void main() {
   });
 
   testWidgets('An opened album can be closed by tapping on the (<) icon button', (tester) async {
-    when(() => audioService.findAll()).thenAnswer((_) async => [anAudioFile(album: 'Test Album 1'), anAudioFile(album: 'Test Album 2')]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [anAudioFile(album: 'Test Album 1'), anAudioFile(album: 'Test Album 2')]);
     await tester.startApp();
     await act.tap(spot<TabBar>().spotText('Alben'));
     await tester.pumpAndSettle();
@@ -76,7 +76,7 @@ void main() {
   });
 
   testWidgets('An opened album can be closed by pressing the back button', (tester) async {
-    when(() => audioService.findAll()).thenAnswer((_) async => [anAudioFile(album: 'Test Album 1'), anAudioFile(album: 'Test Album 2')]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [anAudioFile(album: 'Test Album 1'), anAudioFile(album: 'Test Album 2')]);
     await tester.startApp();
     await act.tap(spot<TabBar>().spotText('Alben'));
     await tester.pumpAndSettle();

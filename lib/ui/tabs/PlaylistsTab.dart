@@ -192,7 +192,7 @@ class _PlaylistListTile extends ConsumerWidget {
       ),
       trailing: PlaylistActions(playlist),
       onTap: () {
-        debugPrint('Tap on $_PlaylistListTile for ${playlist.name}');
+        debugPrint('tap on $_PlaylistListTile for ${playlist.name}');
         onTap();
       },
     );

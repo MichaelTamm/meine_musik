@@ -16,7 +16,7 @@ void main() {
     testWidgets('when PlayerWidget is not shown', (tester) async {
       final song1 = anAudioFile(title: 'song1');
       final song2 = anAudioFile(title: 'song2');
-      when(() => audioService.findAll()).thenAnswer((_) async => [song1, song2]);
+      when(() => nativeMethods.findAll()).thenAnswer((_) async => [song1, song2]);
       await tester.startApp();
       await act.tapAndSettle(spotText('Alle Lieder'));
       spotText('song1').existsOnce();
@@ -31,7 +31,7 @@ void main() {
     testWidgets('when a song is playing', (tester) async {
       final song1 = anAudioFile(title: 'song1');
       final song2 = anAudioFile(title: 'song2');
-      when(() => audioService.findAll()).thenAnswer((_) async => [song1, song2]);
+      when(() => nativeMethods.findAll()).thenAnswer((_) async => [song1, song2]);
       await tester.startApp();
       await act.tapAndSettle(spotText('Alle Lieder'));
       spotText('song1').existsOnce();

@@ -130,20 +130,24 @@ class AudioPlayerWrapper {
   /// If not `null` this is the position the `AudioPlayer` is (or should be) seeking to.
   Duration? _seekToPosition;
 
+  void reset() {
+    _seekToPosition = null;
+    _audioPlayer.stop();
+    _resetPlayerState(_ref);
+  }
+
   void playSong(Song song) => playPlaylist([song]);
 
   void playPlaylist(Iterable<Song> playlist) {
+    if (playlist.isEmpty) {
+      throw ArgumentError('playlist is empty');
+    }
     _seekToPosition = null;
     _ref.read(currentPlaylistProvider.notifier)._set(Wiedergabeliste(playlist));
-    if (playlist.isEmpty) {
-      _resetPlayerState(_ref);
-      _audioPlayer.stop();
-    } else {
-      _ref.read(currentSongProvider.notifier)._set(playlist.first);
-      _ref.read(currentSongPositionProvider.notifier)._set(Duration.zero);
-      _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
-      _audioPlayer.play(playlist.first.source);
-    }
+    _ref.read(currentSongProvider.notifier)._set(playlist.first);
+    _ref.read(currentSongPositionProvider.notifier)._set(Duration.zero);
+    _ref.read(isPlayingPausedOrCompletedProvider.notifier).set(playing);
+    _audioPlayer.play(playlist.first.source);
   }
 
   void shuffleAndPlay(Playlist playlist) => playPlaylist([...playlist]..shuffle());

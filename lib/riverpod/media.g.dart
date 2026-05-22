@@ -38,7 +38,7 @@ final class LocalAudioFilesProvider extends $FunctionalProvider<AsyncValue<List<
   }
 }
 
-String _$localAudioFilesHash() => r'829573ed132851b74cf306f542dfd3c921536fc2';
+String _$localAudioFilesHash() => r'40fdc1307d35f038f56b4710f3c63f46ce08bc2e';
 
 @ProviderFor(localAudioFilesById)
 const localAudioFilesByIdProvider = LocalAudioFilesByIdProvider._();
@@ -162,7 +162,7 @@ final class SongThumbnailProvider extends $FunctionalProvider<AsyncValue<Uint8Li
   }
 }
 
-String _$songThumbnailHash() => r'e5fceb44ab38e57a22a2707a220a878feb2444f8';
+String _$songThumbnailHash() => r'431c4ce52b64b089510ce0feff7528a93476a953';
 
 final class SongThumbnailFamily extends $Family with $FunctionalFamilyOverride<FutureOr<Uint8List?>, Song> {
   const SongThumbnailFamily._()
@@ -213,7 +213,7 @@ final class AlbumCoverThumbnailProvider extends $FunctionalProvider<AsyncValue<U
   }
 }
 
-String _$albumCoverThumbnailHash() => r'f386d8a7c04dd2492fb6d81e60d5ee8048fbd0f6';
+String _$albumCoverThumbnailHash() => r'0d7d6c7ce4b60b78f2e203bfc57bf34dae565e9e';
 
 final class AlbumCoverThumbnailFamily extends $Family with $FunctionalFamilyOverride<FutureOr<Uint8List?>, Album> {
   const AlbumCoverThumbnailFamily._()

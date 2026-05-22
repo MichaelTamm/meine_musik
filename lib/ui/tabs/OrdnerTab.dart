@@ -327,10 +327,10 @@ class _AudioFolderListTile extends HookConsumerWidget {
               },
               onChanged: (_) {
                 if (folderState == _FolderState.allSongs) {
-                  debugPrint('[$runtimeType] Tap on checkbox for folder ${folder.name} -- blacklisting folder ...');
+                  debugPrint('[$runtimeType] tap on checkbox for folder ${folder.name} -- blacklisting folder ...');
                   blacklistFolder(folder, ref);
                 } else {
-                  debugPrint('Tap on checkbox for folder ${folder.name} -- whitelisting folder ...');
+                  debugPrint('tap on checkbox for folder ${folder.name} -- whitelisting folder ...');
                   whitelistFolder(folder, ref);
                 }
               },
@@ -343,7 +343,7 @@ class _AudioFolderListTile extends HookConsumerWidget {
       title: Text(folder.name),
       trailing: Icon(Icons.chevron_right_rounded),
       onTap: () {
-        debugPrint('Tap on $_AudioFolderListTile of folder: ${folder.name}');
+        debugPrint('tap on $_AudioFolderListTile of folder: ${folder.name}');
         onTap();
       },
     );
@@ -384,14 +384,14 @@ class _AudioFileListTile extends HookConsumerWidget {
               },
               onChanged: (_) {
                 if (fileState == _FileState.song) {
-                  debugPrint('Tap on checkbox for file ${file.fileName} -- blacklisting file ...');
+                  debugPrint('tap on checkbox for file ${file.fileName} -- blacklisting file ...');
                   blacklistFile(file, ref);
                 } else if (fileState == _FileState.notSong) {
-                  debugPrint('Tap on checkbox for file ${file.fileName} -- whitelisting file ...');
+                  debugPrint('tap on checkbox for file ${file.fileName} -- whitelisting file ...');
                   whitelistFile(file, ref);
                 } else {
                   // Should never happen, because the checkbox is only visible if fileState is not loading.
-                  debugPrint('Tap on checkbox for file ${file.fileName} -- ignoring tap');
+                  debugPrint('tap on checkbox for file ${file.fileName} -- ignoring tap');
                 }
               },
               tristate: true,
@@ -404,7 +404,7 @@ class _AudioFileListTile extends HookConsumerWidget {
       subtitle: Text('${file.artist} • ${file.title}'),
       trailing: const Icon(Icons.play_arrow_rounded),
       onTap: () {
-        debugPrint('Tap on $_AudioFileListTile for file ${file.fileName}');
+        debugPrint('tap on $_AudioFileListTile for file ${file.fileName}');
         ref.read(playerProvider).playSong(file);
       },
     );

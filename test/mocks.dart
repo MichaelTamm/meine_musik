@@ -1,11 +1,14 @@
 import 'package:meine_musik/drift/database.dart';
 import 'package:meine_musik/model/Playlist.dart';
 import 'package:meine_musik/model/Song.dart';
-import 'package:meine_musik/services/AudioApi.dart';
+import 'package:meine_musik/services/MeineMusikAudioHandler.dart';
+import 'package:meine_musik/services/MeineMusikPigeonApi.dart';
 import 'package:meine_musik/services/MusicBrainz.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockAudioService extends Mock implements AudioService {}
+class MockMeineMusikAudioHandler extends Mock implements MeineMusikAudioHandler {}
+
+class MockMeineMusikNativeMethods extends Mock implements MeineMusikNativeMethods {}
 
 class DummyMusicBrainz implements MusicBrainz {
   @override

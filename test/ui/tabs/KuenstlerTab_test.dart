@@ -11,7 +11,7 @@ import '../../widget_test_utils.dart';
 
 void main() {
   testWidgets('songs are grouped by kuenstler', (tester) async {
-    when(() => audioService.findAll()).thenAnswer(
+    when(() => nativeMethods.findAll()).thenAnswer(
       (_) async => [anAudioFile(artist: 'Test Artist 1'), anAudioFile(artist: 'Test Artist 1'), anAudioFile(artist: 'Test Artist 2')],
     );
     await tester.startApp();
@@ -27,7 +27,7 @@ void main() {
   testWidgets('Tapping on an artist shows all songs of that artist', (tester) async {
     final song1 = anAudioFile(artist: 'Test Artist 1');
     final song2 = anAudioFile(artist: 'Test Artist 1');
-    when(() => audioService.findAll()).thenAnswer((_) async => [song1, song2, anAudioFile(artist: 'Test Artist 2')]);
+    when(() => nativeMethods.findAll()).thenAnswer((_) async => [song1, song2, anAudioFile(artist: 'Test Artist 2')]);
     await tester.startApp();
     await act.tapAndSettle(spot<TabBar>().spotText('Künstler'));
     await act.tapAndSettle(spotText('Test Artist 1'));
@@ -39,7 +39,7 @@ void main() {
 
   testWidgets('A selected artist is restored when user switches tabs', (tester) async {
     when(
-      () => audioService.findAll(),
+      () => nativeMethods.findAll(),
     ).thenAnswer((_) async => [anAudioFile(artist: 'Test Artist 1'), anAudioFile(artist: 'Test Artist 2')]);
     await tester.startApp();
     // Switch to 'Künstler' tab ...
@@ -62,7 +62,7 @@ void main() {
 
   testWidgets('Go back to overview by tapping on the (<) icon button', (tester) async {
     when(
-      () => audioService.findAll(),
+      () => nativeMethods.findAll(),
     ).thenAnswer((_) async => [anAudioFile(artist: 'Test Artist 1'), anAudioFile(artist: 'Test Artist 2')]);
     await tester.startApp();
     // Switch to 'Künstler' tab ...
@@ -81,7 +81,7 @@ void main() {
 
   testWidgets('Go back to overview by pressing the back button', (tester) async {
     when(
-      () => audioService.findAll(),
+      () => nativeMethods.findAll(),
     ).thenAnswer((_) async => [anAudioFile(artist: 'Test Artist 1'), anAudioFile(artist: 'Test Artist 2')]);
     await tester.startApp();
     // Switch to 'Künstler' tab ...
