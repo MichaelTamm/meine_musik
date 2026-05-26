@@ -1,16 +1,21 @@
-# meine_musik
+# Meine Musik Android app
 
-A new Flutter project.
+_Table of contents:_
 
-## Getting Started
+<!-- toc -->
 
-This project is a starting point for a Flutter application.
+- [Release on Google Play](#release-on-google-play)
 
-A few resources to get you started if this is your first Flutter project:
+<!-- tocstop -->
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Release on Google Play
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Build and upload a new version of the app to the Google Play Console using fastlane:
+```bash
+cd android
+gem install bundler # optional if bundler is not already installed
+bundle update --all # optional to update all gems to the latest version
+bundle exec fastlane deploy
+```
+2. Prepare a new release in the Google Play Console, and submit it for review.
+Start at https://play.google.com/console/u/0/developers/8809094835044872950/app/4972821853502283296/app-dashboard 
