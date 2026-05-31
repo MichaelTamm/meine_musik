@@ -9,6 +9,57 @@ part of 'media.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(songById)
+const songByIdProvider = SongByIdFamily._();
+
+final class SongByIdProvider extends $FunctionalProvider<AsyncValue<Song>, Song, FutureOr<Song>>
+    with $FutureModifier<Song>, $FutureProvider<Song> {
+  const SongByIdProvider._({required SongByIdFamily super.from, required int super.argument})
+    : super(retry: null, name: r'songByIdProvider', isAutoDispose: true, dependencies: null, $allTransitiveDependencies: null);
+
+  @override
+  String debugGetCreateSourceHash() => _$songByIdHash();
+
+  @override
+  String toString() {
+    return r'songByIdProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<Song> $createElement($ProviderPointer pointer) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<Song> create(Ref ref) {
+    final argument = this.argument as int;
+    return songById(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SongByIdProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$songByIdHash() => r'5a45d582252c03e0dd38096fa1b08d5ec3a544fb';
+
+final class SongByIdFamily extends $Family with $FunctionalFamilyOverride<FutureOr<Song>, int> {
+  const SongByIdFamily._()
+    : super(retry: null, name: r'songByIdProvider', dependencies: null, $allTransitiveDependencies: null, isAutoDispose: true);
+
+  SongByIdProvider call(int songId) => SongByIdProvider._(argument: songId, from: this);
+
+  @override
+  String toString() => r'songByIdProvider';
+}
+
 @ProviderFor(localAudioFiles)
 const localAudioFilesProvider = LocalAudioFilesProvider._();
 

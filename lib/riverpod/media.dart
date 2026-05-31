@@ -14,6 +14,16 @@ import '../model/Song.dart';
 
 part 'media.g.dart';
 
+@Riverpod(keepAlive: false)
+Future<Song> songById(Ref ref, int songId) async {
+  final localAudioFilesById = await ref.watch(localAudioFilesByIdProvider.future);
+  final song = localAudioFilesById[songId];
+  if (song == null) {
+    throw Exception('Could not find song with id $songId');
+  }
+  return song;
+}
+
 @Riverpod(keepAlive: true)
 Future<List<AudioFile>> localAudioFiles(Ref ref) async {
   if (!kIsTest) {
