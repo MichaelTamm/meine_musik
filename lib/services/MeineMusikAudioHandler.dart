@@ -68,6 +68,18 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
         MediaItem(id: 'Künstler', title: 'Künstler', playable: false, extras: {'browsable': true}),
       ];
     }
+
+    final canAccessAudioFiles = riverpodContainer.read(canAccessAudioFilesProvider);
+    if (!canAccessAudioFiles) {
+      return [
+        const MediaItem(
+          id: 'no_permission',
+          title: 'Bitte öffne die App auf dem Handy und erlaube den Zugriff auf Musik- und Audiodateien.',
+          playable: false,
+        ),
+      ];
+    }
+
     // 2. Ebene: Playlists ...
     if (parentMediaId == 'Playlists') {
       final playlists = await riverpodContainer.read(playlistsProvider.future);

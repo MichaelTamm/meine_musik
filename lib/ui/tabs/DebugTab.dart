@@ -5,32 +5,27 @@ import 'package:dartx/dartx.dart';
 import 'package:drift_db_viewer/drift_db_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:meine_musik/ui/FileViewer.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:meine_musik/ui/FileViewerScreen.dart';
 
-import '../env.dart';
-import '../model/Date.dart';
-import 'DeletableListTile.dart';
+import '../../debug_utils.dart';
+import '../../env.dart';
+import '../../model/Date.dart';
+import '../../ui/DeletableListTile.dart';
+import '../LogViewerScreen.dart';
 
-class FileManager extends HookWidget {
+class DebugTab extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final dataDirNotifier = useState<Directory?>(null);
-    final supportDirNotifier = useState<Directory?>(null);
-    final tempDirNotifier = useState<Directory?>(null);
     final currentDirNotifier = useState<Directory?>(null);
-    final dirsNotifier = useState<List<Directory>>([]);
+    final dirsNotifier = useState<List<Directory>>([applicationCacheDirectory, applicationDocumentsDirectory, applicationSupportDirectory]);
     final filesNotifier = useState<List<File>>([]);
 
     void changeDir(Directory? dir) {
-      debugPrint('[$FileManager]: changeDir($dir)');
+      debugPrint('[$DebugTab]: changeDir($dir)');
       currentDirNotifier.value = dir;
       if (dir == null) {
-        final dataDir = dataDirNotifier.value;
-        final supportDir = supportDirNotifier.value;
-        final tempDir = tempDirNotifier.value;
         currentDirNotifier.value = null;
-        dirsNotifier.value = [?dataDir, ?supportDir, ?tempDir];
+        dirsNotifier.value = [applicationCacheDirectory, applicationDocumentsDirectory, applicationSupportDirectory];
         filesNotifier.value = [];
       } else {
         try {
@@ -38,32 +33,13 @@ class FileManager extends HookWidget {
           dirsNotifier.value = a.whereType<Directory>().sortedBy((it) => it.name);
           filesNotifier.value = a.whereType<File>().sortedBy((it) => it.name);
         } catch (error, stack) {
-          debugPrintStack(label: '$error', stackTrace: stack);
+          reportErrorOnce('$DebugTab.changeDir failed', error, stack);
           dirsNotifier.value = [];
           filesNotifier.value = [];
         }
       }
     }
 
-    useEffect(() {
-      (() async {
-        try {
-          dataDirNotifier.value = await getApplicationDocumentsDirectory();
-          supportDirNotifier.value = await getApplicationSupportDirectory();
-          tempDirNotifier.value = await getTemporaryDirectory();
-          if (currentDirNotifier.value == null) {
-            changeDir(null);
-          }
-        } catch (error, stack) {
-          debugPrintStack(label: '$error', stackTrace: stack);
-        }
-      })();
-      return null;
-    }, []);
-
-    final dataDir = dataDirNotifier.value;
-    final supportDir = supportDirNotifier.value;
-    final tempDir = tempDirNotifier.value;
     final currentDir = currentDirNotifier.value;
     final dirs = dirsNotifier.value;
     final files = filesNotifier.value;
@@ -79,43 +55,51 @@ class FileManager extends HookWidget {
             changeDir(currentDir);
           },
           child: ListView.builder(
-            itemCount: 1 + dirs.length + files.length,
+            itemCount: (currentDir == null ? 2 : 1) + dirs.length + files.length,
             itemBuilder: (_, index) {
               if (index == 0) {
                 if (currentDir == null) {
+                  return ListTile(
+                    leading: Icon(Icons.list_alt_rounded),
+                    title: const Text('Log'),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => LogViewer())),
+                  );
+                } else {
+                  return ListTile(
+                    leading: Icon(Icons.folder_open_rounded),
+                    title: const Text('..'),
+                    onTap: () {
+                      if (currentDir.path == applicationCacheDirectory.path ||
+                          currentDir.path == applicationDocumentsDirectory.path ||
+                          currentDir.path == applicationSupportDirectory.path) {
+                        changeDir(null);
+                      } else {
+                        changeDir(currentDir.parent);
+                      }
+                    },
+                  );
+                }
+              }
+              index -= 1;
+              if (currentDir == null) {
+                if (index == 0) {
                   return ListTile(
                     leading: Icon(Icons.table_chart_outlined),
                     title: const Text('Database'),
                     onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => DriftDbViewer(db))),
                   );
                 }
-                return ListTile(
-                  leading: Icon(Icons.folder_open_rounded),
-                  title: const Text('..'),
-                  onTap: () {
-                    final dataDir = dataDirNotifier.value;
-                    final supportDir = supportDirNotifier.value;
-                    final tempDir = tempDirNotifier.value;
-                    if (currentDir.path == dataDir?.path || currentDir.path == supportDir?.path || currentDir.path == tempDir?.path) {
-                      changeDir(null);
-                    } else {
-                      changeDir(currentDir.parent);
-                    }
-                  },
-                );
-              }
-              index -= 1;
-              if (currentDir == null) {
+                index -= 1;
                 final dir = dirs[index];
                 return ListTile(
                   leading: Icon(Icons.folder_open_rounded),
                   title: AutoSizeText(
-                    dir.path == dataDir?.path
+                    dir.path == applicationCacheDirectory.path
+                        ? 'Application Cache Directory'
+                        : dir.path == applicationDocumentsDirectory.path
                         ? 'Application Documents Directory'
-                        : dir.path == supportDir?.path
+                        : dir.path == applicationSupportDirectory.path
                         ? 'Application Support Directory'
-                        : dir.path == tempDir?.path
-                        ? 'Temporary Directory'
                         : '???',
                     maxLines: 1,
                     minFontSize: 3,
@@ -142,7 +126,7 @@ class FileManager extends HookWidget {
                 key: Key(file.name),
                 title: AutoSizeText(file.name, maxLines: 1, minFontSize: 3),
                 trailing: Text('${_formatFileSize(file.lengthSync())}, ${_formatLastModified(file.lastModifiedSync())}'),
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => FileViewer(file))),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => FileViewerScreen(file))),
                 onDelete: () {
                   file.deleteSync();
                   filesNotifier.value = currentDir.listSync().whereType<File>().sortedBy((it) => it.name);

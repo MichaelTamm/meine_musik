@@ -4,21 +4,23 @@ import 'package:drift_sqflite/drift_sqflite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
+import 'debug_utils.dart';
 import 'drift/database.dart';
 import 'env.dart';
 import 'model/MeineMusikLogic.dart';
-import 'services/MeineMusikPigeonApi.dart';
 import 'services/CoverArtArchive.dart';
 import 'services/LoggingHttpClient.dart';
 import 'services/MeineMusikAudioHandler.dart';
+import 'services/MeineMusikPigeonApi.dart';
 import 'services/MusicBrainz.dart';
 import 'services/TheAudioDB.dart';
 import 'ui/MeineMusikApp.dart';
 
 Future<void> main() async {
   try {
-    WidgetsFlutterBinding.ensureInitialized();
+    SentryWidgetsFlutterBinding.ensureInitialized();
     timeDilation = kSlowDownAnimations ? 10 : 1;
     final getApplicationDocumentsDirectoryFuture = getApplicationDocumentsDirectory();
     final getApplicationCacheDirectoryFuture = getApplicationCacheDirectory();
@@ -39,11 +41,12 @@ Future<void> main() async {
     theAudioDB = TheAudioDB(loggingHttpClient);
     coverArtArchive = CoverArtArchive(loggingHttpClient);
     applicationDocumentsDirectory = await getApplicationDocumentsDirectoryFuture;
+    applicationSupportDirectory = await getApplicationDocumentsDirectoryFuture;
     applicationCacheDirectory = await getApplicationCacheDirectoryFuture;
     db = Database(SqfliteQueryExecutor(path: '${applicationDocumentsDirectory.path}/database.sqlite', logStatements: kDebugDrift));
     await sessionConfigureFuture;
     // ignore: missing_provider_scope
-    runApp(const MeineMusikApp());
+    await initSentry(appRunner: () => runApp(SentryWidget(child: const MeineMusikApp())));
   } catch (error, stack) {
     debugPrintStack(label: 'main() failed -- $error', stackTrace: stack);
   }

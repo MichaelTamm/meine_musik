@@ -14,6 +14,48 @@ import '../model/Song.dart';
 
 part 'media.g.dart';
 
+/// Re-checks the audio/storage permission status whenever the app comes to the foreground.
+/// When resumed (i.e. Activity is visible on the phone), also calls .request() to show the
+/// system permission dialog if needed. On Android Auto there is no Activity, so
+/// didChangeAppLifecycleState(resumed) is never fired and .request() is never called.
+@Riverpod(keepAlive: true)
+class CanAccessAudioFiles extends _$CanAccessAudioFiles with WidgetsBindingObserver {
+  @override
+  bool build() {
+    if (kIsTest) {
+      return true;
+    }
+    WidgetsBinding.instance.addObserver(this);
+    ref.onDispose(() => WidgetsBinding.instance.removeObserver(this));
+    final isResumed = WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    _checkPermission(requestIfNeeded: isResumed);
+    return false;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _checkPermission(requestIfNeeded: true);
+    }
+  }
+
+  Future<void> _checkPermission({required bool requestIfNeeded}) async {
+    final apiLevel = await kMethodChannel.invokeMethod<int>("getApiLevel");
+    if (apiLevel == null) {
+      throw Exception('apiLevel == null');
+    }
+    final permission = apiLevel < 33 ? Permission.storage : Permission.audio;
+    var granted = await permission.status.isGranted;
+    if (!granted && requestIfNeeded) {
+      final result = await permission.request();
+      granted = result.isGranted;
+    }
+    if (granted != state) {
+      state = granted;
+    }
+  }
+}
+
 @Riverpod(keepAlive: false)
 Future<Song> songById(Ref ref, int songId) async {
   final localAudioFilesById = await ref.watch(localAudioFilesByIdProvider.future);
@@ -27,19 +69,9 @@ Future<Song> songById(Ref ref, int songId) async {
 @Riverpod(keepAlive: true)
 Future<List<AudioFile>> localAudioFiles(Ref ref) async {
   if (!kIsTest) {
-    final apiLevel = await kMethodChannel.invokeMethod<int>("getApiLevel");
-    if (apiLevel == null) {
-      throw Exception('apiLevel == null');
-    } else if (apiLevel < 33) {
-      final permission = await Permission.storage.request();
-      if (!permission.isGranted) {
-        throw Exception('Permission.storage not granted');
-      }
-    } else {
-      final permission = await Permission.audio.request();
-      if (!permission.isGranted) {
-        throw Exception('Permission.audio not granted');
-      }
+    final canAccess = ref.watch(canAccessAudioFilesProvider);
+    if (!canAccess) {
+      return [];
     }
   }
   final audioFiles = await nativeMethods.findAll();
@@ -49,11 +81,17 @@ Future<List<AudioFile>> localAudioFiles(Ref ref) async {
       n == 0
           ? 'Did not find an audio file.'
           : n == 1
-          ? 'Found 1 audio file:'
-          : 'Found $n audio files:',
+          ? 'Found 1 audio file'
+          : 'Found $n audio files',
     );
-    for (final audioFile in audioFiles) {
+    for (final audioFile in audioFiles.take(3)) {
       debugPrint('    $audioFile');
+    }
+    if (n > 3) {
+      if (n > 4) {
+        debugPrint('    ...');
+      }
+      debugPrint('    ${audioFiles.last}');
     }
   }
   return audioFiles;

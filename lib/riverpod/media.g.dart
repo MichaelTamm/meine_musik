@@ -8,6 +8,65 @@ part of 'media.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Re-checks the audio/storage permission status whenever the app comes to the foreground.
+/// When resumed (i.e. Activity is visible on the phone), also calls .request() to show the
+/// system permission dialog if needed. On Android Auto there is no Activity, so
+/// didChangeAppLifecycleState(resumed) is never fired and .request() is never called.
+
+@ProviderFor(CanAccessAudioFiles)
+const canAccessAudioFilesProvider = CanAccessAudioFilesProvider._();
+
+/// Re-checks the audio/storage permission status whenever the app comes to the foreground.
+/// When resumed (i.e. Activity is visible on the phone), also calls .request() to show the
+/// system permission dialog if needed. On Android Auto there is no Activity, so
+/// didChangeAppLifecycleState(resumed) is never fired and .request() is never called.
+final class CanAccessAudioFilesProvider extends $NotifierProvider<CanAccessAudioFiles, bool> {
+  /// Re-checks the audio/storage permission status whenever the app comes to the foreground.
+  /// When resumed (i.e. Activity is visible on the phone), also calls .request() to show the
+  /// system permission dialog if needed. On Android Auto there is no Activity, so
+  /// didChangeAppLifecycleState(resumed) is never fired and .request() is never called.
+  const CanAccessAudioFilesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'canAccessAudioFilesProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$canAccessAudioFilesHash();
+
+  @$internal
+  @override
+  CanAccessAudioFiles create() => CanAccessAudioFiles();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(origin: this, providerOverride: $SyncValueProvider<bool>(value));
+  }
+}
+
+String _$canAccessAudioFilesHash() => r'0c527aeebdbbc77492ba4fd0b96fd3f74852eac2';
+
+/// Re-checks the audio/storage permission status whenever the app comes to the foreground.
+/// When resumed (i.e. Activity is visible on the phone), also calls .request() to show the
+/// system permission dialog if needed. On Android Auto there is no Activity, so
+/// didChangeAppLifecycleState(resumed) is never fired and .request() is never called.
+
+abstract class _$CanAccessAudioFiles extends $Notifier<bool> {
+  bool build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<bool, bool>;
+    final element = ref.element as $ClassProviderElement<AnyNotifier<bool, bool>, bool, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
 @ProviderFor(songById)
 const songByIdProvider = SongByIdFamily._();
@@ -89,7 +148,7 @@ final class LocalAudioFilesProvider extends $FunctionalProvider<AsyncValue<List<
   }
 }
 
-String _$localAudioFilesHash() => r'40fdc1307d35f038f56b4710f3c63f46ce08bc2e';
+String _$localAudioFilesHash() => r'af2e09d52a7643d02d0c2b447eede53c45ad4ea4';
 
 @ProviderFor(localAudioFilesById)
 const localAudioFilesByIdProvider = LocalAudioFilesByIdProvider._();

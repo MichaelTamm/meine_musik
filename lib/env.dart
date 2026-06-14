@@ -20,8 +20,6 @@ const kSlowDownAnimations = false;
 
 final kIsTest = Platform.environment.containsKey('FLUTTER_TEST');
 
-final bool kIsAppleDevice = Platform.isIOS || Platform.isMacOS;
-
 const kMethodChannel = MethodChannel('de.michaeltamm.meine_musik');
 
 /// Set to `true` to enable logging of SQL statements.
@@ -30,8 +28,9 @@ const kDebugDrift = false;
 /// Set to `true` to enable logging of riverpod activity.
 const kDebugRiverpod = false;
 
-late Directory applicationDocumentsDirectory;
 late Directory applicationCacheDirectory;
+late Directory applicationDocumentsDirectory;
+late Directory applicationSupportDirectory;
 late Database db;
 late ProviderContainer riverpodContainer;
 late CoverArtArchive coverArtArchive;

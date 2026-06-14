@@ -11,8 +11,8 @@ import '../hooks.dart';
 import '../navigation.dart';
 import '../riverpod/player_state.dart';
 import '../theme.dart';
-import 'FileManager.dart';
 import 'tabs/AlbenTab.dart';
+import 'tabs/DebugTab.dart';
 import 'tabs/KuenstlerTab.dart';
 import 'tabs/OrdnerTab.dart';
 import 'tabs/PlaylistsTab.dart';
@@ -64,12 +64,12 @@ class _MeineMusikScaffoldWrapper extends HookConsumerWidget {
         debugPrint('[$runtimeType] onPopInvokedWithResult($didPop, $result)');
         // TODO: display Toast: "Drücke die Zurück-Taste noch einmal, um die App zu beenden."
       },
-      child: DefaultTabController(length: 4, child: _MeineMusikScaffold()),
+      child: DefaultTabController(length: kDebugMode ? 5 : 4, child: _MeineMusikScaffold()),
     );
   }
 }
 
-const _tabNames = ['Playlists', 'Alben', 'Künstler', 'Ordner'];
+const _tabNames = ['Playlists', 'Alben', 'Künstler', 'Ordner', 'Debug'];
 
 class _MeineMusikScaffold extends HookConsumerWidget {
   const _MeineMusikScaffold();
@@ -92,14 +92,6 @@ class _MeineMusikScaffold extends HookConsumerWidget {
       return () => tabController.removeListener(listener);
     }, [tabController]);
 
-    Widget ordnerTab = Tab(icon: Icon(Icons.folder_rounded), text: 'Ordner');
-    if (kDebugMode) {
-      ordnerTab = GestureDetector(
-        onLongPress: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => FileManager())),
-        child: ordnerTab,
-      );
-    }
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -112,13 +104,14 @@ class _MeineMusikScaffold extends HookConsumerWidget {
               Tab(icon: Icon(Icons.library_music_rounded), text: 'Playlists'),
               Tab(icon: Icon(Icons.album_rounded), text: 'Alben'),
               Tab(icon: Icon(Icons.group_rounded), text: 'Künstler'),
-              ordnerTab,
+              Tab(icon: Icon(Icons.folder_rounded), text: 'Ordner'),
+              if (kDebugMode) Tab(icon: Icon(Icons.bug_report_rounded), text: 'Debug'),
             ],
           ),
         ),
         body: Column(
           children: [
-            Expanded(child: TabBarView(children: [PlaylistsTab(), AlbenTab(), KuenstlerTab(), OrdnerTab()])),
+            Expanded(child: TabBarView(children: [PlaylistsTab(), AlbenTab(), KuenstlerTab(), OrdnerTab(), if (kDebugMode) DebugTab()])),
             if (currentPlaylist.isNotEmpty) const PlayerWidget(),
           ],
         ),
