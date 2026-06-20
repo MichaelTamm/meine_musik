@@ -49,7 +49,7 @@ final class CanAccessAudioFilesProvider extends $NotifierProvider<CanAccessAudio
   }
 }
 
-String _$canAccessAudioFilesHash() => r'0c527aeebdbbc77492ba4fd0b96fd3f74852eac2';
+String _$canAccessAudioFilesHash() => r'98b4feb965e06e9159a7d75d272c1543dbd549da';
 
 /// Re-checks the audio/storage permission status whenever the app comes to the foreground.
 /// When resumed (i.e. Activity is visible on the phone), also calls .request() to show the

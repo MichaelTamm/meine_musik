@@ -69,7 +69,7 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
       ];
     }
 
-    final canAccessAudioFiles = riverpodContainer.read(canAccessAudioFilesProvider);
+    final canAccessAudioFiles = await riverpodContainer.read(canAccessAudioFilesProvider.notifier).checkPermission();
     if (!canAccessAudioFiles) {
       return [
         const MediaItem(

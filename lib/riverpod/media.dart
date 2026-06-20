@@ -28,18 +28,18 @@ class CanAccessAudioFiles extends _$CanAccessAudioFiles with WidgetsBindingObser
     WidgetsBinding.instance.addObserver(this);
     ref.onDispose(() => WidgetsBinding.instance.removeObserver(this));
     final isResumed = WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
-    _checkPermission(requestIfNeeded: isResumed);
+    checkPermission(requestIfNeeded: isResumed);
     return false;
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _checkPermission(requestIfNeeded: true);
+      checkPermission(requestIfNeeded: true);
     }
   }
 
-  Future<void> _checkPermission({required bool requestIfNeeded}) async {
+  Future<bool> checkPermission({bool requestIfNeeded = false}) async {
     final apiLevel = await kMethodChannel.invokeMethod<int>("getApiLevel");
     if (apiLevel == null) {
       throw Exception('apiLevel == null');
@@ -53,6 +53,7 @@ class CanAccessAudioFiles extends _$CanAccessAudioFiles with WidgetsBindingObser
     if (granted != state) {
       state = granted;
     }
+    return granted;
   }
 }
 
