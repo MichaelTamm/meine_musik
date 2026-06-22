@@ -19,7 +19,9 @@ public class MainActivity extends AudioServiceActivity {
     new MethodChannel(binaryMessenger, METHOD_CHANNEL_NAME)
       .setMethodCallHandler(
         (methodCall, result) -> {
-          if (methodCall.method.equals("getApiLevel")) {
+          if (methodCall.method.equals("getAppVersion")) {
+            result.success(BuildConfig.VERSION_NAME);
+          } else if (methodCall.method.equals("getApiLevel")) {
             result.success(Build.VERSION.SDK_INT);
           } else {
             result.notImplemented();

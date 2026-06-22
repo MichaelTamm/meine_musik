@@ -116,6 +116,8 @@ final class _RiverpodObserver extends ProviderObserver {
 
 final riverpodObserver = _RiverpodObserver();
 
+DateTime lastTimeAppLifecycleStateChanged = DateTime.now();
+
 void clearCaches() {
   coverArtArchive.clearCache();
   musicBrainz.clearCache();

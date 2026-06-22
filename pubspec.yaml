@@ -1,10 +1,10 @@
 name: meine_musik
-description: "A new Flutter project."
+description: "Meine Musik App - Ein einfacher MP3-Player ohne Werbung"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none'
 
-version: 1.0.2
+version: 2.0.0-dev
 
 environment:
   flutter: 3.44.2

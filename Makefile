@@ -50,4 +50,4 @@ lib/drift/database.drift.dart $(RIVERPOD_GENERATOR_OUTPUT) &: build.yaml lib/dri
 
 build/app/outputs/bundle/release/app-release.aab: .git/refs/heads/trunk
 	$(eval GIT_COMMIT_COUNT := $(shell git rev-list --count HEAD))
-	flutter build appbundle --release --no-pub --build-name=0.0.$(GIT_COMMIT_COUNT) --build-number=$(GIT_COMMIT_COUNT) --no-obfuscate
+	flutter build appbundle --release --no-pub --build-name=2.0.$(GIT_COMMIT_COUNT) --build-number=$(GIT_COMMIT_COUNT) --no-obfuscate

@@ -45,9 +45,35 @@ Future<void> main() async {
     applicationCacheDirectory = await getApplicationCacheDirectoryFuture;
     db = Database(SqfliteQueryExecutor(path: '${applicationDocumentsDirectory.path}/database.sqlite', logStatements: kDebugDrift));
     await sessionConfigureFuture;
-    // ignore: missing_provider_scope
-    await initSentry(appRunner: () => runApp(SentryWidget(child: const MeineMusikApp())));
+    await initSentry(appRunner: () async {
+      final appVersion = await kMethodChannel.invokeMethod<String>("getAppVersion");
+      Sentry.configureScope((scope) {
+        if (appVersion != null) {
+          scope.setTag('appVersion', appVersion);
+        }
+        scope.setTag('timezone', DateTime.now().timeZoneName);
+      });
+      WidgetsBinding.instance.addObserver(_WidgetsBindingObserver());
+      addBreadcrumb('Meine Musik app (version: $appVersion) started.');
+      // ignore: missing_provider_scope
+      runApp(SentryWidget(child: const MeineMusikApp()));
+    });
   } catch (error, stack) {
     debugPrintStack(label: 'main() failed -- $error', stackTrace: stack);
+  }
+}
+
+class _WidgetsBindingObserver extends WidgetsBindingObserver {
+  String _lastState = '???';
+
+  @override
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    try {
+      lastTimeAppLifecycleStateChanged = DateTime.now();
+      addBreadcrumb('AppLifecycleState changed: $_lastState => ${state.name}');
+      _lastState = state.name;
+    } catch (error, stack) {
+      reportError('$_WidgetsBindingObserver.didChangeAppLifecycleState($state) failed', error, stack);
+    }
   }
 }
