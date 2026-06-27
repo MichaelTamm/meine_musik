@@ -15,6 +15,7 @@ import '../model/Song.dart';
 import '../riverpod/media.dart';
 import '../riverpod/player_state.dart';
 import '../riverpod/playlists.dart';
+import '../ui/PlaylistUIExtension.dart';
 import '../ui/tabs/AlbenTab.dart';
 import '../ui/tabs/KuenstlerTab.dart';
 
@@ -83,9 +84,7 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
     // 2. Ebene: Playlists ...
     if (parentMediaId == 'Playlists') {
       final playlists = await riverpodContainer.read(playlistsProvider.future);
-      return playlists
-          .map((it) => MediaItem(id: 'Playlist: ${it.name}', title: it.name, playable: true, extras: {'browsable': true}))
-          .toList();
+      return playlists.map((it) => it.toMediaItem()).toList();
     }
     // 2. Ebene: Alben ...
     if (parentMediaId == 'Alben') {
@@ -269,6 +268,35 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
   AudioPlayerWrapper get _player => riverpodContainer.read(playerProvider);
 }
 
+extension on Playlist {
+  MediaItem toMediaItem() {
+    return MediaItem(
+        id: 'Playlist: $name',
+        title: name,
+        displayTitle: name,
+        displaySubtitle: displaySubtitle,
+        playable: true,
+        extras: {'browsable': true}
+    );
+  }
+}
+
+extension on Album {
+  Future<MediaItem> toMediaItem() async {
+    final artUri = await firstSong.getArtUri();
+    return MediaItem(
+      id: 'Album: $name ($kuenstler)',
+      title: name,
+      album: name,
+      artist: kuenstler,
+      artUri: artUri,
+      playable: true,
+      duration: duration,
+      extras: {'browsable': true},
+    );
+  }
+}
+
 extension on KuenstlerSongs {
   Future<MediaItem> toMediaItem() async {
     final artUri = await getArtUri();
@@ -292,22 +320,6 @@ extension on KuenstlerSongs {
       }
     }
     return null;
-  }
-}
-
-extension on Album {
-  Future<MediaItem> toMediaItem() async {
-    final artUri = await firstSong.getArtUri();
-    return MediaItem(
-      id: 'Album: $name ($kuenstler)',
-      title: name,
-      album: name,
-      artist: kuenstler,
-      artUri: artUri,
-      playable: true,
-      duration: duration,
-      extras: {'browsable': true},
-    );
   }
 }
 
