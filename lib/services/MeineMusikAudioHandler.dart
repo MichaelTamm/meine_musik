@@ -64,9 +64,27 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
     // 1. Ebene ...
     if (parentMediaId == AudioService.browsableRootId) {
       return [
-        MediaItem(id: 'Playlists', title: 'Playlists', playable: false, extras: {'browsable': true}),
-        MediaItem(id: 'Alben', title: 'Alben', playable: false, extras: {'browsable': true}),
-        MediaItem(id: 'Künstler', title: 'Künstler', playable: false, extras: {'browsable': true}),
+        MediaItem(
+          id: 'Playlists',
+          title: 'Playlists',
+          playable: false,
+          artUri: Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_library_music_rounded'),
+          extras: {'browsable': true},
+        ),
+        MediaItem(
+          id: 'Alben',
+          title: 'Alben',
+          playable: false,
+          artUri: Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_album_rounded'),
+          extras: {'browsable': true},
+        ),
+        MediaItem(
+          id: 'Künstler',
+          title: 'Künstler',
+          playable: false,
+          artUri: Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_group_rounded'),
+          extras: {'browsable': true},
+        ),
       ];
     }
 
@@ -275,7 +293,7 @@ extension on Playlist {
         title: name,
         displayTitle: name,
         displaySubtitle: displaySubtitle,
-        playable: true,
+        playable: length > 0,
         extras: {'browsable': true}
     );
   }
