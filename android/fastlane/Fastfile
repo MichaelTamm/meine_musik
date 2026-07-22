@@ -22,7 +22,7 @@ platform :android do
         MEINE_MUSIK_UPLOAD_KEY_ALIAS
         MEINE_MUSIK_UPLOAD_KEY_PASSWORD
         MEINE_MUSIK_FASTLANE_ACCOUNT_JSON_PATH
-        MEINE_MUSIK_FASTLANE_SENTRY_AUTH_TOKEN
+        MEINE_MUSIK_SENTRY_AUTH_TOKEN
     ]
     missing_env = required_env.select { |k| ENV[k].to_s.strip.empty? }
     UI.user_error!("Missing required env variables: #{missing_env.join(', ')}") unless missing_env.empty?
@@ -35,21 +35,21 @@ platform :android do
     commit = last_git_commit()
     upload_to_play_store(
         aab: "../build/app/outputs/bundle/release/app-release.aab",
-        version_name: "2.0." + build_number,
+        version_name: "2.0." + build_number.to_s,
         version_code: build_number,
         track: "internal",
         release_status: "draft",
     )
-    sentry_debug_files_upload(
-        auth_token: ENV["MEINE_MUSIK_FASTLANE_SENTRY_AUTH_TOKEN"],
+    sentry_upload_build(
+        auth_token: ENV["MEINE_MUSIK_SENTRY_AUTH_TOKEN"],
         org_slug: "michaeltamm",
         project_slug: "meine-musik",
-        build_configuration: "Release",
         aab_path: "../build/app/outputs/bundle/release/app-release.aab",
         vcs_provider: "github",
-        base_sha: commit[:commit_hash],
-        base_repo_name: "MichaelTamm/meine_musik",
-        base_ref: commit[:branch],
+        head_sha: commit[:commit_hash],
+        head_repo_name: "MichaelTamm/meine_musik",
+        head_ref: commit[:branch],
+        build_configuration: 'Release'
     )
   end
 end
