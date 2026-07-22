@@ -28,6 +28,8 @@ const kDebugDrift = false;
 /// Set to `true` to enable logging of riverpod activity.
 const kDebugRiverpod = false;
 
+String appVersion = '???';
+
 late Directory applicationCacheDirectory;
 late Directory applicationDocumentsDirectory;
 late Directory applicationSupportDirectory;

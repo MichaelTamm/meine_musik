@@ -10,7 +10,6 @@ import '../../model/Playlist.dart';
 import '../../riverpod/player_state.dart';
 import '../../riverpod/playlists.dart';
 import '../../theme.dart';
-import '../../utils.dart';
 import '../LoadingIndicator.dart';
 import '../PlaylistActions.dart';
 import '../PlaylistView.dart';
@@ -142,6 +141,7 @@ class _AllePlaylistsOverview extends HookConsumerWidget {
             ),
           ),
         ),
+        Positioned(left: 16, bottom: 16, child: Text('Meine Musik Version: $appVersion')),
       ],
     );
   }

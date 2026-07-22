@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:meine_musik/debug_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,6 +12,7 @@ import '../env.dart';
 import '../model/AudioFile.dart';
 import '../model/Playlist.dart';
 import '../model/Song.dart';
+import '../utils.dart';
 
 part 'media.g.dart';
 
@@ -158,16 +160,48 @@ Future<IconData> artistIcon(Ref ref, KuenstlerSongs kuenstlerSongs) async {
 
 Future<Uint8List?> _loadOrFetchThumbnail(Directory thumbnailsDir, String mbid, {required Future<Uint8List?> Function() fetch}) async {
   final thumbnailDir = Directory('${thumbnailsDir.path}/${mbid.substring(0, 2)}');
+
+  // 1. Check for *.jpg, *.png, and *.webp file ...
+  for (final ext in ['jpg', 'png', 'webp']) {
+    final file = File('${thumbnailDir.path}/$mbid.$ext');
+    if (file.existsSync()) {
+      return file.readAsBytes();
+    }
+  }
+
+  // 2. Check for old *.thumbnail file and try to migrate it ...
   final thumbnailFile = File('${thumbnailDir.path}/$mbid.thumbnail');
   if (thumbnailFile.existsSync()) {
-    return thumbnailFile.readAsBytes();
+    final data = await thumbnailFile.readAsBytes();
+    final ext = determineFilenameExtension(data);
+    if (ext == null) {
+      final hex = data.take(20).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ');
+      reportErrorOnce('${thumbnailFile.name} has unknown image format. First 20 bytes: $hex');
+    } else {
+      try {
+        await thumbnailFile.rename('${thumbnailDir.path}/$mbid.$ext');
+        debugPrint('Renamed $mbid.thumbnail to $mbid.$ext');
+      } catch (error) {
+        reportErrorOnce('Failed to rename $mbid.thumbnail to $mbid.$ext', error);
+      }
+    }
+    return data;
   }
+
   final data = await fetch();
   if (data != null) {
     if (!thumbnailDir.existsSync()) {
       thumbnailDir.createSync(recursive: true);
     }
-    await thumbnailFile.writeAsBytes(data);
+    final ext = determineFilenameExtension(data);
+    if (ext != null) {
+      await File('${thumbnailDir.path}/$mbid.$ext').writeAsBytes(data);
+    } else {
+      final hex = data.take(20).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ');
+      reportErrorOnce('Unknown image format for MBID $mbid. First 20 bytes: $hex');
+      // Still save it as *.thumbnail file, so we don't fetch it again and again ...
+      await File('${thumbnailDir.path}/$mbid.thumbnail').writeAsBytes(data);
+    }
   }
   return data;
 }

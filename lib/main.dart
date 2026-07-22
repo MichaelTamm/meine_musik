@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audio_service/audio_service.dart' as audio_service;
 import 'package:audio_session/audio_session.dart';
 import 'package:drift_sqflite/drift_sqflite.dart';
@@ -45,19 +47,32 @@ Future<void> main() async {
     applicationCacheDirectory = await getApplicationCacheDirectoryFuture;
     db = Database(SqfliteQueryExecutor(path: '${applicationDocumentsDirectory.path}/database.sqlite', logStatements: kDebugDrift));
     await sessionConfigureFuture;
-    await initSentry(appRunner: () async {
-      final appVersion = await kMethodChannel.invokeMethod<String>("getAppVersion");
-      Sentry.configureScope((scope) {
-        if (appVersion != null) {
-          scope.setTag('appVersion', appVersion);
-        }
-        scope.setTag('timezone', DateTime.now().timeZoneName);
-      });
-      WidgetsBinding.instance.addObserver(_WidgetsBindingObserver());
-      addBreadcrumb('Meine Musik app (version: $appVersion) started.');
-      // ignore: missing_provider_scope
-      runApp(SentryWidget(child: const MeineMusikApp()));
-    });
+    // ignore: missing_provider_scope
+    await initSentry(
+      appRunner: () => runApp(
+        SentryWidget(
+          child: MeineMusikApp(
+            init: () async {
+              try {
+                final appVersion_ = await kMethodChannel.invokeMethod<String>("getAppVersion");
+                if (appVersion_ != null) {
+                  appVersion = appVersion_;
+                }
+              } catch (error, stack) {
+                debugPrintStack(label: 'Failed to invoke getAppVersion: $error', stackTrace: stack);
+              }
+              Sentry.configureScope((scope) {
+                scope.setTag('appVersion', appVersion);
+                scope.setTag('timezone', DateTime.now().timeZoneName);
+                scope.setTag('locale', Platform.localeName);
+              });
+              WidgetsBinding.instance.addObserver(_WidgetsBindingObserver());
+              addBreadcrumb('Meine Musik app (version: $appVersion) started.');
+            },
+          ),
+        ),
+      ),
+    );
   } catch (error, stack) {
     debugPrintStack(label: 'main() failed -- $error', stackTrace: stack);
   }

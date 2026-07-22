@@ -34,7 +34,7 @@ class Thumbnail extends ConsumerWidget {
 
   Thumbnail.forSong(Song song)
     : load = ((ref) => ref.watch(songThumbnailProvider(song))),
-      fallback = ((_) => const Icon(Icons.music_note, size: 32)),
+      fallback = ((_) => const Icon(Icons.music_note_rounded, size: 32)),
       super(key: ValueKey(song));
 
   final AsyncValue<Uint8List?> Function(WidgetRef ref) load;

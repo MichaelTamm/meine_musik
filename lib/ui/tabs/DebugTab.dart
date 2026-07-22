@@ -11,6 +11,7 @@ import '../../debug_utils.dart';
 import '../../env.dart';
 import '../../model/Date.dart';
 import '../../ui/DeletableListTile.dart';
+import '../../utils.dart';
 import '../LogViewerScreen.dart';
 
 class DebugTab extends HookWidget {
@@ -138,10 +139,6 @@ class DebugTab extends HookWidget {
       ),
     );
   }
-}
-
-extension on FileSystemEntity {
-  String get name => path.substring(path.lastIndexOf('/') + 1);
 }
 
 String _formatFileSize(int size) {

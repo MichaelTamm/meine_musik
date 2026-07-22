@@ -19,10 +19,15 @@ import '../ui/PlaylistUIExtension.dart';
 import '../ui/tabs/AlbenTab.dart';
 import '../ui/tabs/KuenstlerTab.dart';
 
+final _libraryMusicIconArtUri = Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_library_music_rounded');
+final _albumIconArtUri = Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_album_rounded');
+final _groupIconArtUri = Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_group_rounded');
+final _musicNoteIconArtUri = Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_music_note_rounded');
+
 /// See https://github.com/ryanheise/audio_service/wiki/Tutorial
 class MeineMusikAudioHandler extends BaseAudioHandler {
   void init() {
-    riverpodContainer.listen(currentSongProvider, (_, currentSong) {
+    riverpodContainer.listen(currentSongProvider, (_, currentSong) async {
       debugPrint('[$MeineMusikAudioHandler] current song changed to: $currentSong');
       if (currentSong.id == 0) {
         return;
@@ -31,17 +36,20 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
       if (title.isEmpty || title.startsWith('<') || title == 'unknown' || title == 'null') {
         title = basename(currentSong.fileName);
       }
-      mediaItem.add(
-        MediaItem(
+      playbackState.add(playbackState.value.copyWith(updatePosition: Duration.zero));
+      var mediaItem_ = MediaItem(
           id: currentSong.id.toString(),
           title: title,
           album: currentSong.album,
           artist: currentSong.artist,
           duration: Duration(milliseconds: currentSong.durationInMilliseconds),
-          // TODO: add cover art
-        ),
-      );
-      playbackState.add(playbackState.value.copyWith(updatePosition: Duration.zero));
+          artUri: _musicNoteIconArtUri,
+        );
+      mediaItem.add(mediaItem_);
+      final artUri = await currentSong.getArtUri();
+      if (artUri != null) {
+        mediaItem.add(mediaItem_.copyWith(artUri: artUri));
+      }
     });
     riverpodContainer.listen<PlayingPausedOrCompleted>(isPlayingPausedOrCompletedProvider, (_, state) {
       debugPrint('[$MeineMusikAudioHandler] player state changed to: $state');
@@ -68,21 +76,25 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
           id: 'Playlists',
           title: 'Playlists',
           playable: false,
-          artUri: Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_library_music_rounded'),
+          artUri: _libraryMusicIconArtUri,
           extras: {'browsable': true},
         ),
         MediaItem(
           id: 'Alben',
           title: 'Alben',
           playable: false,
-          artUri: Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_album_rounded'),
-          extras: {'browsable': true},
+          artUri: _albumIconArtUri,
+          extras: {
+            'browsable': true,
+            'android.media.browse.CONTENT_STYLE_BROWSABLE_HINT': 2,
+            'android.media.browse.CONTENT_STYLE_PLAYABLE_HINT': 2,
+          },
         ),
         MediaItem(
           id: 'Künstler',
           title: 'Künstler',
           playable: false,
-          artUri: Uri.parse('android.resource://de.michaeltamm.meine_musik/drawable/ic_group_rounded'),
+          artUri: _groupIconArtUri,
           extras: {'browsable': true},
         ),
       ];
@@ -289,19 +301,19 @@ class MeineMusikAudioHandler extends BaseAudioHandler {
 extension on Playlist {
   MediaItem toMediaItem() {
     return MediaItem(
-        id: 'Playlist: $name',
-        title: name,
-        displayTitle: name,
-        displaySubtitle: displaySubtitle,
-        playable: length > 0,
-        extras: {'browsable': true}
+      id: 'Playlist: $name',
+      title: name,
+      displayTitle: name,
+      displaySubtitle: displaySubtitle,
+      playable: length > 0,
+      extras: {'browsable': true},
     );
   }
 }
 
 extension on Album {
   Future<MediaItem> toMediaItem() async {
-    final artUri = await firstSong.getArtUri();
+    final artUri = await firstSong.getArtUri() ?? _albumIconArtUri;
     return MediaItem(
       id: 'Album: $name ($kuenstler)',
       title: name,
@@ -317,7 +329,7 @@ extension on Album {
 
 extension on KuenstlerSongs {
   Future<MediaItem> toMediaItem() async {
-    final artUri = await getArtUri();
+    final artUri = await getArtUri() ?? _groupIconArtUri;
     return MediaItem(
       id: 'Künstler: $kuenstler',
       title: kuenstler,
@@ -332,9 +344,10 @@ extension on KuenstlerSongs {
   Future<Uri?> getArtUri() async {
     final artist = await db.findArtistByName(kuenstler);
     if (artist != null) {
-      final thumbnailFile = File('${applicationCacheDirectory.path}/artist-thumbnails/${artist.mbid}.thumbnail');
-      if (thumbnailFile.existsSync()) {
-        return Uri.file(thumbnailFile.path);
+      final mbid = artist.mbid;
+      final thumbnailFile = _findThumbnailFile('artist-thumbnails', mbid);
+      if (thumbnailFile != null) {
+        return _toContentUri(thumbnailFile);
       }
     }
     return null;
@@ -345,16 +358,17 @@ extension on Song {
   Future<Uri?> getArtUri() async {
     final release = await db.findReleaseBySongId(id);
     if (release != null) {
-      final thumbnailFile = File('${applicationCacheDirectory.path}/album-thumbnails/${release.mbid}.thumbnail');
-      if (thumbnailFile.existsSync()) {
-        return Uri.file(thumbnailFile.path);
+      final mbid = release.mbid;
+      final thumbnailFile = _findThumbnailFile('album-thumbnails', mbid);
+      if (thumbnailFile != null) {
+        return _toContentUri(thumbnailFile);
       }
     }
     return null;
   }
 
   Future<MediaItem> toMediaItem() async {
-    final artUri = await getArtUri();
+    final artUri = await getArtUri() ?? _musicNoteIconArtUri;
     return MediaItem(
       id: 'Song: $id',
       title: title.isNotEmpty ? title : basename(fileName),
@@ -364,5 +378,32 @@ extension on Song {
       duration: Duration(milliseconds: durationInMilliseconds),
       playable: true,
     );
+  }
+}
+
+const _thumbnailFileExtensions = ['jpg', 'png', 'webp', 'thumbnail'];
+
+File? _findThumbnailFile(String subDir, String mbid) {
+  for (final ext in _thumbnailFileExtensions) {
+    final file = File('${applicationCacheDirectory.path}/$subDir/${mbid.substring(0, 2)}/$mbid.$ext');
+    if (file.existsSync()) {
+      return file;
+    }
+  }
+  return null;
+}
+
+Uri _toContentUri(File file) {
+  if (Platform.isAndroid) {
+    final cachePath = applicationCacheDirectory.path;
+    if (!file.path.startsWith(cachePath)) {
+      throw Exception('Unexpected file.path: ${file.path} -- should start with: $cachePath');
+    }
+    final relativePath = file.path.substring(cachePath.length);
+    final uri = Uri.parse('content://de.michaeltamm.meine_musik.fileprovider/cache$relativePath');
+    debugPrint('[$MeineMusikAudioHandler] mapped ${file.path} to $uri (${file.lengthSync()} bytes)');
+    return uri;
+  } else {
+    throw Exception('Unexpected platform: ${Platform.operatingSystem} -- expected: Android');
   }
 }

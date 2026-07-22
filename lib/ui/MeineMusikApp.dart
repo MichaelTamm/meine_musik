@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:meine_musik/ui/player_widget/PlayerWidget.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../env.dart';
 import '../hooks.dart';
@@ -17,13 +20,15 @@ import 'tabs/KuenstlerTab.dart';
 import 'tabs/OrdnerTab.dart';
 import 'tabs/PlaylistsTab.dart';
 
-class MeineMusikApp extends StatelessWidget {
-  const MeineMusikApp({this.riverpodOverrides = const []});
+class MeineMusikApp extends HookWidget {
+  const MeineMusikApp({required this.init, this.riverpodOverrides = const []});
 
   final List<Override> riverpodOverrides;
+  final Future<void> Function() init;
 
   @override
   Widget build(BuildContext context) {
+    useEffect(() { unawaited(init()); return null; }, []);
     return ProviderScope(
       overrides: riverpodOverrides,
       observers: [riverpodObserver],
@@ -32,6 +37,7 @@ class MeineMusikApp extends StatelessWidget {
         theme: themeData,
         debugShowCheckedModeBanner: false,
         navigatorKey: appNavigatorKey,
+        navigatorObservers: [SentryNavigatorObserver()],
         home: _MeineMusikScaffoldWrapper(),
       ),
     );
