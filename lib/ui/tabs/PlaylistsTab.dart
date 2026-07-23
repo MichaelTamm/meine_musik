@@ -172,18 +172,24 @@ class _PlaylistListTile extends ConsumerWidget {
     final (isFullySelected, isPartiallySelected) = ref.watch(
       currentPlaylistProvider.select((it) => (playlist.isNotEmpty && it.containsAllOf(playlist), it.containsOneOf(playlist))),
     );
-    return ListTile(
-      selected: isFullySelected || isPartiallySelected,
-      selectedTileColor: isFullySelected ? fullySelectedPlaylistBackground : partiallySelectedPlaylistBackground,
-      contentPadding: EdgeInsets.only(left: 8),
-      leading: Thumbnail.forPlaylist(playlist),
-      title: Text(playlist.name, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Text(playlist.displaySubtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
-      trailing: PlaylistActions(playlist),
-      onTap: () {
-        debugPrint('tap on $_PlaylistListTile for ${playlist.name}');
-        onTap();
-      },
+    final backgroundColor = isFullySelected
+        ? fullySelectedPlaylistBackground
+        : isPartiallySelected
+            ? partiallySelectedPlaylistBackground
+            : Colors.transparent;
+    return Material(
+      color: backgroundColor,
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 8),
+        leading: Thumbnail.forPlaylist(playlist),
+        title: Text(playlist.name, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: Text(playlist.displaySubtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
+        trailing: PlaylistActions(playlist),
+        onTap: () {
+          debugPrint('tap on $_PlaylistListTile for ${playlist.name}');
+          onTap();
+        },
+      ),
     );
   }
 }

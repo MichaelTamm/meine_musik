@@ -3,15 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 
 import 'drift/database.dart';
 import 'model/MeineMusikLogic.dart';
-import 'services/MeineMusikPigeonApi.dart';
 import 'services/CoverArtArchive.dart';
 import 'services/MeineMusikAudioHandler.dart';
+import 'services/MeineMusikPigeonApi.dart';
 import 'services/MusicBrainz.dart';
 import 'services/TheAudioDB.dart';
 
@@ -19,8 +18,6 @@ import 'services/TheAudioDB.dart';
 const kSlowDownAnimations = false;
 
 final kIsTest = Platform.environment.containsKey('FLUTTER_TEST');
-
-const kMethodChannel = MethodChannel('de.michaeltamm.meine_musik');
 
 /// Set to `true` to enable logging of SQL statements.
 const kDebugDrift = false;

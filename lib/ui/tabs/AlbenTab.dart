@@ -161,32 +161,38 @@ class _AlbumListTile extends ConsumerWidget {
       currentPlaylistProvider.select((it) => (it.containsAllOf(album), it.containsOneOf(album))),
     );
     final textTheme = TextTheme.of(context);
-    return ListTile(
-      selected: isFullySelected || isPartiallySelected,
-      selectedTileColor: isFullySelected ? fullySelectedPlaylistBackground : partiallySelectedPlaylistBackground,
-      contentPadding: EdgeInsets.only(left: 8),
-      leading: Thumbnail.forAlbum(album),
-      title: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(album.kuenstler, style: textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
-          Text(album.name, style: textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
-        ],
-      ),
-      subtitle: Text(
-        switch (album.length) {
-          1 => '1 Lied (${formatPlaylistDuration(album.duration)})',
-          _ => '${album.length} Lieder (${formatPlaylistDuration(album.duration)})',
+    final backgroundColor = isFullySelected
+        ? fullySelectedPlaylistBackground
+        : isPartiallySelected
+            ? partiallySelectedPlaylistBackground
+            : Colors.transparent;
+    return Material(
+      color: backgroundColor,
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 8),
+        leading: Thumbnail.forAlbum(album),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(album.kuenstler, style: textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text(album.name, style: textTheme.bodyLarge, maxLines: 1, overflow: TextOverflow.ellipsis),
+          ],
+        ),
+        subtitle: Text(
+          switch (album.length) {
+            1 => '1 Lied (${formatPlaylistDuration(album.duration)})',
+            _ => '${album.length} Lieder (${formatPlaylistDuration(album.duration)})',
+          },
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: PlaylistActions(album),
+        onTap: () {
+          debugPrint('tap on $_AlbumListTile for ${album.name}');
+          onTap();
         },
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
       ),
-      trailing: PlaylistActions(album),
-      onTap: () {
-        debugPrint('tap on $_AlbumListTile for ${album.name}');
-        onTap();
-      },
     );
   }
 }

@@ -19,31 +19,32 @@ class SongListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isCurrentSong = ref.watch(currentSongProvider.select((it) => it.id == song.id));
     final textTheme = TextTheme.of(context);
-    return ListTile(
-      selectedTileColor: selectedSongBackground,
-      selected: isCurrentSong,
-      contentPadding: EdgeInsets.only(left: 8),
-      leading: Thumbnail.forSong(song),
-      title: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(song.artist, style: textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
-          Text(
-            playlist is Album ? '${song.trackNumber}. ${song.title}' : song.title,
-            style: textTheme.bodyLarge,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+    return Material(
+      color: isCurrentSong ? selectedSongBackground : Colors.transparent,
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 8),
+        leading: Thumbnail.forSong(song),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(song.artist, style: textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text(
+              playlist is Album ? '${song.trackNumber}. ${song.title}' : song.title,
+              style: textTheme.bodyLarge,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+        subtitle: Text(formatSongDuration(Duration(milliseconds: song.durationInMilliseconds))),
+        // TODO: display animated playing icon when this is the current song and it is currently being played
+        trailing: _SongActions(song),
+        onTap: () {
+          debugPrint('tap on song ${song.fileName} -- playing file ...');
+          ref.read(playerProvider).playSong(song);
+        },
       ),
-      subtitle: Text(formatSongDuration(Duration(milliseconds: song.durationInMilliseconds))),
-      // TODO: display animated playing icon when this is the current song and it is currently being played
-      trailing: _SongActions(song),
-      onTap: () {
-        debugPrint('tap on song ${song.fileName} -- playing file ...');
-        ref.read(playerProvider).playSong(song);
-      },
     );
   }
 }

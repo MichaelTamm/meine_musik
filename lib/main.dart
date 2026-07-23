@@ -25,6 +25,7 @@ Future<void> main() async {
     SentryWidgetsFlutterBinding.ensureInitialized();
     timeDilation = kSlowDownAnimations ? 10 : 1;
     final getApplicationDocumentsDirectoryFuture = getApplicationDocumentsDirectory();
+    final getApplicationSupportDirectoryFuture = getApplicationSupportDirectory();
     final getApplicationCacheDirectoryFuture = getApplicationCacheDirectory();
     audioHandler = await audio_service.AudioService.init(
       builder: () => MeineMusikAudioHandler(),
@@ -43,30 +44,31 @@ Future<void> main() async {
     theAudioDB = TheAudioDB(loggingHttpClient);
     coverArtArchive = CoverArtArchive(loggingHttpClient);
     applicationDocumentsDirectory = await getApplicationDocumentsDirectoryFuture;
-    applicationSupportDirectory = await getApplicationDocumentsDirectoryFuture;
+    applicationSupportDirectory = await getApplicationSupportDirectoryFuture;
     applicationCacheDirectory = await getApplicationCacheDirectoryFuture;
     db = Database(SqfliteQueryExecutor(path: '${applicationDocumentsDirectory.path}/database.sqlite', logStatements: kDebugDrift));
     await sessionConfigureFuture;
-    // ignore: missing_provider_scope
     await initSentry(
+      // ignore: missing_provider_scope
       appRunner: () => runApp(
         SentryWidget(
           child: MeineMusikApp(
             init: () async {
-              try {
-                final appVersion_ = await kMethodChannel.invokeMethod<String>("getAppVersion");
-                if (appVersion_ != null) {
-                  appVersion = appVersion_;
-                }
-              } catch (error, stack) {
-                debugPrintStack(label: 'Failed to invoke getAppVersion: $error', stackTrace: stack);
-              }
               Sentry.configureScope((scope) {
-                scope.setTag('appVersion', appVersion);
                 scope.setTag('timezone', DateTime.now().timeZoneName);
                 scope.setTag('locale', Platform.localeName);
               });
               WidgetsBinding.instance.addObserver(_WidgetsBindingObserver());
+              try {
+                appVersion = await nativeMethods.getAppVersion();
+              } catch (error, stack) {
+                debugPrintStack(label: 'nativeMethods.getAppVersion() failed: $error', stackTrace: stack);
+              }
+              if (appVersion != '???') {
+                Sentry.configureScope((scope) {
+                  scope.setTag('appVersion', appVersion);
+                });
+              }
               addBreadcrumb('Meine Musik app (version: $appVersion) started.');
             },
           ),

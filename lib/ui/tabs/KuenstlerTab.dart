@@ -158,25 +158,31 @@ class _KuenstlerListTile extends ConsumerWidget {
     final (isFullySelected, isPartiallySelected) = ref.watch(
       currentPlaylistProvider.select((it) => (it.containsAllOf(kuenstlerSongs), it.containsOneOf(kuenstlerSongs))),
     );
-    return ListTile(
-      selected: isFullySelected || isPartiallySelected,
-      selectedTileColor: isFullySelected ? fullySelectedPlaylistBackground : partiallySelectedPlaylistBackground,
-      contentPadding: EdgeInsets.only(left: 8),
-      leading: Thumbnail.forKuenstler(kuenstlerSongs),
-      title: Text(kuenstler, maxLines: 1, overflow: TextOverflow.ellipsis),
-      subtitle: Text(
-        switch (kuenstlerSongs.length) {
-          1 => '1 Lied (${formatPlaylistDuration(kuenstlerSongs.duration)})',
-          _ => '${kuenstlerSongs.length} Lieder (${formatPlaylistDuration(kuenstlerSongs.duration)})',
+    final backgroundColor = isFullySelected
+        ? fullySelectedPlaylistBackground
+        : isPartiallySelected
+            ? partiallySelectedPlaylistBackground
+            : Colors.transparent;
+    return Material(
+      color: backgroundColor,
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 8),
+        leading: Thumbnail.forKuenstler(kuenstlerSongs),
+        title: Text(kuenstler, maxLines: 1, overflow: TextOverflow.ellipsis),
+        subtitle: Text(
+          switch (kuenstlerSongs.length) {
+            1 => '1 Lied (${formatPlaylistDuration(kuenstlerSongs.duration)})',
+            _ => '${kuenstlerSongs.length} Lieder (${formatPlaylistDuration(kuenstlerSongs.duration)})',
+          },
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: PlaylistActions(kuenstlerSongs),
+        onTap: () {
+          debugPrint('tap on $_KuenstlerListTile for $kuenstler');
+          onTap();
         },
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
       ),
-      trailing: PlaylistActions(kuenstlerSongs),
-      onTap: () {
-        debugPrint('tap on $_KuenstlerListTile for $kuenstler');
-        onTap();
-      },
     );
   }
 }

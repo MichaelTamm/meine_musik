@@ -309,43 +309,46 @@ class _AudioFolderListTile extends HookConsumerWidget {
       }
       return _getFolderState(folder, isSongPredicate);
     }, [folder, isSongPredicate]);
-    return ListTile(
-      contentPadding: const EdgeInsets.only(left: 2, right: 10),
-      leading: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Visibility(
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            visible: folderState != _FolderState.loading,
-            child: Checkbox(
-              value: switch (folderState) {
-                _FolderState.allSongs => true,
-                _FolderState.noSongs => false,
-                _ => null,
-              },
-              onChanged: (_) {
-                if (folderState == _FolderState.allSongs) {
-                  debugPrint('[$runtimeType] tap on checkbox for folder ${folder.name} -- blacklisting folder ...');
-                  blacklistFolder(folder, ref);
-                } else {
-                  debugPrint('tap on checkbox for folder ${folder.name} -- whitelisting folder ...');
-                  whitelistFolder(folder, ref);
-                }
-              },
-              tristate: true,
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        contentPadding: const EdgeInsets.only(left: 2, right: 10),
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Visibility(
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              visible: folderState != _FolderState.loading,
+              child: Checkbox(
+                value: switch (folderState) {
+                  _FolderState.allSongs => true,
+                  _FolderState.noSongs => false,
+                  _ => null,
+                },
+                onChanged: (_) {
+                  if (folderState == _FolderState.allSongs) {
+                    debugPrint('[$runtimeType] tap on checkbox for folder ${folder.name} -- blacklisting folder ...');
+                    blacklistFolder(folder, ref);
+                  } else {
+                    debugPrint('tap on checkbox for folder ${folder.name} -- whitelisting folder ...');
+                    whitelistFolder(folder, ref);
+                  }
+                },
+                tristate: true,
+              ),
             ),
-          ),
-          const Icon(Icons.folder_rounded),
-        ],
+            const Icon(Icons.folder_rounded),
+          ],
+        ),
+        title: Text(folder.name),
+        trailing: Icon(Icons.chevron_right_rounded),
+        onTap: () {
+          debugPrint('tap on $_AudioFolderListTile of folder: ${folder.name}');
+          onTap();
+        },
       ),
-      title: Text(folder.name),
-      trailing: Icon(Icons.chevron_right_rounded),
-      onTap: () {
-        debugPrint('tap on $_AudioFolderListTile of folder: ${folder.name}');
-        onTap();
-      },
     );
   }
 }
@@ -366,47 +369,50 @@ class _AudioFileListTile extends HookConsumerWidget {
       }
       return isSongPredicate(file) ? _FileState.song : _FileState.notSong;
     }, [file, isSongPredicate]);
-    return ListTile(
-      contentPadding: const EdgeInsets.only(left: 2, right: 10),
-      leading: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Visibility(
-            maintainSize: true,
-            maintainAnimation: true,
-            maintainState: true,
-            visible: fileState != _FileState.loading,
-            child: Checkbox(
-              value: switch (fileState) {
-                _FileState.song => true,
-                _FileState.notSong => false,
-                _ => null,
-              },
-              onChanged: (_) {
-                if (fileState == _FileState.song) {
-                  debugPrint('tap on checkbox for file ${file.fileName} -- blacklisting file ...');
-                  blacklistFile(file, ref);
-                } else if (fileState == _FileState.notSong) {
-                  debugPrint('tap on checkbox for file ${file.fileName} -- whitelisting file ...');
-                  whitelistFile(file, ref);
-                } else {
-                  // Should never happen, because the checkbox is only visible if fileState is not loading.
-                  debugPrint('tap on checkbox for file ${file.fileName} -- ignoring tap');
-                }
-              },
-              tristate: true,
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        contentPadding: const EdgeInsets.only(left: 2, right: 10),
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Visibility(
+              maintainSize: true,
+              maintainAnimation: true,
+              maintainState: true,
+              visible: fileState != _FileState.loading,
+              child: Checkbox(
+                value: switch (fileState) {
+                  _FileState.song => true,
+                  _FileState.notSong => false,
+                  _ => null,
+                },
+                onChanged: (_) {
+                  if (fileState == _FileState.song) {
+                    debugPrint('tap on checkbox for file ${file.fileName} -- blacklisting file ...');
+                    blacklistFile(file, ref);
+                  } else if (fileState == _FileState.notSong) {
+                    debugPrint('tap on checkbox for file ${file.fileName} -- whitelisting file ...');
+                    whitelistFile(file, ref);
+                  } else {
+                    // Should never happen, because the checkbox is only visible if fileState is not loading.
+                    debugPrint('tap on checkbox for file ${file.fileName} -- ignoring tap');
+                  }
+                },
+                tristate: true,
+              ),
             ),
-          ),
-          const Icon(Icons.audio_file_rounded),
-        ],
+            const Icon(Icons.audio_file_rounded),
+          ],
+        ),
+        title: Text(file.fileName),
+        subtitle: Text('${file.artist} • ${file.title}'),
+        trailing: const Icon(Icons.play_arrow_rounded),
+        onTap: () {
+          debugPrint('tap on $_AudioFileListTile for file ${file.fileName}');
+          ref.read(playerProvider).playSong(file);
+        },
       ),
-      title: Text(file.fileName),
-      subtitle: Text('${file.artist} • ${file.title}'),
-      trailing: const Icon(Icons.play_arrow_rounded),
-      onTap: () {
-        debugPrint('tap on $_AudioFileListTile for file ${file.fileName}');
-        ref.read(playerProvider).playSong(file);
-      },
     );
   }
 }

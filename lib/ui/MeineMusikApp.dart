@@ -21,14 +21,14 @@ import 'tabs/OrdnerTab.dart';
 import 'tabs/PlaylistsTab.dart';
 
 class MeineMusikApp extends HookWidget {
-  const MeineMusikApp({required this.init, this.riverpodOverrides = const []});
+  const MeineMusikApp({this.init, this.riverpodOverrides = const []});
 
   final List<Override> riverpodOverrides;
-  final Future<void> Function() init;
+  final Future<void> Function()? init;
 
   @override
   Widget build(BuildContext context) {
-    useEffect(() { unawaited(init()); return null; }, []);
+    useEffect(() { unawaited(init?.call()); return null; }, []);
     return ProviderScope(
       overrides: riverpodOverrides,
       observers: [riverpodObserver],

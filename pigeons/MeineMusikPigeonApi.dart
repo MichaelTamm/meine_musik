@@ -14,6 +14,12 @@ class AudioFile {
 @HostApi()
 abstract class MeineMusikNativeMethods {
   @async
+  String getAppVersion();
+
+  @async
+  int getApiLevel();
+
+  @async
   List<AudioFile> findAll();
 
   @async

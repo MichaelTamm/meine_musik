@@ -33,7 +33,7 @@ void main() {
     await act.tap(spotText('Test Album 1'));
     await tester.pumpAndSettle();
     spotText('Test Album 1').existsOnce();
-    // TODO: spotText(song1.title).existsOnce();
+    spotText(song1.title).existsOnce();
     spotText('Test Album 2').doesNotExist();
   });
 

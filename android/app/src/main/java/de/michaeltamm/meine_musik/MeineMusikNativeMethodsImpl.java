@@ -18,6 +18,16 @@ public class MeineMusikNativeMethodsImpl implements MeineMusikPigeonApi.MeineMus
     this.contentResolver = contentResolver;
   }
 
+  @Override
+  public void getAppVersion(@NonNull MeineMusikPigeonApi.Result<String> result) {
+    result.success(BuildConfig.VERSION_NAME);
+  }
+
+  @Override
+  public void getApiLevel(@NonNull MeineMusikPigeonApi.Result<Long> result) {
+    result.success((long) Build.VERSION.SDK_INT);
+  }
+
   private final ContentResolver contentResolver;
 
   private static final String[] _projectionWithoutCdTrackNumber = {

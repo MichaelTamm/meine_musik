@@ -27,6 +27,8 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
     audioHandler = MockMeineMusikAudioHandler();
     logic = MeineMusikLogic();
     nativeMethods = MockMeineMusikNativeMethods();
+    when(() => nativeMethods.getAppVersion()).thenAnswer((_) async => '2.0.0-dev');
+    when(() => nativeMethods.getApiLevel()).thenAnswer((_) async => 36);
     when(() => nativeMethods.findAll()).thenAnswer(
       (_) async => [
         anAudioFile(

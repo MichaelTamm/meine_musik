@@ -42,10 +42,10 @@ class CanAccessAudioFiles extends _$CanAccessAudioFiles with WidgetsBindingObser
   }
 
   Future<bool> checkPermission({bool requestIfNeeded = false}) async {
-    final apiLevel = await kMethodChannel.invokeMethod<int>("getApiLevel");
-    if (apiLevel == null) {
-      throw Exception('apiLevel == null');
+    if (kIsTest) {
+      return true;
     }
+    final apiLevel = await nativeMethods.getApiLevel();
     final permission = apiLevel < 33 ? Permission.storage : Permission.audio;
     var granted = await permission.status.isGranted;
     if (!granted && requestIfNeeded) {
